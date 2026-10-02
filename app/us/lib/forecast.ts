@@ -25,7 +25,7 @@ export interface ChamberResult {
   histogram: { seats: number; prob: number }[]; // full Dem seat distribution
 }
 
-/** Standard normal CDF via Abramowitz–Stegun erf approximation (|err| < 1.5e-7). */
+/** Standard normal CDF via Abramowitz–Stegun erf approximation (|err| < 2e-7). */
 export function normalCdf(x: number): number {
   const t = 1 / (1 + 0.2316419 * Math.abs(x));
   const d = 0.3989423 * Math.exp((-x * x) / 2);

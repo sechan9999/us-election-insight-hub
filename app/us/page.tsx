@@ -28,9 +28,9 @@ import {
   DATA_SOURCE,
   SOURCE_URLS,
 } from './lib/seed-data';
-import { ELECTION_DAY, LIVE_RESULTS, LIVE_SOURCE } from './lib/live';
+import { ELECTION_DAY, LIVE_RESULTS } from './lib/live';
 import { forecastRunId } from './lib/run';
-import { t, tl, type Lang } from './lib/i18n';
+import { t, tl, tRating, type Lang } from './lib/i18n';
 
 const TAU = MODEL_NOTES.tau;
 const DEM_BLUE = '#60a5fa';
@@ -196,7 +196,7 @@ export default function USElectionHub() {
               </tbody>
             </table>
           )}
-          <p className="mt-2 text-xs text-neutral-500">{LIVE_SOURCE}</p>
+          <p className="mt-2 text-xs text-neutral-500">{t(lang, 'liveSource')}</p>
         </section>
 
         {/* Senate battleground chart (vertical layout keeps labels off the 4-pt line) */}
@@ -256,7 +256,7 @@ export default function USElectionHub() {
                   <td className="py-2 pr-4 font-mono text-neutral-400">
                     {margin(d.lo)} ~ {margin(d.hi)}
                   </td>
-                  <td className="py-2 pr-4 text-neutral-400">{d.rating}</td>
+                  <td className="py-2 pr-4 text-neutral-400">{tRating(lang, d.rating)}</td>
                   <td className="py-2 font-mono">{pct(d.pWin)}</td>
                 </tr>
               ))}
@@ -304,12 +304,10 @@ export default function USElectionHub() {
           </ul>
           <h3 className="mt-4 font-semibold text-amber-300">{t(lang, 'assumptions')}</h3>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-amber-200/80">
-            <li>{MODEL_NOTES.sigmaNote}</li>
-            <li>{MODEL_NOTES.tauNote}</li>
-            <li>
-              {HOUSE_BASELINE.note} (safe D = {HOUSE_BASELINE.safeDemSeats})
-            </li>
-            <li>House toss-ups: D+2.0 placeholder × {HOUSE_SNAPSHOT.tossUps}</li>
+            <li>{t(lang, 'aSigma', { sigma: SENATE_BATTLEGROUND[0].sigma.toFixed(1) })}</li>
+            <li>{t(lang, 'aTau', { tau: TAU })}</li>
+            <li>{t(lang, 'aHouseSafe', { safe: HOUSE_BASELINE.safeDemSeats })}</li>
+            <li>{t(lang, 'aHouseTossup', { n: HOUSE_SNAPSHOT.tossUps })}</li>
           </ul>
           <h3 className="mt-4 font-semibold">{t(lang, 'sources')}</h3>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-neutral-400">
@@ -334,7 +332,7 @@ export default function USElectionHub() {
         </section>
 
         <footer className="mt-8 border-t border-white/10 pt-4 text-xs text-neutral-500">
-          Non-partisan forecast · {runId} · {DATA_SOURCE}, {DATA_AS_OF}
+          {t(lang, 'footer')} · {runId} · {DATA_SOURCE}, {DATA_AS_OF}
         </footer>
       </div>
     </div>

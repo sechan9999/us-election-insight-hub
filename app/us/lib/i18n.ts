@@ -75,6 +75,32 @@ const S = {
     ],
   },
   assumptions: { ko: '공개 전 교체해야 할 가정', en: 'Assumptions to replace before launch' },
+  // Rendered in place of the English notes in seed-data.ts. Those strings feed the
+  // run-ID hash (run.ts), so the data stays unchanged and only the display is localized.
+  aSigma: {
+    ko: '지역별 오차 σᵢ = {sigma}pt, 모든 지역 일괄 적용 (가정)',
+    en: 'Race-level error σᵢ = {sigma} pts for all races (labeled assumption)',
+  },
+  aTau: {
+    ko: '전국 오차 스케일 τ = {tau}pt (가정, 과거 선거의 여론조사 오차로 보정 예정)',
+    en: 'National error scale τ = {tau} pts (labeled assumption; calibrate from historical cycle polling error)',
+  },
+  aHouseSafe: {
+    ko: '하원 민주 안전 의석 {safe}석 (가정, Cook 레이팅 기준 안전 의석으로 교체 예정)',
+    en: 'House safe Democratic seats = {safe} (assumption; replace with Cook-rated safe-seat baseline)',
+  },
+  aHouseTossup: {
+    ko: '하원 경합 지역구 {n}곳에 D+2.0 임시값 일괄 적용',
+    en: 'House toss-ups: D+2.0 placeholder × {n}',
+  },
+  liveSource: {
+    ko: '개표 시작 전 · 투표 마감 전에는 결과를 표시하지 않습니다',
+    en: 'Not started — no results are shown before polls close',
+  },
+  footer: { ko: '비당파 예측', en: 'Non-partisan forecast' },
+  ratingLeansD: { ko: '민주 우세', en: 'Leans D' },
+  ratingLeansR: { ko: '공화 우세', en: 'Leans R' },
+  ratingTossUp: { ko: '경합', en: 'Toss Up' },
   langSwitch: { ko: 'English', en: '한국어' },
 } as const;
 
@@ -84,6 +110,18 @@ export function t(lang: Lang, key: Key, vars: Record<string, string | number> = 
   const v = S[key][lang];
   if (typeof v !== 'string') throw new Error(`${key} is a list; use tl()`);
   return v.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? `{${k}}`));
+}
+
+const RATING_KEY: Record<string, Key> = {
+  'Leans D': 'ratingLeansD',
+  'Leans R': 'ratingLeansR',
+  'Toss Up': 'ratingTossUp',
+};
+
+/** Localize a rating label from the seed data; unknown labels pass through. */
+export function tRating(lang: Lang, rating: string): string {
+  const key = RATING_KEY[rating];
+  return key ? t(lang, key) : rating;
 }
 
 export function tl(lang: Lang, key: 'charter'): readonly string[] {
