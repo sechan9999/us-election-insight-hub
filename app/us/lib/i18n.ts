@@ -31,6 +31,23 @@ const S = {
   thBand: { ko: '90% 오차 범위', en: '90% margin range' },
   thRating: { ko: '레이팅', en: 'Rating' },
   thProb: { ko: 'P(민주 승리)', en: 'P(Dem win)' },
+  pollsTitle: { ko: '최신 개별 여론조사: 뉴욕타임스/시에나', en: 'Latest individual polls: New York Times/Siena' },
+  pollsMeta: {
+    ko: '가능성 높은 유권자 대상 · {released} 공개 · 전화 조사',
+    en: 'Likely voters · released {released} · phone survey',
+  },
+  pollsSummary: {
+    ko: '{n}개 주 중 민주당 우위 {d}곳, 공화당 우위 {r}곳, 동률 {t}곳',
+    en: 'Of {n} states: Democrat ahead in {d}, Republican ahead in {r}, tied in {t}',
+  },
+  pollsVsAvg: { ko: '모형 입력 RCP 평균 {avg}', en: 'RCP average in model {avg}' },
+  pollsSample: { ko: '{n}명 · 오차 ±{moe}%p · {dates}', en: 'n={n} · ±{moe} pts · {dates}' },
+  pollsTie: { ko: '동률', en: 'Tied' },
+  pollsOther: { ko: '다른 조사 기관', en: 'Different pollster' },
+  pollsNote: {
+    ko: '개별 조사는 참고용이며 모형 입력이 아닙니다. 모형은 RCP 평균만 쓰므로, 이 조사는 평균에 반영된 뒤 다음 run에서 확률에 들어갑니다. 대부분의 격차가 오차범위 안이라 한 조사만으로 우세를 판단하면 안 됩니다.',
+    en: 'Individual polls are shown for reference and are not model inputs. The model reads RCP averages only, so these polls reach the probabilities once they enter the average. Most gaps sit inside the margin of error, so no single poll settles a race.',
+  },
   houseTitle: { ko: '하원', en: 'House' },
   generic: { ko: '전국 여론조사 평균 (generic ballot)', en: 'Generic ballot average' },
   compDist: { ko: '경합 지역구 조사 ({n}곳)', en: 'Competitive-district polls ({n})' },

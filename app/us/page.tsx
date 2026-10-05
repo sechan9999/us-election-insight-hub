@@ -29,6 +29,7 @@ import {
   SOURCE_URLS,
 } from './lib/seed-data';
 import { ELECTION_DAY, LIVE_RESULTS } from './lib/live';
+import { NYT_SIENA_OCT_2026, OTHER_RECENT_POLLS, POLL_SOURCE_URLS, type PollRace } from './lib/polls';
 import { forecastRunId } from './lib/run';
 import { t, tl, tRating, type Lang } from './lib/i18n';
 
@@ -62,6 +63,47 @@ function SeatDistribution({ lang, result, needed }: { lang: Lang; result: Chambe
           </Bar>
         </BarChart>
       </ResponsiveContainer>
+    </div>
+  );
+}
+
+function PollCard({ lang, p, pollster, rcpMargin }: { lang: Lang; p: PollRace; pollster?: string; rcpMargin?: number }) {
+  const race = SENATE_BATTLEGROUND.find((r) => r.id === p.id);
+  const m = p.demPct - p.repPct;
+  const lead = m === 0 ? t(lang, 'pollsTie') : margin(m);
+  return (
+    <div className={`rounded-lg border p-4 ${pollster ? 'border-dashed border-white/20' : 'border-white/10'} bg-black/20`}>
+      <div className="flex items-baseline justify-between gap-2">
+        <div className="font-semibold">
+          {race ? (lang === 'ko' ? race.stateKo : race.label) : p.id}
+          <span className="ml-1 text-xs text-neutral-500">{race ? (lang === 'ko' ? race.label : race.stateKo) : ''}</span>
+        </div>
+        <span className={`rounded px-2 py-0.5 font-mono text-sm ${m > 0 ? 'bg-blue-400/15 text-blue-300' : m < 0 ? 'bg-rose-400/15 text-rose-300' : 'bg-white/10 text-neutral-200'}`}>
+          {lead}
+        </span>
+      </div>
+      {pollster && <div className="mt-1 text-xs text-amber-300/80">{t(lang, 'pollsOther')}: {pollster}</div>}
+      {[
+        { name: p.dem, v: p.demPct, color: DEM_BLUE, tag: 'D' },
+        { name: p.rep, v: p.repPct, color: REP_RED, tag: 'R' },
+      ].map((c) => (
+        <div key={c.tag} className="mt-3">
+          <div className="flex justify-between text-sm">
+            <span>
+              <span className="mr-1 font-mono text-xs" style={{ color: c.color }}>{c.tag}</span>
+              {c.name}
+            </span>
+            <span className="font-mono">{c.v}%</span>
+          </div>
+          <div className="mt-1 h-2 rounded bg-white/10" role="presentation">
+            <div className="h-2 rounded" style={{ width: `${c.v}%`, background: c.color }} />
+          </div>
+        </div>
+      ))}
+      <div className="mt-3 text-xs text-neutral-400">{t(lang, 'pollsSample', { n: p.n.toLocaleString(), moe: p.moe.toFixed(1), dates: p.dates })}</div>
+      {rcpMargin !== undefined && (
+        <div className="mt-1 text-xs text-neutral-500">{t(lang, 'pollsVsAvg', { avg: margin(rcpMargin) })}</div>
+      )}
     </div>
   );
 }
@@ -262,6 +304,42 @@ export default function USElectionHub() {
               ))}
             </tbody>
           </table>
+        </section>
+
+        {/* Latest individual polls (display-only; the model reads RCP averages) */}
+        <section className="mt-8 rounded-xl border border-white/10 bg-white/5 p-5">
+          <h2 className="text-xl font-semibold">{t(lang, 'pollsTitle')}</h2>
+          <p className="mt-1 text-sm text-neutral-400">
+            {t(lang, 'pollsMeta', { released: NYT_SIENA_OCT_2026.released })} ·{' '}
+            {(() => {
+              const ms = NYT_SIENA_OCT_2026.races.map((r) => r.demPct - r.repPct);
+              return t(lang, 'pollsSummary', {
+                n: ms.length,
+                d: ms.filter((m) => m > 0).length,
+                r: ms.filter((m) => m < 0).length,
+                t: ms.filter((m) => m === 0).length,
+              });
+            })()}
+          </p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {NYT_SIENA_OCT_2026.races.map((p) => (
+              <PollCard key={p.id} lang={lang} p={p} rcpMargin={SENATE_BATTLEGROUND.find((r) => r.id === p.id)?.demMargin} />
+            ))}
+            {OTHER_RECENT_POLLS.map((p) => (
+              <PollCard key={p.id} lang={lang} p={p} pollster={`${p.pollster}, ${p.released}`} rcpMargin={SENATE_BATTLEGROUND.find((r) => r.id === p.id)?.demMargin} />
+            ))}
+          </div>
+          <p className="mt-3 text-xs text-amber-300/80">{t(lang, 'pollsNote')}</p>
+          <p className="mt-1 text-xs text-neutral-500">
+            {POLL_SOURCE_URLS.map((u, i) => (
+              <span key={u}>
+                {i > 0 && ' · '}
+                <a className="underline" href={u} target="_blank" rel="noreferrer">
+                  {u.replace(/^https:\/\/(www\.)?/, '').split('/')[0]}
+                </a>
+              </span>
+            ))}
+          </p>
         </section>
 
         {/* House panel */}
