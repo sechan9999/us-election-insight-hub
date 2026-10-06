@@ -48,7 +48,30 @@ const S = {
     ko: '개별 조사는 참고용이며 모형 입력이 아닙니다. 모형은 RCP 평균만 쓰므로, 이 조사는 평균에 반영된 뒤 다음 run에서 확률에 들어갑니다. 대부분의 격차가 오차범위 안이라 한 조사만으로 우세를 판단하면 안 됩니다.',
     en: 'Individual polls are shown for reference and are not model inputs. The model reads RCP averages only, so these polls reach the probabilities once they enter the average. Most gaps sit inside the margin of error, so no single poll settles a race.',
   },
-  truthTitle: { ko: '트럼프 트루스소셜 개입 지수', en: 'Trump Truth Social intervention index' },
+  tabForecast: { ko: '예측', en: 'Forecast' },
+  tabMessage: { ko: '트럼프 메시지 분석', en: 'Trump message analysis' },
+  msgHeader: {
+    ko: '트루스소셜 @realDonaldTrump · {last} 까지 · 본문 게시물 {n}건 · 라벨 {v}',
+    en: 'Truth Social @realDonaldTrump · through {last} · {n} text posts · labels {v}',
+  },
+  msgFull: { ko: '전체 분석 보기 →', en: 'Full analysis →' },
+  msgMixTitle: { ko: '최근 4주 주제 구성', en: 'Topic mix, last 4 weeks' },
+  msgMixNote: {
+    ko: '{from}~{to} 주의 본문 게시물 {n}건 기준. 오른쪽 숫자는 취임 이후 그 이전 기간 평균 대비 비중 차이(%p).',
+    en: 'Text posts in weeks {from} to {to} (n = {n}). The right-hand figure is the change in share vs. all earlier weeks since inauguration (pts).',
+  },
+  msgTrendTitle: { ko: '주제별 주간 추이 (최근 26주)', en: 'Weekly trend by topic (last 26 weeks)' },
+  msgTrendNote: { ko: '같은 눈금(0~{max}건). 마지막 막대는 진행 중인 주일 수 있습니다.', en: 'Same scale (0–{max} posts). The last bar may be a partial week.' },
+  msgCaution: { ko: '해석 주의', en: 'interpret with care' },
+  msgCautionNote: {
+    ko: '주제 이름은 키워드와 중심 게시물을 보고 붙인 해석입니다. 군집 경계가 약하며(silhouette {sil}), 응집도 0.05 미만 주제는 해석 주의로 표시했습니다.',
+    en: 'Topic names are interpretations based on keywords and central posts. Cluster boundaries are weak (silhouette {sil}); topics with cohesion under 0.05 are flagged.',
+  },
+  msgLimits: {
+    ko: '이 탭은 예측 모형과 별개인 기술적 맥락 자료입니다. 트루스소셜은 유권자 전체가 아니며, 게시 빈도는 지지율이 아닙니다.',
+    en: 'This tab is descriptive context, separate from the forecast model. Truth Social is not the electorate, and posting volume is not support.',
+  },
+  truthTitle: { ko: '상원 경합주 개입 지수', en: 'Senate battleground intervention index' },
   truthMeta: {
     ko: '{week} 주 기준 최근 {w}주 · 지지 선언 {n}건 중 경합주 매핑 {mapped}건',
     en: 'Last {w} weeks to week of {week} · {mapped} of {n} endorsement posts mapped to a battleground',

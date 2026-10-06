@@ -35,13 +35,52 @@ export interface TruthIndex {
   notes: { ko: string; en: string };
 }
 
+export const TRUTH_WEEKLY_URL = 'https://sechan9999.github.io/trump-truth-analysis/weekly.json';
+export const TRUTH_SITE_URL = 'https://sechan9999.github.io/trump-truth-analysis/';
+
+export interface TruthCluster {
+  ko: [string, string];
+  en: [string, string];
+  c: string;
+}
+
+export interface TruthClusterStats {
+  n: number;
+  cohesion: number; // mean silhouette (cosine)
+  boundary_share: number;
+  keywords: string[];
+}
+
+/** weekly.json (schema truth-weekly/v1): topic labels, cluster stats, monthly and weekly topic counts. */
+export interface TruthWeekly {
+  schema: string;
+  site: string;
+  meta: { collected: string; total: number; analyzed: number; last: string };
+  labels: { version: string; date: string; clusters: Record<string, TruthCluster> };
+  stats: { overall_silhouette: number; boundary_threshold: number; clusters: Record<string, TruthClusterStats> };
+  months: string[];
+  monthly: Record<string, number[]>;
+  weeks: string[]; // Monday of each ET week
+  weekly: Record<string, number[]>;
+}
+
+async function getJson<T>(url: string, signal?: AbortSignal): Promise<T> {
+  const res = await fetch(url, { signal, cache: 'no-store' });
+  if (!res.ok) throw new Error(`${url} ${res.status}`);
+  return (await res.json()) as T;
+}
+
+export async function fetchTruthWeekly(signal?: AbortSignal): Promise<TruthWeekly> {
+  const j = await getJson<TruthWeekly>(TRUTH_WEEKLY_URL, signal);
+  if (!j || !j.labels || !j.weekly) throw new Error('truth weekly: bad shape');
+  return j;
+}
+
 /** 'NC-SEN' -> 'NC' */
 export const stateCode = (raceId: string) => raceId.split('-')[0];
 
 export async function fetchTruthIndex(signal?: AbortSignal): Promise<TruthIndex> {
-  const res = await fetch(TRUTH_INDEX_URL, { signal, cache: 'no-store' });
-  if (!res.ok) throw new Error(`truth index ${res.status}`);
-  const j = (await res.json()) as TruthIndex;
+  const j = await getJson<TruthIndex>(TRUTH_INDEX_URL, signal);
   if (!j || typeof j.states !== 'object') throw new Error('truth index: bad shape');
   return j;
 }
