@@ -14,6 +14,7 @@ import {
   Legend,
   Line,
   LineChart,
+  ReferenceArea,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -64,7 +65,7 @@ function Intervention({ lang, d, races }: { lang: Lang; d: MessageIndexWeekly; r
   const rows = races
     .map((r) => {
       const s = d.states[stateCode(r.id)];
-      return s ? { code: stateCode(r.id), name: r.name, alt: lang === 'ko' ? r.label : r.stateKo, ...s } : null;
+      return s ? { code: stateCode(r.id), name: r.name, alt: lang === 'ko' ? r.label : '', ...s } : null;
     })
     .filter((x): x is NonNullable<typeof x> => x !== null)
     .sort((a, b) => a.rank - b.rank || a.name.localeCompare(b.name));
@@ -78,7 +79,7 @@ function Intervention({ lang, d, races }: { lang: Lang; d: MessageIndexWeekly; r
   }));
   const top = rows[0];
   const surges = rows.filter((r) => r.surge);
-  const cur = rows.find((r) => r.code === sel);
+  const cur = rows.find((r) => r.code === (sel ?? rows[0]?.code));
   const small = d.smallN;
 
   return (
@@ -160,8 +161,9 @@ function Intervention({ lang, d, races }: { lang: Lang; d: MessageIndexWeekly; r
           </div>
           <div className="mt-1 text-neutral-300">{t(lang, 'ivPosts', { n: +cur.nEndorse.toFixed(1), m: +cur.nDemMention.toFixed(1) })}</div>
           {cur.smallN ? (
-            <div className="mt-2">
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-neutral-400">
               <SmallBadge lang={lang} />
+              <span>{t(lang, 'ivSmallDetail', { n: Math.round(d.coverage.nMapped) })}</span>
             </div>
           ) : (
             <div className="mt-1 flex flex-wrap gap-x-4 font-mono text-xs text-neutral-400">
@@ -324,6 +326,11 @@ function MessageVsPublic({ lang, d }: { lang: Lang; d: MessageIndexWeekly }) {
                       contentStyle={{ background: '#111', border: '1px solid #333' }}
                       formatter={(v, k) => [v == null ? '—' : `${Number(v).toFixed(1)}%`, names[String(k)] ?? String(k)]}
                     />
+                    {mvp.months
+                      .filter((m) => mvp.gallupQuality[m] === 'missing' || mvp.gallupQuality[m] === 'excluded')
+                      .map((m) => (
+                        <ReferenceArea key={m} x1={mlabel(m)} x2={mlabel(m)} fill="#737373" fillOpacity={0.18} ifOverflow="extendDomain" />
+                      ))}
                     <ReferenceLine x={mlabel(mvp.yougovMethodBreak)} stroke="#525252" strokeDasharray="2 4" label={{ value: t(lang, 'mvpYgBreak'), fill: '#737373', fontSize: 9, position: 'insideTopLeft' }} />
                     <Line type="monotone" dataKey="trump" stroke={AMBER} strokeWidth={2} dot={false} connectNulls={false} isAnimationActive={false} />
                     {p.public.map((s, j) =>

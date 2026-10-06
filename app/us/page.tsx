@@ -31,6 +31,7 @@ import {
 import { ELECTION_DAY, LIVE_RESULTS } from './lib/live';
 import { NYT_SIENA_OCT_2026, OTHER_RECENT_POLLS, POLL_SOURCE_URLS, type PollRace } from './lib/polls';
 import { forecastRunId } from './lib/run';
+import { daysSince, NEXT_RUN, STALE_AFTER_DAYS } from './lib/schedule';
 import MessageTab from './components/MessageTab';
 import { t, tl, tRating, type Lang } from './lib/i18n';
 
@@ -79,7 +80,7 @@ function PollCard({ lang, p, pollster, rcpMargin }: { lang: Lang; p: PollRace; p
       <div className="flex items-baseline justify-between gap-2">
         <div className="font-semibold">
           {race ? (lang === 'ko' ? race.stateKo : race.label) : p.id}
-          <span className="ml-1 text-xs text-neutral-500">{race ? (lang === 'ko' ? race.label : race.stateKo) : ''}</span>
+          {race && lang === 'ko' && <span className="ml-1 text-xs text-neutral-500">{race.label}</span>}
         </div>
         <span className={`rounded px-2 py-0.5 font-mono text-sm ${m > 0 ? 'bg-blue-400/15 text-blue-300' : m < 0 ? 'bg-rose-400/15 text-rose-300' : 'bg-white/10 text-neutral-200'}`}>
           {lead}
@@ -114,6 +115,7 @@ function PollCard({ lang, p, pollster, rcpMargin }: { lang: Lang; p: PollRace; p
 export default function USElectionHub() {
   const [lang, setLang] = useState<Lang>('ko');
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
+  const [inputAge, setInputAge] = useState<number | null>(null);
   const [tab, setTab] = useState<Tab>('forecast');
 
   useEffect(() => {
@@ -125,6 +127,7 @@ export default function USElectionHub() {
     const tq = new URLSearchParams(window.location.search).get('tab');
     if (tq === 'messages' || tq === 'truth') setTab('messages'); // 'truth' = earlier shared links
     setDaysLeft(Math.max(0, Math.ceil(ms / 86_400_000)));
+    setInputAge(daysSince(DATA_AS_OF));
   }, []);
 
   const switchLang = () => {
@@ -186,6 +189,14 @@ export default function USElectionHub() {
             <span className="rounded bg-amber-400/15 px-2 py-1 text-amber-300">
               {t(lang, 'sample')} · {t(lang, 'dataAsOf')} {DATA_AS_OF}
             </span>
+            {inputAge !== null && (
+              <span
+                className={`rounded px-2 py-1 ${inputAge > STALE_AFTER_DAYS ? 'bg-amber-400/15 text-amber-300' : 'bg-white/5 text-neutral-400'}`}
+              >
+                {t(lang, inputAge > STALE_AFTER_DAYS ? 'staleOld' : 'staleFresh', { d: inputAge })}
+                {NEXT_RUN && ` · ${t(lang, 'nextRun', { date: NEXT_RUN })}`}
+              </span>
+            )}
             <span className="rounded bg-white/5 px-2 py-1 text-neutral-400">{DATA_SOURCE}</span>
             <span className="rounded bg-white/5 px-2 py-1 font-mono text-neutral-400">
               {t(lang, 'runId')} {runId}
@@ -326,7 +337,7 @@ export default function USElectionHub() {
                   {races.map((d) => (
                     <tr key={d.id} className="border-b border-white/5">
                       <td className="py-2 pr-4 font-medium">
-                        {d.name} <span className="text-neutral-500">({lang === 'ko' ? d.label : d.stateKo})</span>
+                        {d.name} {lang === 'ko' && <span className="text-neutral-500">({d.label})</span>}
                       </td>
                       <td className="py-2 pr-4">{d.demCandidate}</td>
                       <td className="py-2 pr-4">{d.repCandidate}</td>

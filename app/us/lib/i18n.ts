@@ -10,6 +10,9 @@ const S = {
     en: 'Election Day November 3, 2026 · {n} simulations',
   },
   runId: { ko: '예측 run ID', en: 'Forecast run ID' },
+  staleFresh: { ko: '입력 {d}일 경과', en: 'Inputs {d} days old' },
+  staleOld: { ko: '입력 {d}일째 갱신 안 됨', en: 'Inputs not updated for {d} days' },
+  nextRun: { ko: '다음 업데이트 {date}', en: 'Next update {date}' },
   dataAsOf: { ko: '여론조사 기준일', en: 'Polls as of' },
   senateKpi: { ko: '상원 민주당 과반 확률', en: 'P(Democratic Senate majority)' },
   houseKpi: { ko: '하원 민주당 과반 확률', en: 'P(Democratic House majority)' },
@@ -86,6 +89,10 @@ const S = {
     ko: '민주당 후보 이름 언급이 최근 4주 {n}건으로 20건 미만이라 언급 점유율 막대는 표시하지 않습니다.',
     en: 'Democratic-candidate mentions in the last 4 weeks: {n} (under 20), so mention-share bars are not shown.',
   },
+  ivSmallDetail: {
+    ko: '최근 4주 경합주 매핑이 {n}건뿐이라 점유율·z·순위는 표시하지 않습니다.',
+    en: 'Only {n} battleground-mapped posts in the last 4 weeks, so share, z and rank are not shown.',
+  },
   ivPick: { ko: '막대를 누르면 주별 수치가 나옵니다.', en: 'Select a bar for state details.' },
   mixTitle: { ko: '주제 믹스', en: 'Topic mix' },
   mixNote: {
@@ -118,8 +125,8 @@ const S = {
     en: 'Gallup dots: filled = that month’s own release, hollow = trend column in a later release. Gaps mean no data (never interpolated). {partial} is in progress and excluded from peaks.',
   },
   mvpGaps: {
-    ko: 'Gallup 결측: 2025-06·07, 2026-08 (문항 없음), 2025-08은 범죄만, 2026-09는 2차 출처뿐이라 제외.',
-    en: 'Gallup gaps: 2025-06, 2025-07, 2026-08 (not asked); 2025-08 crime only; 2026-09 excluded (secondary source only).',
+    ko: '회색 띠 = Gallup 자료 없음: 2025-06·07, 2026-08(문항 없음), 2026-09(2차 출처뿐이라 제외). 2025-08은 범죄만 있음.',
+    en: 'Grey bands = no Gallup data: 2025-06, 2025-07, 2026-08 (not asked) and 2026-09 (excluded, secondary source only). 2025-08 has crime only.',
   },
   mvpGuard: {
     ko: '같은 달에 함께 오른 것은 동시 발생일 뿐 어느 쪽이 원인인지 말해 주지 않습니다.',
@@ -132,7 +139,7 @@ const S = {
     en: 'Data: CNN Truth Social archive → truth-analysis pipeline (collected {collected}, weekly)',
   },
   msgM2: {
-    ko: '군집: all-mpnet-base-v2 → t-SNE → k-means k=10, silhouette(코사인) {sil}: 경계가 뚜렷하지 않음. 주제 이름(라벨 {lv})은 해석',
+    ko: '군집: all-mpnet-base-v2 → t-SNE → k-means k=10, silhouette(코사인) {sil}, 즉 군집 경계가 뚜렷하지 않습니다. 주제 이름(라벨 {lv})은 키워드와 대표 게시물을 보고 붙인 해석입니다.',
     en: 'Clusters: all-mpnet-base-v2 → t-SNE → k-means k=10, silhouette (cosine) {sil}: boundaries are weak. Topic names (labels {lv}) are interpretations',
   },
   msgM3: {
