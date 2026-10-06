@@ -13,14 +13,14 @@
 - 하원 패널, 방법론, 가정, 출처, 편집 헌장 ([docs/EDITORIAL_CHARTER.md](docs/EDITORIAL_CHARTER.md))
 - 헤더의 run ID(`us-fc-<기준일>-<입력 해시>`)로 같은 숫자를 재현할 수 있습니다.
 
-## 트럼프 메시지 분석 탭 (`/us?tab=truth`, 모형 입력 아님)
+## 메시지 분석 탭 (`/us?tab=messages`, 모형 입력 아님)
 
-[trump-truth-analysis](https://github.com/sechan9999/trump-truth-analysis)가 매주 만드는 JSON 두 개를 브라우저에서 불러와 표시합니다(`app/us/MessageTab.tsx`, `app/us/lib/truth.ts`). 재배포 없이 주간 갱신이 반영되고, `seed-data.ts`와 run ID에는 영향이 없습니다.
+트럼프 트루스소셜 게시물의 기술적(descriptive) 맥락 레이어입니다. 예측 모형과 분리되어 있고 `seed-data.ts`·run ID에 영향이 없습니다. 탭 전환은 클라이언트 상태라 시뮬레이션을 다시 돌리지 않습니다.
 
-- [`weekly.json`](https://sechan9999.github.io/trump-truth-analysis/weekly.json): 최근 4주 주제 구성(취임 이후 이전 기간 대비 %p), 주제별 주간 추이(최근 26주), 대표 키워드, 응집도 0.05 미만 '해석 주의'
-- 이벤트 타임라인(`app/us/EventTimeline.tsx`): `weekly.json`의 `events`. 주간 게시량 막대 아래에 주제별 급증 에피소드 띠를 표시하고, 선택하면 기간·평소 대비 배수·두드러진 키워드·대표 게시물 원문 링크를 보여줌. 사건 이름은 붙이지 않음. 여론조사 시계열이 들어오면 같은 에피소드를 추이 차트 주석으로 재사용 가능
-- [`intervention.json`](https://sechan9999.github.io/trump-truth-analysis/intervention.json): 상원 경합주 개입 지수(지지 선언 점유율, 민주당 후보 언급, 경합주 매핑 20건 미만이면 '표본 부족')
-- 한계: 주제 이름은 해석, 군집 경계 약함, 지지 선언은 접전주를 따라가는 내생 변수, 트루스소셜 ≠ 유권자
+- 데이터: [trump-truth-analysis](https://github.com/sechan9999/trump-truth-analysis)의 `scripts/export_weekly.py`가 주 1회 만드는 [`message_index_weekly.json`](https://sechan9999.github.io/trump-truth-analysis/message_index_weekly.json). `app/us/lib/seed-messages.ts`가 체크인 스냅샷(`lib/data/`)을 먼저 그리고, 게시된 최신 파일로 갱신합니다(운영에서는 BigQuery 등으로 교체 가능). 조인 키는 race id 앞자리(`NC-SEN` → `NC`)
+- 화면(`app/us/components/MessageTab.tsx`): 헤더 스트립 / 개입 지수(지지 점유율·민주당 후보 언급 점유율 그룹 막대, amber·teal, KPI 3개, 20건 미만이면 '표본 부족' 배지) / 주제 믹스(월별 누적 영역 + 급증 주석) / 방법론 노트·한계 4개
+- 메시지 vs 민심 섹션은 이슈 여론조사 ingest 전까지 숨김(v1.5)
+- 가드레일: 기술적 서술만, 인과·예측 문장 금지, 예측 모형 입력 사용 금지, 추측성 해석에는 (추정)
 
 ## 모델 (`app/us/lib/forecast.ts`)
 

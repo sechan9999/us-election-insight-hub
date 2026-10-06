@@ -31,7 +31,7 @@ import {
 import { ELECTION_DAY, LIVE_RESULTS } from './lib/live';
 import { NYT_SIENA_OCT_2026, OTHER_RECENT_POLLS, POLL_SOURCE_URLS, type PollRace } from './lib/polls';
 import { forecastRunId } from './lib/run';
-import MessageTab from './MessageTab';
+import MessageTab from './components/MessageTab';
 import { t, tl, tRating, type Lang } from './lib/i18n';
 
 const TAU = MODEL_NOTES.tau;
@@ -40,7 +40,7 @@ const REP_RED = '#f87171';
 const Z90 = 1.6449;
 const SIM_OPTS = { tau: TAU, sims: MODEL_NOTES.sims, seed: MODEL_NOTES.seed };
 
-type Tab = 'forecast' | 'truth';
+type Tab = 'forecast' | 'messages';
 
 const pct = (p: number) => `${(p * 100).toFixed(1)}%`;
 const margin = (m: number) => `${m > 0 ? 'D+' : m < 0 ? 'R+' : ''}${Math.abs(m).toFixed(1)}`;
@@ -122,7 +122,8 @@ export default function USElectionHub() {
     const ms = new Date(`${ELECTION_DAY}T00:00:00-05:00`).getTime() - Date.now();
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (q === 'en' || q === 'ko') setLang(q);
-    if (new URLSearchParams(window.location.search).get('tab') === 'truth') setTab('truth');
+    const tq = new URLSearchParams(window.location.search).get('tab');
+    if (tq === 'messages' || tq === 'truth') setTab('messages'); // 'truth' = earlier shared links
     setDaysLeft(Math.max(0, Math.ceil(ms / 86_400_000)));
   }, []);
 
@@ -137,7 +138,7 @@ export default function USElectionHub() {
   const switchTab = (next: Tab) => {
     setTab(next);
     const url = new URL(window.location.href);
-    if (next === 'truth') url.searchParams.set('tab', 'truth');
+    if (next === 'messages') url.searchParams.set('tab', 'messages');
     else url.searchParams.delete('tab');
     window.history.replaceState(null, '', url);
   };
@@ -203,7 +204,7 @@ export default function USElectionHub() {
 
         {/* Tabs */}
         <div role="tablist" aria-label={t(lang, 'title')} className="flex gap-1 border-b border-white/10">
-          {(['forecast', 'truth'] as const).map((k) => (
+          {(['forecast', 'messages'] as const).map((k) => (
             <button
               key={k}
               type="button"
@@ -214,12 +215,12 @@ export default function USElectionHub() {
                 tab === k ? 'border-white/10 border-b-neutral-950 bg-neutral-950 text-neutral-100' : 'border-transparent text-neutral-400 hover:text-neutral-200'
               }`}
             >
-              {t(lang, k === 'forecast' ? 'tabForecast' : 'tabMessage')}
+              {t(lang, k === 'forecast' ? 'tabForecast' : 'tabMessages')}
             </button>
           ))}
         </div>
 
-        {tab === 'truth' && <MessageTab lang={lang} races={races} />}
+        {tab === 'messages' && <MessageTab lang={lang} races={races} />}
 
         {tab === 'forecast' && (
           <div className="mt-6">
