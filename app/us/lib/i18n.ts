@@ -147,12 +147,20 @@ const S = {
     en: 'Mapping: gazetteer {g}, candidate name first → state name → abbreviation; namesakes and primary losers restricted by rules and dates (method {m})',
   },
   msgAudit: {
-    ko: '라벨 감사({v}): 고정 표본 {n}건(주제당 {per}건) 중 {k}건이 라벨과 맞아 일치율 {p}% (95% 신뢰구간 {lo}–{hi}%).',
-    en: 'Label audit ({v}): {k} of {n} sampled posts ({per} per topic) matched their label, {p}% (95% CI {lo}–{hi}%).',
+    ko: '라벨 감사({v}): 고정 표본 {n}건(주제당 {per}건) 중 최종 {k}건이 라벨과 맞아 일치율 {p}% (95% 신뢰구간 {lo}–{hi}%).',
+    en: 'Label audit ({v}): in the final judgments, {k} of {n} sampled posts ({per} per topic) matched their label, {p}% (95% CI {lo}–{hi}%).',
   },
   msgAuditHow: {
-    ko: '기준: “{c}”. 검토자 {r}명이 같은 루브릭으로 표본을 나눠 판정했습니다(글당 1명, 검토자 간 일치도는 측정하지 않음).',
-    en: 'Criterion: “{c}”. The sample was split among {r} reviewers using the same rubric (one reviewer per post; inter-rater agreement not measured).',
+    ko: '기준: “{c}”. 1차로 검토자 {r}명이 같은 루브릭으로 표본을 나눠 판정했습니다(글당 1명).',
+    en: 'Criterion: “{c}”. In the first pass the sample was split among {r} reviewers using the same rubric (one reviewer per post).',
+  },
+  msgAuditRe: {
+    ko: '이어서 {r2}명이 300건 전체를 다시 보고 최종 판정에 합의했고 {ch}건이 바뀌었습니다(N→Y {ny}, Y→N {yn}). 1차 판정 대비 유지율 {ret}% (κ {k}).',
+    en: 'Then {r2} reviewers re-checked all posts and agreed final judgments; {ch} changed ({ny} N→Y, {yn} Y→N). First-pass retention {ret}% (κ {k}).',
+  },
+  msgAuditIrr: {
+    ko: '재검토자 개별 판정이 기록되지 않아 검토자 간 일치도는 측정하지 않았습니다.',
+    en: 'Inter-rater agreement was not measured because individual re-review judgments were not recorded.',
   },
   msgAuditLow: { ko: '일치율이 가장 낮은 주제: {list}.', en: 'Lowest-fit topics: {list}.' },
   msgLimitsTitle: { ko: '한계', en: 'Limits' },
