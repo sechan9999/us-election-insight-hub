@@ -72,6 +72,21 @@ export interface MessageVsPublic {
   pairs: MessagePair[];
 }
 
+/** Human label audit on a fixed sample (labels must match the version shown). */
+export interface LabelAudit {
+  n: number;
+  fit: number;
+  fitRate: number;
+  ci95: [number, number]; // Wilson 95%
+  labelVersion: string;
+  criterion: string;
+  criterionKo: string;
+  reviewers: number;
+  coding: string;
+  codingKo: string;
+  lowest: { topic: string; fitRate: number }[];
+}
+
 export interface MessageIndexWeekly {
   week: string;
   windowWeeks: number;
@@ -89,6 +104,7 @@ export interface MessageIndexWeekly {
   topics: ({ month: string } & Record<string, number | string>)[];
   annotations: Annotation[];
   messageVsPublic: MessageVsPublic | null; // null until poll data is exported
+  labelAudit: LabelAudit | null;
 }
 
 type Raw = typeof snapshot;
@@ -139,6 +155,21 @@ export function normalize(r: Raw): MessageIndexWeekly {
       ratio: a.ratio,
       keywords: a.keywords,
     })),
+    labelAudit: r.label_audit
+      ? {
+          n: r.label_audit.n,
+          fit: r.label_audit.fit,
+          fitRate: r.label_audit.fit_rate,
+          ci95: [r.label_audit.ci95[0], r.label_audit.ci95[1]],
+          labelVersion: r.label_audit.label_version,
+          criterion: r.label_audit.criterion,
+          criterionKo: r.label_audit.criterion_ko,
+          reviewers: r.label_audit.reviewers,
+          coding: r.label_audit.coding,
+          codingKo: r.label_audit.coding_ko,
+          lowest: r.label_audit.lowest.map((x) => ({ topic: x.topic, fitRate: x.fit_rate })),
+        }
+      : null,
     messageVsPublic: r.message_vs_public
       ? {
           mappingVersion: r.message_vs_public.mapping_version,

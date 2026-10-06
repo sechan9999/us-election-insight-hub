@@ -373,6 +373,28 @@ function Method({ lang, d }: { lang: Lang; d: MessageIndexWeekly }) {
         <li>{t(lang, 'msgM1', { collected: d.collected })}</li>
         <li>{t(lang, 'msgM2', { sil: d.silhouette.toFixed(2), lv: d.labelsVersion })}</li>
         <li>{t(lang, 'msgM3', { g: d.gazetteerVersion, m: d.methodVersion })}</li>
+        {d.labelAudit && (
+          <li>
+            {t(lang, 'msgAudit', {
+              v: d.labelAudit.labelVersion,
+              n: d.labelAudit.n,
+              per: Math.round(d.labelAudit.n / Object.keys(d.topicLabels).length),
+              k: d.labelAudit.fit,
+              p: Math.round(d.labelAudit.fitRate * 100),
+              lo: Math.round(d.labelAudit.ci95[0] * 100),
+              hi: Math.round(d.labelAudit.ci95[1] * 100),
+            })}{' '}
+            {t(lang, 'msgAuditHow', {
+              c: lang === 'ko' ? d.labelAudit.criterionKo : d.labelAudit.criterion,
+              r: d.labelAudit.reviewers,
+            })}{' '}
+            {t(lang, 'msgAuditLow', {
+              list: d.labelAudit.lowest
+                .map((x) => `${d.topicLabels[x.topic]?.[lang] ?? x.topic} ${Math.round(x.fitRate * 100)}%`)
+                .join(', '),
+            })}
+          </li>
+        )}
       </ul>
       <h3 className="mt-4 font-semibold text-amber-300">{t(lang, 'msgLimitsTitle')}</h3>
       <ol className="mt-2 list-decimal space-y-1 pl-5 text-amber-200/80">
