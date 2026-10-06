@@ -43,6 +43,35 @@ export interface Annotation {
   keywords: string[];
 }
 
+/** One public-opinion series for a mapped pair, in its native unit (%). null = no data (never interpolated). */
+export interface PublicSeries {
+  source: 'gallup' | 'yougov';
+  key: string;
+  label: string;
+  values: (number | null)[];
+  peak: string | null;
+}
+
+/** Trump topic vs. voter issue series (mapping v1). Not normalized: each series keeps its own unit. */
+export interface MessagePair {
+  topic: string; // topic slug, see topicLabels
+  match: 'partial' | 'direct' | 'approximate' | string;
+  note: string;
+  noteKo: string;
+  trump: (number | null)[]; // % of that month's text posts
+  trumpPeak: string | null;
+  public: PublicSeries[];
+}
+
+export interface MessageVsPublic {
+  mappingVersion: string;
+  months: string[];
+  gallupQuality: Record<string, string | null>; // primary | trend | partial | missing | excluded
+  yougovMethodBreak: string;
+  partialMonth: string;
+  pairs: MessagePair[];
+}
+
 export interface MessageIndexWeekly {
   week: string;
   windowWeeks: number;
@@ -59,6 +88,7 @@ export interface MessageIndexWeekly {
   topicLabels: Record<string, TopicLabel>;
   topics: ({ month: string } & Record<string, number | string>)[];
   annotations: Annotation[];
+  messageVsPublic: MessageVsPublic | null; // null until poll data is exported
 }
 
 type Raw = typeof snapshot;
@@ -109,6 +139,24 @@ export function normalize(r: Raw): MessageIndexWeekly {
       ratio: a.ratio,
       keywords: a.keywords,
     })),
+    messageVsPublic: r.message_vs_public
+      ? {
+          mappingVersion: r.message_vs_public.mapping_version,
+          months: r.message_vs_public.months,
+          gallupQuality: r.message_vs_public.gallup_quality,
+          yougovMethodBreak: r.message_vs_public.yougov_method_break,
+          partialMonth: r.message_vs_public.partial_month,
+          pairs: r.message_vs_public.pairs.map((p) => ({
+            topic: p.topic,
+            match: p.match,
+            note: p.note,
+            noteKo: p.note_ko ?? p.note,
+            trump: p.trump,
+            trumpPeak: p.trump_peak,
+            public: p.public.map((x) => ({ ...x, source: x.source as PublicSeries['source'] })),
+          })),
+        }
+      : null,
   };
 }
 
