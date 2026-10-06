@@ -68,7 +68,7 @@ Bot-protection challenges were **not** bypassed. For ⛔ and ⚠️ states, elec
 | ME | Results posted as Excel days after; RCV tabulation later | Manual entry; label as preliminary until SOS posts; RCV round results later |
 
 ## Implications for the tracker
-1. **6 states can be ingested automatically** (NC, GA, MN, IA, FL, AK). GA and IA need the general-election ID once published; FL only after 7 PM ET; AK first-choice only.
+1. **6 states can be ingested automatically from a home connection** (NC, GA, MN, IA, FL, AK); **from Cloud Run, Iowa is blocked**, so 5 are automated in production. GA and IA need the general-election ID once published; FL only after 7 PM ET; AK first-choice only.
 2. **6 states need a manual-entry path** (TX, KS, MI, OH, NH, ME) unless a feed appears. The same operator who enters NYT calls can enter counts from the official pages, with a timestamp and source link per entry.
 3. Two RCV states (AK, ME): show first-choice counts with an explicit label; never mark called from counts (consistent with policy c).
 4. Re-check OH and MI in the week before the election, when their live sites usually come back.
@@ -102,3 +102,28 @@ Test run on 2026-10-06 (all match the official sources):
 | AK | US Senate top-four primary | Peltola 82,244 / Sullivan 68,726, reporting not derivable (flag undocumented) |
 
 Still to configure before Nov 3: Georgia's general-election slug (not published yet), and confirmation of Iowa's general election name and Alaska's `26genr` page once they go live. Poll-close times in `config.ts` should be double-checked against each state's official hours.
+
+## Production setup (GCP project `electoral-hub-510410`, us-central1)
+
+| Resource | Name | Notes |
+|---|---|---|
+| GCS bucket | `electoral-hub-510410-us-results` | public read (`allUsers` objectViewer), CORS GET/HEAD from `*`, objects written with `Cache-Control: no-cache` |
+| Feed object | `live/results.json` | read by the hub (`LIVE_RESULTS_URL`); `live/results_rehearsal.json` for rehearsals (`mode: test`, never shown) |
+| Cloud Run Job | `results-ingest` | image from `ingest/Dockerfile` via `ingest/cloudbuild.yaml`; env `RESULTS_BUCKET`, `RESULTS_OBJECT`, `MODE=general`; exits without writing outside 2026-11-02..11-10 ET |
+| Service account | `results-ingest@…` | objectAdmin on the bucket only |
+| Cloud Scheduler | `results-ingest-every-minute` | `* * * * *` America/New_York, calls the Job via `results-scheduler@…` (run.invoker on the Job). **Created PAUSED.** |
+
+Operate:
+```bash
+# rebuild + update the job
+IMG=us-central1-docker.pkg.dev/electoral-hub-510410/cloud-run-source-deploy/results-ingest:<tag>
+gcloud builds submit --config ingest/cloudbuild.yaml --substitutions _IMAGE=$IMG .
+gcloud run jobs update results-ingest --region us-central1 --image $IMG
+# rehearsal (writes live/results_rehearsal.json)
+gcloud run jobs execute results-ingest --region us-central1 --update-env-vars MODE=rehearsal,RESULTS_OBJECT=live/results_rehearsal.json --wait
+# election window: resume on 2026-11-02, pause after 2026-11-10
+gcloud scheduler jobs resume results-ingest-every-minute --location us-central1
+gcloud scheduler jobs pause  results-ingest-every-minute --location us-central1
+```
+
+Verified 2026-10-06 from Cloud Run: NC and MN fetch fine; **Iowa returns HTTP 202 with an empty body to Cloud Run (bot protection) — not bypassed; Iowa moves to the manual-entry path.** Scheduler → Job trigger returned HTTP 200 (2 executions, nothing written outside the window as designed).

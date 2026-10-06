@@ -48,8 +48,8 @@ export const ELECTION_DAY = '2026-11-03';
 /** Tracker runs from the day before Election Day through one week after (ET, inclusive). */
 export const TRACKER_WINDOW = { start: '2026-11-02', end: '2026-11-10' };
 
-/** Results feed written by the ingest job. null = not configured yet: no results are fetched or shown. */
-export const LIVE_RESULTS_URL: string | null = null;
+/** Results feed written by the Cloud Run job `results-ingest` (ingest/results/job.ts) once per minute in the window. */
+export const LIVE_RESULTS_URL: string | null = 'https://storage.googleapis.com/electoral-hub-510410-us-results/live/results.json';
 
 /** Client refresh interval inside the window, and how old the feed may get before the fallback banner. */
 export const POLL_MS = 60_000;
@@ -75,5 +75,6 @@ export async function fetchLiveFeed(signal?: AbortSignal): Promise<LiveFeed> {
   if (!res.ok) throw new Error(`live feed ${res.status}`);
   const j = (await res.json()) as LiveFeed;
   if (!j || !Array.isArray(j.races)) throw new Error('live feed: bad shape');
+  if (j.mode && j.mode !== 'general') throw new Error('live feed: test/rehearsal data is never shown');
   return j;
 }

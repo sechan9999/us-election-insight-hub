@@ -49,6 +49,7 @@ export const GENERAL: StateJob[] = [
   {
     raceId: 'IA-SEN',
     countSource: 'Iowa Secretary of State',
+    // Blocked from Cloud Run (HTTP 202, empty body; 2026-10-06). Kept so the status shows it; counts come from manual entry.
     notBefore: '2026-11-04T02:00:00Z', // 8 PM CT
     fetch: () => A.ia({ electionName: /^2026 General Election$/i, contest: /^United States Senator$/i }),
     dem: /^Josh Turek$/i,

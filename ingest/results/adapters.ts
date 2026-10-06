@@ -21,9 +21,22 @@ export interface RawContest {
 
 export class NotAvailable extends Error {} // source reachable but this election/contest is not published yet
 
-async function get(url: string, init: RequestInit = {}): Promise<Response> {
-  const res = await fetch(url, { ...init, headers: { 'user-agent': UA, ...(init.headers ?? {}) }, signal: AbortSignal.timeout(30_000) });
+export class Blocked extends Error {} // the source answers with a bot-protection response; never bypassed
+
+async function get(url: string, init: RequestInit = {}, attempt = 0): Promise<Response> {
+  let res: Response;
+  try {
+    res = await fetch(url, { ...init, headers: { 'user-agent': UA, ...(init.headers ?? {}) }, signal: AbortSignal.timeout(30_000) });
+  } catch (e) {
+    if (attempt === 0) {
+      await new Promise((r) => setTimeout(r, 2_000)); // one retry for transient network errors
+      return get(url, init, 1);
+    }
+    throw e;
+  }
   if (res.status === 404) throw new NotAvailable(`404 ${url}`);
+  // Iowa answers cloud IPs with 202 + empty body (seen from Cloud Run 2026-10-06): a bot-protection response.
+  if (res.status === 202 || res.status === 403 || res.status === 429) throw new Blocked(`${res.status} from ${url} (bot protection or rate limit; not bypassed)`);
   if (!res.ok) throw new Error(`${res.status} ${url}`);
   return res;
 }
