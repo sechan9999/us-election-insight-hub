@@ -15,17 +15,32 @@
 export interface LiveRace {
   id: string; // matches RaceInput.id, e.g. 'NH-SEN'
   pctReporting: number | null; // 0–100, null when the source does not publish it
+  reportingBasis?: 'precincts' | 'counties'; // what pctReporting counts
   demVotes: number;
   repVotes: number;
   called: 'D' | 'R' | null; // only set when the cited source has called the race
   calledBy?: string; // source that made the call: 'NYT'
   countSource: string; // official state office the counts come from, e.g. 'NC State Board of Elections'
+  firstChoiceOnly?: boolean; // ranked-choice state: first-choice counts only, not final
   updatedAt: string; // ISO timestamp from the source
+}
+
+/** Per-state fetch status written by the ingest job. */
+export interface SourceStatus {
+  raceId: string;
+  ok: boolean;
+  notAvailable?: boolean; // source reachable but this election/contest is not published yet
+  fetchedAt: string;
+  contest?: string;
+  url?: string;
+  message?: string;
 }
 
 export interface LiveFeed {
   generatedAt: string; // ISO timestamp when the feed file was written
+  mode?: 'general' | 'test';
   races: LiveRace[];
+  sources?: SourceStatus[];
 }
 
 export const ELECTION_DAY = '2026-11-03';
