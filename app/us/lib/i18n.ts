@@ -62,6 +62,26 @@ const S = {
   },
   msgTrendTitle: { ko: '주제별 주간 추이 (최근 26주)', en: 'Weekly trend by topic (last 26 weeks)' },
   msgTrendNote: { ko: '같은 눈금(0~{max}건). 마지막 막대는 진행 중인 주일 수 있습니다.', en: 'Same scale (0–{max} posts). The last bar may be a partial week.' },
+  evTitle: { ko: '이벤트 타임라인: 주제 급증', en: 'Event timeline: topic spikes' },
+  evNote: {
+    ko: '막대 = 주간 본문 게시물 수. 아래 띠 = 주제별 급증 에피소드 {n}건(눌러서 보기). 사건 이름은 붙이지 않았습니다. 키워드와 원문으로 무슨 일이었는지 확인하세요.',
+    en: 'Bars = weekly text posts. Strips below = {n} topic spike episodes (select one). Episodes are not named; check the keywords and original posts for what happened.',
+  },
+  evAll: { ko: '전체 주제', en: 'All topics' },
+  evPeriod: { ko: '{start} ~ {end} ({w}주)', en: '{start} to {end} ({w} wk)' },
+  evStat: {
+    ko: '{n}건 · 평소 주 {b}건 대비 {r}배 · 최다 주 {peak}건',
+    en: '{n} posts · {r}x the usual {b}/wk · peak week {peak}',
+  },
+  evKw: { ko: '이 기간에 두드러진 말', en: 'Distinctive terms in this period' },
+  evEx: { ko: '대표 게시물', en: 'Representative posts' },
+  evList: { ko: '최근 에피소드', en: 'Recent episodes' },
+  evMore: { ko: '전체 {n}건 보기', en: 'Show all {n}' },
+  evLess: { ko: '접기', en: 'Show fewer' },
+  evPoll: {
+    ko: '허브에 여론조사 시계열이 들어오면 같은 에피소드를 여론조사 추이 차트에 주석으로 겹쳐 표시할 수 있습니다.',
+    en: 'Once poll time series are ingested, the same episodes can annotate the polling trend chart.',
+  },
   msgCaution: { ko: '해석 주의', en: 'interpret with care' },
   msgCautionNote: {
     ko: '주제 이름은 키워드와 중심 게시물을 보고 붙인 해석입니다. 군집 경계가 약하며(silhouette {sil}), 응집도 0.05 미만 주제는 해석 주의로 표시했습니다.',

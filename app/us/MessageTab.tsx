@@ -13,6 +13,7 @@ import {
   type TruthWeekly,
 } from './lib/truth';
 import { t, type Lang } from './lib/i18n';
+import EventTimeline from './EventTimeline';
 
 const WINDOW = 4;
 const TREND_WEEKS = 26;
@@ -210,6 +211,7 @@ export default function MessageTab({ lang, races }: { lang: Lang; races: RaceLit
         </a>
       </div>
       {w && <TopicMix lang={lang} w={w} />}
+      {w && <EventTimeline lang={lang} w={w} />}
       <InterventionPanel lang={lang} races={races} />
       {w && <WeeklyTrend lang={lang} w={w} />}
       <p className="mt-4 text-xs text-neutral-500">

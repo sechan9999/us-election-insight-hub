@@ -51,6 +51,21 @@ export interface TruthClusterStats {
   keywords: string[];
 }
 
+/** A topic spike episode. Deliberately unnamed: keywords + example posts are the evidence. */
+export interface TruthEvent {
+  cluster: number;
+  start: string; // Monday of first week (ET)
+  end: string; // Sunday of last week
+  weeks: number;
+  peak_week: string;
+  count: number;
+  peak: number;
+  baseline_weekly: number;
+  ratio: number; // mean weekly count / baseline
+  keywords: string[];
+  examples: [id: string, date: string, text: string][];
+}
+
 /** weekly.json (schema truth-weekly/v1): topic labels, cluster stats, monthly and weekly topic counts. */
 export interface TruthWeekly {
   schema: string;
@@ -62,7 +77,10 @@ export interface TruthWeekly {
   monthly: Record<string, number[]>;
   weeks: string[]; // Monday of each ET week
   weekly: Record<string, number[]>;
+  events?: { method_version: string; rule: { ko: string; en: string }; events: TruthEvent[] };
 }
+
+export const truthPostUrl = (id: string) => `https://truthsocial.com/@realDonaldTrump/${id}`;
 
 async function getJson<T>(url: string, signal?: AbortSignal): Promise<T> {
   const res = await fetch(url, { signal, cache: 'no-store' });

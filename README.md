@@ -18,6 +18,7 @@
 [trump-truth-analysis](https://github.com/sechan9999/trump-truth-analysis)가 매주 만드는 JSON 두 개를 브라우저에서 불러와 표시합니다(`app/us/MessageTab.tsx`, `app/us/lib/truth.ts`). 재배포 없이 주간 갱신이 반영되고, `seed-data.ts`와 run ID에는 영향이 없습니다.
 
 - [`weekly.json`](https://sechan9999.github.io/trump-truth-analysis/weekly.json): 최근 4주 주제 구성(취임 이후 이전 기간 대비 %p), 주제별 주간 추이(최근 26주), 대표 키워드, 응집도 0.05 미만 '해석 주의'
+- 이벤트 타임라인(`app/us/EventTimeline.tsx`): `weekly.json`의 `events`. 주간 게시량 막대 아래에 주제별 급증 에피소드 띠를 표시하고, 선택하면 기간·평소 대비 배수·두드러진 키워드·대표 게시물 원문 링크를 보여줌. 사건 이름은 붙이지 않음. 여론조사 시계열이 들어오면 같은 에피소드를 추이 차트 주석으로 재사용 가능
 - [`intervention.json`](https://sechan9999.github.io/trump-truth-analysis/intervention.json): 상원 경합주 개입 지수(지지 선언 점유율, 민주당 후보 언급, 경합주 매핑 20건 미만이면 '표본 부족')
 - 한계: 주제 이름은 해석, 군집 경계 약함, 지지 선언은 접전주를 따라가는 내생 변수, 트루스소셜 ≠ 유권자
 
