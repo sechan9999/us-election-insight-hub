@@ -28,10 +28,11 @@ import {
   DATA_SOURCE,
   SOURCE_URLS,
 } from './lib/seed-data';
-import { ELECTION_DAY, LIVE_RESULTS } from './lib/live';
+import { ELECTION_DAY } from './lib/live';
+import LiveTracker from './components/LiveTracker';
 import { NYT_SIENA_OCT_2026, OTHER_RECENT_POLLS, POLL_SOURCE_URLS, type PollRace } from './lib/polls';
 import { forecastRunId } from './lib/run';
-import { daysSince, NEXT_RUN, STALE_AFTER_DAYS } from './lib/schedule';
+import { daysSince, nextRun, STALE_AFTER_DAYS } from './lib/schedule';
 import MessageTab from './components/MessageTab';
 import { t, tl, tRating, type Lang } from './lib/i18n';
 
@@ -116,6 +117,7 @@ export default function USElectionHub() {
   const [lang, setLang] = useState<Lang>('ko');
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
   const [inputAge, setInputAge] = useState<number | null>(null);
+  const [next, setNext] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>('forecast');
 
   useEffect(() => {
@@ -128,6 +130,7 @@ export default function USElectionHub() {
     if (tq === 'messages' || tq === 'truth') setTab('messages'); // 'truth' = earlier shared links
     setDaysLeft(Math.max(0, Math.ceil(ms / 86_400_000)));
     setInputAge(daysSince(DATA_AS_OF));
+    setNext(nextRun(DATA_AS_OF));
   }, []);
 
   const switchLang = () => {
@@ -174,7 +177,6 @@ export default function USElectionHub() {
   );
 
   const n = MODEL_NOTES.sims.toLocaleString(lang === 'ko' ? 'ko-KR' : 'en-US');
-  const live = LIVE_RESULTS.length > 0;
   const kpis = [
     { key: 'senateKpi' as const, r: senate, need: SENATE_BASELINE.needed, extra: null },
     { key: 'houseKpi' as const, r: house, need: HOUSE_BASELINE.needed, extra: t(lang, 'houseAssume', { safe: HOUSE_BASELINE.safeDemSeats }) },
@@ -194,7 +196,7 @@ export default function USElectionHub() {
                 className={`rounded px-2 py-1 ${inputAge > STALE_AFTER_DAYS ? 'bg-amber-400/15 text-amber-300' : 'bg-white/5 text-neutral-400'}`}
               >
                 {t(lang, inputAge > STALE_AFTER_DAYS ? 'staleOld' : 'staleFresh', { d: inputAge })}
-                {NEXT_RUN && ` · ${t(lang, 'nextRun', { date: NEXT_RUN })}`}
+                {next && ` · ${t(lang, 'nextRun', { date: next })}`}
               </span>
             )}
             <span className="rounded bg-white/5 px-2 py-1 text-neutral-400">{DATA_SOURCE}</span>
@@ -253,40 +255,8 @@ export default function USElectionHub() {
             </div>
             <p className="mt-2 text-xs text-neutral-500">{t(lang, 'distNote')}</p>
 
-            {/* Election-night tracker */}
-            <section className="mt-8 rounded-xl border border-white/10 bg-white/5 p-5">
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h2 className="text-xl font-semibold">{t(lang, 'liveTitle')}</h2>
-                {daysLeft !== null && !live && <span className="text-sm text-neutral-400">{t(lang, 'liveDays', { d: daysLeft })}</span>}
-              </div>
-              {!live ? (
-                <p className="mt-2 text-sm text-neutral-400">{t(lang, 'livePre')}</p>
-              ) : (
-                <table className="mt-4 w-full text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-white/10 text-neutral-400">
-                      <th className="py-2 pr-4">{t(lang, 'thState')}</th>
-                      <th className="py-2 pr-4">{t(lang, 'liveReporting')}</th>
-                      <th className="py-2 pr-4">D / R</th>
-                      <th className="py-2">{t(lang, 'liveCalled')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {LIVE_RESULTS.map((l) => (
-                      <tr key={l.id} className="border-b border-white/5">
-                        <td className="py-2 pr-4">{l.id}</td>
-                        <td className="py-2 pr-4 font-mono">{l.pctReporting.toFixed(0)}%</td>
-                        <td className="py-2 pr-4 font-mono">
-                          {l.demVotes.toLocaleString()} / {l.repVotes.toLocaleString()}
-                        </td>
-                        <td className="py-2">{l.called ? `${l.called}${l.calledBy ? ` (${l.calledBy})` : ''}` : '—'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-              <p className="mt-2 text-xs text-neutral-500">{t(lang, 'liveSource')}</p>
-            </section>
+            {/* Election results tracker */}
+            <LiveTracker lang={lang} races={races} daysLeft={daysLeft} />
 
             {/* Senate battleground chart (vertical layout keeps labels off the 4-pt line) */}
             <section className="mt-8 rounded-xl border border-white/10 bg-white/5 p-5">
