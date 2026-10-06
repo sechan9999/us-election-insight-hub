@@ -13,6 +13,15 @@
 - 하원 패널, 방법론, 가정, 출처, 편집 헌장 ([docs/EDITORIAL_CHARTER.md](docs/EDITORIAL_CHARTER.md))
 - 헤더의 run ID(`us-fc-<기준일>-<입력 해시>`)로 같은 숫자를 재현할 수 있습니다.
 
+## 트럼프 트루스소셜 개입 지수 (맥락 패널, 모형 입력 아님)
+
+여론조사 섹션 아래 패널. [trump-truth-analysis](https://github.com/sechan9999/trump-truth-analysis)가 매주 만드는 [`intervention.json`](https://sechan9999.github.io/trump-truth-analysis/intervention.json)을 브라우저에서 불러와 표시합니다(`app/us/lib/truth.ts`). 재배포 없이 주간 갱신이 반영되고, `seed-data.ts`와 run ID에는 영향이 없습니다.
+
+- 지지 선언 점유율: 최근 4주 지지 선언 글 중 12개 경합주로 매핑된 글의 주별 비중(합 = 1)
+- 민주당 후보 언급: 민주당 후보 이름이 나온 횟수(어조는 측정하지 않음)
+- 경합주 매핑 20건 미만이면 '표본 부족' 경고, 이때 '급증' 배지 없음
+- 한계: 하원·주의회 지지 선언 포함, 접전주를 따라가는 내생 변수라 인과 해석 불가, 트루스소셜 ≠ 유권자
+
 ## 모델 (`app/us/lib/forecast.ts`)
 
 각 시뮬레이션은 전국 공통 오차 s ~ N(0, τ²)를 하나 뽑아 모든 선거구에 공유하고, 선거구 결과 = mᵢ + s + σᵢ·εᵢ로 계산합니다. 선거구별 공개 확률은 닫힌 식 Φ(mᵢ / √(σᵢ² + τ²)), 의회 과반은 시뮬레이션(상관 때문에 닫힌 식 없음)으로 구합니다.

@@ -31,6 +31,7 @@ import {
 import { ELECTION_DAY, LIVE_RESULTS } from './lib/live';
 import { NYT_SIENA_OCT_2026, OTHER_RECENT_POLLS, POLL_SOURCE_URLS, type PollRace } from './lib/polls';
 import { forecastRunId } from './lib/run';
+import { fetchTruthIndex, stateCode, TRUTH_REPO_URL, type TruthIndex } from './lib/truth';
 import { t, tl, tRating, type Lang } from './lib/i18n';
 
 const TAU = MODEL_NOTES.tau;
@@ -105,6 +106,69 @@ function PollCard({ lang, p, pollster, rcpMargin }: { lang: Lang; p: PollRace; p
         <div className="mt-1 text-xs text-neutral-500">{t(lang, 'pollsVsAvg', { avg: margin(rcpMargin) })}</div>
       )}
     </div>
+  );
+}
+
+function TruthPanel({ lang, races }: { lang: Lang; races: { id: string; name: string; label: string; stateKo: string }[] }) {
+  const [idx, setIdx] = useState<TruthIndex | null>(null);
+  const [err, setErr] = useState(false);
+
+  useEffect(() => {
+    const ac = new AbortController();
+    fetchTruthIndex(ac.signal)
+      .then(setIdx)
+      .catch((e: unknown) => {
+        if (!(e instanceof DOMException && e.name === 'AbortError')) setErr(true);
+      });
+    return () => ac.abort();
+  }, []);
+
+  if (err) return <p className="mt-3 text-sm text-neutral-400">{t(lang, 'truthError')}</p>;
+  if (!idx) return <p className="mt-3 text-sm text-neutral-500">{t(lang, 'truthLoading')}</p>;
+
+  const max = Math.max(0.01, ...Object.values(idx.states).map((s) => s.endorse_share));
+  const mapped = Math.round(idx.coverage.n_mapped_battleground);
+  return (
+    <>
+      <p className="mt-1 text-sm text-neutral-400">
+        {t(lang, 'truthMeta', { week: idx.week, w: idx.window_weeks, n: idx.coverage.n_endorse_window, mapped })}
+      </p>
+      {idx.small_n && <p className="mt-3 rounded bg-amber-400/10 px-3 py-2 text-sm text-amber-300">{t(lang, 'truthSmall')}</p>}
+      <div className={`mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 ${idx.small_n ? 'opacity-70' : ''}`}>
+        {races.map((r) => {
+          const s = idx.states[stateCode(r.id)];
+          if (!s) return null;
+          return (
+            <div key={r.id} className="rounded-lg border border-white/10 bg-black/20 p-4">
+              <div className="flex items-baseline justify-between gap-2">
+                <div className="font-semibold">
+                  {r.name}
+                  <span className="ml-1 text-xs text-neutral-500">{lang === 'ko' ? r.label : r.stateKo}</span>
+                </div>
+                <span className="font-mono text-sm">{(s.endorse_share * 100).toFixed(0)}%</span>
+              </div>
+              <div className="mt-2 text-xs text-neutral-400">{t(lang, 'truthShare')}</div>
+              <div className="mt-1 h-2 rounded bg-white/10" role="presentation">
+                <div className="h-2 rounded bg-amber-300/70" style={{ width: `${(s.endorse_share / max) * 100}%` }} />
+              </div>
+              <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-neutral-400">
+                <span>{t(lang, 'truthPosts', { n: +s.n_endorse.toFixed(1) })}</span>
+                <span>{t(lang, 'truthDem', { n: +s.n_dem_mention.toFixed(1) })}</span>
+                {s.z_vs_baseline !== null && <span>{t(lang, 'truthZ', { z: s.z_vs_baseline.toFixed(1) })}</span>}
+                {s.surge && <span className="rounded bg-amber-400/15 px-1.5 text-amber-300">{t(lang, 'truthSurge')}</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <p className="mt-3 text-xs text-amber-300/80">{t(lang, 'truthNote')}</p>
+      <p className="mt-1 text-xs text-neutral-500">
+        {t(lang, 'truthMethod', { m: idx.method_version, g: idx.gazetteer_version })}{' '}
+        <a className="underline" href={TRUTH_REPO_URL} target="_blank" rel="noreferrer">
+          github.com/sechan9999/trump-truth-analysis
+        </a>
+      </p>
+    </>
   );
 }
 
@@ -340,6 +404,12 @@ export default function USElectionHub() {
               </span>
             ))}
           </p>
+        </section>
+
+        {/* Trump Truth Social intervention index (display-only context, not a model input) */}
+        <section className="mt-8 rounded-xl border border-white/10 bg-white/5 p-5">
+          <h2 className="text-xl font-semibold">{t(lang, 'truthTitle')}</h2>
+          <TruthPanel lang={lang} races={races} />
         </section>
 
         {/* House panel */}
