@@ -100,6 +100,32 @@ const S = {
     ko: '주석은 급증 규칙(직전 12주 기준선의 2배 이상 등)으로 고른 것이며, 사건 이름은 붙이지 않았습니다.',
     en: 'Annotations are chosen by a spike rule (at least 2x the trailing 12-week baseline, etc.) and are deliberately unnamed.',
   },
+  mvpTitle: { ko: '메시지 vs 민심', en: 'Message vs. public' },
+  mvpNote: {
+    ko: '트럼프 게시 비중과 유권자가 꼽은 문제를 주제 대응표 {v}로 짝지었습니다. 세 지표는 단위가 달라 정규화하지 않고 각자 원래 %로 그렸습니다. 높이(수준)가 아니라 오르내린 시점을 비교하세요.',
+    en: 'Trump posting share and the problems voters name, paired by topic mapping {v}. The three measures have different units, so each is drawn in its own % without normalization. Compare timing, not levels.',
+  },
+  mvpTrump: { ko: '트럼프 게시 비중 (본문 글 중 %)', en: 'Trump posting share (% of text posts)' },
+  mvpGallup: { ko: 'Gallup 가장 중요한 문제 (응답자 중 %)', en: 'Gallup most important problem (% of adults)' },
+  mvpYouGov: { ko: 'YouGov 가장 중요한 이슈 (1순위 %)', en: 'YouGov most important issue (% top pick)' },
+  mvpPeak: { ko: '최고치', en: 'Peak' },
+  mvpMatchPartial: { ko: '부분 대응', en: 'partial match' },
+  mvpMatchDirect: { ko: '직접 대응', en: 'direct match' },
+  mvpMatchApprox: { ko: '근사 대응', en: 'approximate match' },
+  mvpYgBreak: { ko: 'YouGov 문항 변경', en: 'YouGov wording change' },
+  mvpLegend: {
+    ko: 'Gallup 점: 채움 = 그 달 조사 원자료, 빈 원 = 다른 달 자료의 추세 열. 선이 끊긴 달은 자료 없음(보간하지 않음). {partial}은 진행 중인 달이라 최고치 계산에서 뺐습니다.',
+    en: 'Gallup dots: filled = that month’s own release, hollow = trend column in a later release. Gaps mean no data (never interpolated). {partial} is in progress and excluded from peaks.',
+  },
+  mvpGaps: {
+    ko: 'Gallup 결측: 2025-06·07, 2026-08 (문항 없음), 2025-08은 범죄만, 2026-09는 2차 출처뿐이라 제외.',
+    en: 'Gallup gaps: 2025-06, 2025-07, 2026-08 (not asked); 2025-08 crime only; 2026-09 excluded (secondary source only).',
+  },
+  mvpGuard: {
+    ko: '같은 달에 함께 오른 것은 동시 발생일 뿐 어느 쪽이 원인인지 말해 주지 않습니다.',
+    en: 'Rising in the same month is co-occurrence; it does not show which way any influence runs.',
+  },
+  mvpSources: { ko: '출처: Gallup 월간 토플라인, YouGov/Economist 트래커(CC BY-NC 4.0)', en: 'Sources: Gallup monthly toplines, YouGov/Economist tracker (CC BY-NC 4.0)' },
   msgMethodTitle: { ko: '방법론 노트', en: 'Methodology notes' },
   msgM1: {
     ko: '데이터: CNN Truth Social 아카이브 → truth-analysis 파이프라인 (수집 {collected}, 주 1회 갱신)',

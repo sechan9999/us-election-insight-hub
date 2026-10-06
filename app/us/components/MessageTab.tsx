@@ -12,6 +12,8 @@ import {
   CartesianGrid,
   Cell,
   Legend,
+  Line,
+  LineChart,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -265,6 +267,97 @@ function TopicMix({ lang, d }: { lang: Lang; d: MessageIndexWeekly }) {
   );
 }
 
+const GALLUP_STROKES = ['#2dd4bf', '#99f6e4'];
+const YOUGOV = '#a3a3a3';
+const mlabel = (m: string) => m.slice(2).replace('-', '.');
+
+function GallupDot(props: { cx?: number; cy?: number; payload?: Record<string, unknown>; value?: number | null; stroke?: string }) {
+  const { cx, cy, payload, value, stroke } = props;
+  if (cx == null || cy == null || value == null) return null;
+  const filled = payload?.gq === 'primary' || payload?.gq === 'partial';
+  return <circle cx={cx} cy={cy} r={3} stroke={stroke} strokeWidth={1.5} fill={filled ? stroke : '#0a0a0a'} />;
+}
+
+function MessageVsPublic({ lang, d }: { lang: Lang; d: MessageIndexWeekly }) {
+  const mvp = d.messageVsPublic;
+  if (!mvp) return null; // hidden until poll data is exported
+  const matchKey = (m: string) => (m === 'partial' ? 'mvpMatchPartial' : m === 'approximate' ? 'mvpMatchApprox' : 'mvpMatchDirect');
+  const topicName = (k: string) => d.topicLabels[k]?.[lang] ?? k;
+  const partial = mlabel(mvp.partialMonth);
+
+  return (
+    <section className="mt-6 rounded-xl border border-white/10 bg-white/5 p-5">
+      <h2 className="text-xl font-semibold">{t(lang, 'mvpTitle')}</h2>
+      <p className="mt-1 text-sm text-neutral-400">{t(lang, 'mvpNote', { v: mvp.mappingVersion })}</p>
+      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-300">
+        <span className="flex items-center gap-1.5"><span className="inline-block h-0.5 w-5" style={{ background: AMBER }} />{t(lang, 'mvpTrump')}</span>
+        <span className="flex items-center gap-1.5"><span className="inline-block h-0.5 w-5" style={{ background: TEAL }} />{t(lang, 'mvpGallup')}</span>
+        <span className="flex items-center gap-1.5"><span className="inline-block h-0 w-5 border-t-2 border-dashed" style={{ borderColor: YOUGOV }} />{t(lang, 'mvpYouGov')}</span>
+      </div>
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        {mvp.pairs.map((p) => {
+          const gal = p.public.filter((s) => s.source === 'gallup');
+          const yg = p.public.filter((s) => s.source === 'yougov');
+          const data = mvp.months.map((m, i) => {
+            const row: Record<string, number | string | null> = { month: m === mvp.partialMonth ? `${mlabel(m)}*` : mlabel(m), trump: p.trump[i], gq: mvp.gallupQuality[m] ?? null };
+            p.public.forEach((s, j) => (row[`s${j}`] = s.values[i]));
+            return row;
+          });
+          const names: Record<string, string> = { trump: t(lang, 'mvpTrump') };
+          p.public.forEach((s, j) => (names[`s${j}`] = `${s.source === 'gallup' ? 'Gallup' : 'YouGov'}: ${s.label}`));
+          return (
+            <div key={p.topic} className="rounded-lg border border-white/10 bg-black/20 p-4">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <span className="font-semibold">{topicName(p.topic)}</span>
+                <span className={`rounded px-2 py-0.5 text-xs ${p.match === 'direct' ? 'bg-white/10 text-neutral-300' : 'bg-amber-400/15 text-amber-300'}`}>
+                  {t(lang, matchKey(p.match))}
+                </span>
+              </div>
+              <div className="mt-1 text-xs text-neutral-500">↔ {p.public.map((s) => `${s.source === 'gallup' ? 'Gallup' : 'YouGov'}: ${s.label}`).join(' · ')}</div>
+              <div className="mt-3 h-52">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                    <XAxis dataKey="month" stroke="#888" tick={{ fill: '#aaa', fontSize: 10 }} interval="preserveStartEnd" />
+                    <YAxis stroke="#888" tick={{ fill: '#aaa', fontSize: 10 }} tickFormatter={(v) => `${v}%`} />
+                    <Tooltip
+                      contentStyle={{ background: '#111', border: '1px solid #333' }}
+                      formatter={(v, k) => [v == null ? '—' : `${Number(v).toFixed(1)}%`, names[String(k)] ?? String(k)]}
+                    />
+                    <ReferenceLine x={mlabel(mvp.yougovMethodBreak)} stroke="#525252" strokeDasharray="2 4" label={{ value: t(lang, 'mvpYgBreak'), fill: '#737373', fontSize: 9, position: 'insideTopLeft' }} />
+                    <Line type="monotone" dataKey="trump" stroke={AMBER} strokeWidth={2} dot={false} connectNulls={false} isAnimationActive={false} />
+                    {p.public.map((s, j) =>
+                      s.source === 'gallup' ? (
+                        <Line key={j} type="monotone" dataKey={`s${j}`} stroke={GALLUP_STROKES[gal.indexOf(s)] ?? TEAL} strokeWidth={2} strokeDasharray={gal.indexOf(s) > 0 ? '5 3' : undefined} dot={<GallupDot />} connectNulls={false} isAnimationActive={false} />
+                      ) : (
+                        <Line key={j} type="monotone" dataKey={`s${j}`} stroke={YOUGOV} strokeWidth={1.5} strokeDasharray="4 3" dot={false} connectNulls={false} isAnimationActive={false} />
+                      ),
+                    )}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-neutral-400">
+                <span>{t(lang, 'mvpPeak')}:</span>
+                <span style={{ color: AMBER }}>Trump {p.trumpPeak ?? '—'}</span>
+                {gal.map((s) => (
+                  <span key={s.key} style={{ color: TEAL }}>Gallup {gal.length > 1 ? `(${s.label}) ` : ''}{s.peak ?? '—'}</span>
+                ))}
+                {yg.map((s) => (
+                  <span key={s.key}>YouGov {yg.length > 1 ? `(${s.label}) ` : ''}{s.peak ?? '—'}</span>
+                ))}
+              </div>
+              <p className="mt-1 text-xs text-neutral-500">{lang === 'ko' ? p.noteKo : p.note}</p>
+            </div>
+          );
+        })}
+      </div>
+      <p className="mt-3 text-xs text-neutral-500">{t(lang, 'mvpLegend', { partial })} {t(lang, 'mvpGaps')}</p>
+      <p className="mt-1 text-xs text-amber-300/80">{t(lang, 'mvpGuard')}</p>
+      <p className="mt-1 text-xs text-neutral-500">{t(lang, 'mvpSources')}</p>
+    </section>
+  );
+}
+
 function Method({ lang, d }: { lang: Lang; d: MessageIndexWeekly }) {
   return (
     <section className="mt-6 rounded-xl border border-white/10 bg-white/5 p-5 text-sm">
@@ -324,7 +417,7 @@ export default function MessageTab({ lang, races }: { lang: Lang; races: RaceLit
       </div>
       <Intervention lang={lang} d={d} races={races} />
       <TopicMix lang={lang} d={d} />
-      {/* 2.4 Message vs. public: hidden until issue-priority polls are ingested (v1.5). */}
+      <MessageVsPublic lang={lang} d={d} />
       <Method lang={lang} d={d} />
     </div>
   );

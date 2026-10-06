@@ -19,7 +19,7 @@
 
 - 데이터: [trump-truth-analysis](https://github.com/sechan9999/trump-truth-analysis)의 `scripts/export_weekly.py`가 주 1회 만드는 [`message_index_weekly.json`](https://sechan9999.github.io/trump-truth-analysis/message_index_weekly.json). `app/us/lib/seed-messages.ts`가 체크인 스냅샷(`lib/data/`)을 먼저 그리고, 게시된 최신 파일로 갱신합니다(운영에서는 BigQuery 등으로 교체 가능). 조인 키는 race id 앞자리(`NC-SEN` → `NC`)
 - 화면(`app/us/components/MessageTab.tsx`): 헤더 스트립 / 개입 지수(지지 점유율·민주당 후보 언급 점유율 그룹 막대, amber·teal, KPI 3개, 20건 미만이면 '표본 부족' 배지) / 주제 믹스(월별 누적 영역 + 급증 주석) / 방법론 노트·한계 4개
-- 메시지 vs 민심 섹션은 이슈 여론조사 ingest 전까지 숨김(v1.5)
+- 메시지 vs 민심: 주제 대응표 v1의 4쌍(관세·무역↔경제+물가, 범죄·이민↔이민|범죄, 이란·전쟁↔전쟁·외교 합, 공화당·입법↔정부/리더십 근사)마다 선 차트. 트럼프 게시 비중(amber)·Gallup MIP(teal)·YouGov 1순위 이슈(회색 점선)를 **정규화 없이 각자 원래 %**로 표시하고 최고치 달을 사실로만 적음. Gallup 점은 채움=그 달 원자료, 빈 원=추세 열. 결측 달은 끊어 그림(보간 없음), 진행 중인 달은 최고치에서 제외. 데이터 출처·검증은 truth-analysis `data/polls/README.md`
 - 가드레일: 기술적 서술만, 인과·예측 문장 금지, 예측 모형 입력 사용 금지, 추측성 해석에는 (추정)
 
 ## 모델 (`app/us/lib/forecast.ts`)
