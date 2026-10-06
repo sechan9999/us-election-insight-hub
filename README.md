@@ -13,6 +13,15 @@
 - 하원 패널, 방법론, 가정, 출처, 편집 헌장 ([docs/EDITORIAL_CHARTER.md](docs/EDITORIAL_CHARTER.md))
 - 헤더의 run ID(`us-fc-<기준일>-<입력 해시>`)로 같은 숫자를 재현할 수 있습니다.
 
+## 메시지 분석 탭 (`/us?tab=messages`, 모형 입력 아님)
+
+트럼프 트루스소셜 게시물의 기술적(descriptive) 맥락 레이어입니다. 예측 모형과 분리되어 있고 `seed-data.ts`·run ID에 영향이 없습니다. 탭 전환은 클라이언트 상태라 시뮬레이션을 다시 돌리지 않습니다.
+
+- 데이터: [trump-truth-analysis](https://github.com/sechan9999/trump-truth-analysis)의 `scripts/export_weekly.py`가 주 1회 만드는 [`message_index_weekly.json`](https://sechan9999.github.io/trump-truth-analysis/message_index_weekly.json). `app/us/lib/seed-messages.ts`가 체크인 스냅샷(`lib/data/`)을 먼저 그리고, 게시된 최신 파일로 갱신합니다(운영에서는 BigQuery 등으로 교체 가능). 조인 키는 race id 앞자리(`NC-SEN` → `NC`)
+- 화면(`app/us/components/MessageTab.tsx`): 헤더 스트립 / 개입 지수(지지 점유율·민주당 후보 언급 점유율 그룹 막대, amber·teal, KPI 3개, 20건 미만이면 '표본 부족' 배지) / 주제 믹스(월별 누적 영역 + 급증 주석) / 방법론 노트·한계 4개
+- 메시지 vs 민심 섹션은 이슈 여론조사 ingest 전까지 숨김(v1.5)
+- 가드레일: 기술적 서술만, 인과·예측 문장 금지, 예측 모형 입력 사용 금지, 추측성 해석에는 (추정)
+
 ## 모델 (`app/us/lib/forecast.ts`)
 
 각 시뮬레이션은 전국 공통 오차 s ~ N(0, τ²)를 하나 뽑아 모든 선거구에 공유하고, 선거구 결과 = mᵢ + s + σᵢ·εᵢ로 계산합니다. 선거구별 공개 확률은 닫힌 식 Φ(mᵢ / √(σᵢ² + τ²)), 의회 과반은 시뮬레이션(상관 때문에 닫힌 식 없음)으로 구합니다.
