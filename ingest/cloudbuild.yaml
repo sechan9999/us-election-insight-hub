@@ -1,0 +1,5 @@
+# gcloud builds submit --config ingest/cloudbuild.yaml --substitutions _IMAGE=<registry>/results-ingest:<tag> .
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ['build', '-f', 'ingest/Dockerfile', '-t', '${_IMAGE}', '.']
+images: ['${_IMAGE}']
