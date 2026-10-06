@@ -1,15 +1,23 @@
 # US Election Insights Hub
 
+**한국어** · [English](README.en.md)
+
 2026년 11월 3일 미국 중간선거 예측·개표 현황판입니다. 한국 대선 18–21대 대시보드(Electoral Insights Hub) 팀이 같은 데이터 스택(Next.js · BigQuery · Cloud Run)으로 만듭니다. 한국어·영어 이중언어, 로그인 없음, TV에서 훑어보는 용도입니다.
+
+**배포:** https://us-election-insight-hub-38273401034.us-central1.run.app/us (`?lang=en` 영어)
 
 > **상태: 개발 중 (베타).** 현재 화면은 2026-10-01 RCP 평균을 넣은 샘플 데이터로 돌아갑니다. 공개 전 교체해야 할 가정은 아래와 화면의 "공개 전 교체해야 할 가정"에 정리했습니다.
 
 ## 화면 (`/us`, 영어는 `/us?lang=en`)
 
+상단 탭: **예측**(기본)과 **메시지 분석**(`?tab=messages`). 언어 파라미터와 조합됩니다(`?lang=en&tab=messages`). 탭 전환은 클라이언트 상태라 40,000회 시뮬레이션을 다시 돌리지 않습니다.
+
+### 예측 탭
 - 상원·하원 민주당 과반 확률, 기대 의석, 80% 의석 범위, 의석 분포 히스토그램
 - 개표일 실시간 트래커 (개표 전에는 확률과 불확실성 범위만 표시)
 - 상원 경합주 여론조사 평균 차트 (4pt 기준선, 세로 배치로 라벨 충돌 없음)
 - 경합주 상세: 후보, RCP 평균, 90% 오차 범위, 레이팅, 승리 확률
+- 최신 개별 여론조사: 뉴욕타임스/시에나와 기타 최근 조사(`app/us/lib/polls.ts`, 표시 전용, 모형 입력 아님)
 - 하원 패널, 방법론, 가정, 출처, 편집 헌장 ([docs/EDITORIAL_CHARTER.md](docs/EDITORIAL_CHARTER.md))
 - 헤더의 run ID(`us-fc-<기준일>-<입력 해시>`)로 같은 숫자를 재현할 수 있습니다.
 
@@ -50,6 +58,8 @@ us_polls ──▶ us_poll_averages ──▶ (Vertex AI 커스텀 잡: 시뮬�
                                                                      ├─▶ us_race_forecasts
                                                                      └─▶ us_chamber_forecasts
 선거일: 집계 기관 피드 ──▶ us_results_live ──▶ 트래커 패널
+
+trump-truth-analysis (주 1회) ──▶ message_index_weekly.json ──▶ 메시지 분석 탭
 ```
 
 테이블 정의: [bigquery/us_schema.sql](bigquery/us_schema.sql). 지금은 `app/us/lib/seed-data.ts`가 입력이고, 일일 적재가 시작되면 이 파일만 BigQuery에서 생성한 값으로 바꾸면 됩니다. 모델과 화면은 그대로입니다.
@@ -64,6 +74,14 @@ npm run build          # standalone 빌드 (Dockerfile용)
 ```
 
 ## Cloud Run 배포
+
+운영 서비스 `us-election-insight-hub`는 소스에서 배포합니다:
+
+```bash
+gcloud run deploy us-election-insight-hub --source . --region us-central1 --project <your-gcp-project>
+```
+
+이미지 기반 스테이징 배포:
 
 ```bash
 export PROJECT=your-gcp-project REGION=us-central1
@@ -80,12 +98,17 @@ gcloud run deploy us-hub-staging \
 
 | 경로 | 내용 |
 |---|---|
-| `app/us/page.tsx` | 예측 보드 (클라이언트 컴포넌트) |
+| `app/us/page.tsx` | 탭 바를 포함한 보드 (클라이언트 컴포넌트) |
+| `app/us/components/MessageTab.tsx` | 메시지 분석 탭 |
 | `app/us/lib/forecast.ts` | 상관오차 시뮬레이션, 닫힌 식, seed 고정 난수 |
 | `app/us/lib/seed-data.ts` | 샘플 입력 (RCP 2026-10-01), 기준선, 가정 |
+| `app/us/lib/polls.ts` | 최신 개별 여론조사 (표시 전용, run ID에 포함 안 됨) |
+| `app/us/lib/seed-messages.ts` | 메시지 분석 타입, 스냅샷 로드, 최신 파일 불러오기 |
+| `app/us/lib/data/message_index_weekly.json` | 주간 메시지 export 체크인 스냅샷 |
 | `app/us/lib/run.ts` | run ID = 기준일 + 입력 해시 |
 | `app/us/lib/live.ts` | 개표일 결과 피드 (선거일 전 비어 있음) |
 | `app/us/lib/i18n.ts` | 한국어·영어 문자열 |
 | `scripts/verify-model.ts` | 모델 검증 스크립트 |
 | `bigquery/us_schema.sql` | BigQuery 테이블 |
+| `docs/EDITORIAL_CHARTER.md` | 편집 헌장 (한국어·영어) |
 | `Dockerfile` | Cloud Run용 멀티스테이지 빌드 |
