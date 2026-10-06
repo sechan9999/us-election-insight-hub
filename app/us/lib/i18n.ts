@@ -173,8 +173,8 @@ const S = {
     en: 'Runs {start} to {end} (the day before Election Day through one week after, ET). Refreshes every minute in that window.',
   },
   liveCalledRule: {
-    ko: '확정 표시는 출처가 승자를 판정한 경주에만 붙습니다. 개표율이나 표 차이만으로는 확정으로 표시하지 않습니다.',
-    en: 'A race is marked called only when the cited source has called it. Vote share or margin alone never marks a race as decided.',
+    ko: '개표 수치는 각 주 선거관리 당국의 공식 결과만 씁니다. 확정 표시는 뉴욕타임스가 승자를 판정한 경주에만 붙이며(출처 표기), 개표율이나 표 차이만으로는 확정으로 표시하지 않습니다.',
+    en: 'Vote counts come only from official state election offices. A race is marked called only when The New York Times has called it (credited); vote share or margin alone never marks a race as decided.',
   },
   liveSources: { ko: '출처:', en: 'Sources:' },
   liveAgo: { ko: '{m}분 전 업데이트', en: 'Updated {m} min ago' },
