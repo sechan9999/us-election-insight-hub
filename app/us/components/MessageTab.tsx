@@ -380,14 +380,24 @@ function Method({ lang, d }: { lang: Lang; d: MessageIndexWeekly }) {
               n: d.labelAudit.n,
               per: Math.round(d.labelAudit.n / Object.keys(d.topicLabels).length),
               k: d.labelAudit.fit,
-              p: Math.round(d.labelAudit.fitRate * 100),
-              lo: Math.round(d.labelAudit.ci95[0] * 100),
-              hi: Math.round(d.labelAudit.ci95[1] * 100),
+              p: (d.labelAudit.fitRate * 100).toFixed(1),
+              lo: (d.labelAudit.ci95[0] * 100).toFixed(1),
+              hi: (d.labelAudit.ci95[1] * 100).toFixed(1),
             })}{' '}
             {t(lang, 'msgAuditHow', {
               c: lang === 'ko' ? d.labelAudit.criterionKo : d.labelAudit.criterion,
               r: d.labelAudit.reviewers,
             })}{' '}
+            {d.labelAudit.rereview &&
+              t(lang, 'msgAuditRe', {
+                r2: d.labelAudit.rereview.reviewers,
+                ch: d.labelAudit.rereview.changed,
+                ny: d.labelAudit.rereview.nToY,
+                yn: d.labelAudit.rereview.yToN,
+                ret: (d.labelAudit.rereview.retention * 100).toFixed(1),
+                k: d.labelAudit.rereview.kappaFirstVsFinal.toFixed(2),
+              })}{' '}
+            {d.labelAudit.interRaterAgreement == null && t(lang, 'msgAuditIrr')}{' '}
             {t(lang, 'msgAuditLow', {
               list: d.labelAudit.lowest
                 .map((x) => `${d.topicLabels[x.topic]?.[lang] ?? x.topic} ${Math.round(x.fitRate * 100)}%`)

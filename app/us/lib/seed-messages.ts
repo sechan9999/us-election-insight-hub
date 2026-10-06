@@ -85,6 +85,8 @@ export interface LabelAudit {
   coding: string;
   codingKo: string;
   lowest: { topic: string; fitRate: number }[];
+  rereview: { reviewers: number; retention: number; retained: number; kappaFirstVsFinal: number; changed: number; nToY: number; yToN: number } | null;
+  interRaterAgreement: number | null; // null = not measured
 }
 
 export interface MessageIndexWeekly {
@@ -168,6 +170,18 @@ export function normalize(r: Raw): MessageIndexWeekly {
           coding: r.label_audit.coding,
           codingKo: r.label_audit.coding_ko,
           lowest: r.label_audit.lowest.map((x) => ({ topic: x.topic, fitRate: x.fit_rate })),
+          rereview: r.label_audit.rereview
+            ? {
+                reviewers: r.label_audit.rereview.reviewers,
+                retention: r.label_audit.rereview.retention,
+                retained: r.label_audit.rereview.retained,
+                kappaFirstVsFinal: r.label_audit.rereview.kappa_first_vs_final,
+                changed: r.label_audit.rereview.changed,
+                nToY: r.label_audit.rereview.n_to_y,
+                yToN: r.label_audit.rereview.y_to_n,
+              }
+            : null,
+          interRaterAgreement: r.label_audit.inter_rater_agreement ?? null,
         }
       : null,
     messageVsPublic: r.message_vs_public
