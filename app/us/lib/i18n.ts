@@ -146,6 +146,15 @@ const S = {
     ko: '매핑: 가제티어 {g}, 후보명 우선 → 주 이름 → 약어, 동명이인·경선 탈락자는 규칙과 날짜로 제한 (방법 {m})',
     en: 'Mapping: gazetteer {g}, candidate name first → state name → abbreviation; namesakes and primary losers restricted by rules and dates (method {m})',
   },
+  msgAudit: {
+    ko: '라벨 감사({v}): 고정 표본 {n}건(주제당 {per}건) 중 {k}건이 라벨과 맞아 일치율 {p}% (95% 신뢰구간 {lo}–{hi}%).',
+    en: 'Label audit ({v}): {k} of {n} sampled posts ({per} per topic) matched their label, {p}% (95% CI {lo}–{hi}%).',
+  },
+  msgAuditHow: {
+    ko: '기준: “{c}”. 검토자 {r}명이 같은 루브릭으로 표본을 나눠 판정했습니다(글당 1명, 검토자 간 일치도는 측정하지 않음).',
+    en: 'Criterion: “{c}”. The sample was split among {r} reviewers using the same rubric (one reviewer per post; inter-rater agreement not measured).',
+  },
+  msgAuditLow: { ko: '일치율이 가장 낮은 주제: {list}.', en: 'Lowest-fit topics: {list}.' },
   msgLimitsTitle: { ko: '한계', en: 'Limits' },
   msgL1: { ko: '인과 추론 불가: 지지 선언은 접전주를 따라다닙니다', en: 'No causal reading: endorsements follow competitive races' },
   msgL2: { ko: '트루스소셜 ≠ 유권자 전체', en: 'Truth Social is not the electorate' },
