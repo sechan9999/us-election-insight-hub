@@ -99,15 +99,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ abstain: true, reason: "I could not form a safe query for that.", sql });
     }
     sql = enforceSortDirection(sql, question);
-    const _Cx = String.fromCharCode;
-    const _qn = question.normalize("NFC").toLowerCase().replace(/\s+/g, "");
-    const _dbg = {
-      len: question.length,
-      hasGajang: _qn.includes(_Cx(0xAC00, 0xC7A5)),
-      hasHigh: _qn.includes(_Cx(0xAC00, 0xC7A5, 0xB192)),
-      codes: Array.from(question.normalize("NFC")).slice(0, 14).map((c) => c.codePointAt(0)),
-      sqlDir: /desc/i.test(sql) ? "DESC" : (/asc/i.test(sql) ? "ASC" : "NONE"),
-    };
     if (!/\blimit\s+\d+/i.test(sql)) sql = sql.replace(/;?\s*$/, "") + "\nLIMIT 50";
 
     // 2) Run on BigQuery
@@ -135,7 +126,6 @@ export async function POST(req: NextRequest) {
       answer: (sum.text || "").trim(),
       sql,
       rows: clean,
-      _dbg,
       source: `BigQuery · ${PROJECT}.elections · ${MODEL}`,
     });
   } catch (e: unknown) {
