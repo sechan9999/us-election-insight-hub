@@ -27,7 +27,8 @@ Rules: a single SELECT only; fully-qualified table names; add LIMIT 50 unless th
 const bq = new BigQuery({ projectId: PROJECT });
 const ai = new GoogleGenAI({ vertexai: true, project: PROJECT, location: LOCATION });
 
-const cleanSQL = (s: string) => s.replace(/```sql/gi, "").replace(/```/g, "").trim();
+// strip any triple-backtick fence (```sql, ```bigquery, ```) — single backticks for table names are kept
+const cleanSQL = (s: string) => s.replace(/```[a-z]*/gi, "").trim();
 
 function isSafeSelect(sql: string): boolean {
   const body = sql.trim().replace(/;$/, "");
@@ -68,7 +69,8 @@ export async function POST(req: NextRequest) {
       model: MODEL,
       contents:
         `Answer the question in 1-2 sentences using ONLY these query results. Cite exact numbers. ` +
-        `If the results do not answer it, say "The data doesn't support an answer."\n` +
+        `Reply in the same language as the question (Korean question -> Korean answer). ` +
+        `If the results do not answer it, say so.\n` +
         `Question: ${question}\nResults (JSON): ${JSON.stringify(clean)}`,
     });
 
