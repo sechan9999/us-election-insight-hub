@@ -11,7 +11,7 @@
 
 import type { RaceInput } from './forecast';
 
-export const DATA_AS_OF = '2026-10-01';
+export const DATA_AS_OF = '2026-10-09';
 export const DATA_SOURCE = 'RealClearPolitics polling averages (via uspresidentialelectionnews.com)';
 
 export interface SenateRace extends RaceInput {
