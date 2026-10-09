@@ -49,6 +49,12 @@ export async function POST(req: NextRequest) {
       model: MODEL,
       contents:
         `You translate a question into ONE BigQuery Standard SQL SELECT query.\n${SCHEMA}\n` +
+        `Guidance:\n` +
+        `- "vote share" / "득표율" means the dem_share or rep_share column (a 0..1 fraction), NOT raw vote counts.\n` +
+        `- For "top / highest / lowest / most / biggest / 가장 ... N" questions, ORDER BY the relevant column (DESC or ASC) and LIMIT N. Never answer a ranking with SELECT *.\n` +
+        `- Select only the columns needed to answer, plus an identifier (NAME and/or county_fips) for context.\n` +
+        `- Filter by state with STARTS_WITH(county_fips, '<2-digit state FIPS>'), e.g. '55'=Wisconsin, '48'=Texas, '06'=California, '13'=Georgia, '36'=New York.\n` +
+        `- county_fips is a STRING; compare it to quoted strings.\n` +
         `Return ONLY the SQL, nothing else.\nQuestion: ${question}`,
     });
     let sql = cleanSQL(gen.text || "");
