@@ -13,10 +13,11 @@ const SCHEMA = `BigQuery project ${PROJECT}, dataset "elections".
 
 Table \`${PROJECT}.elections.county_2024\` — one row per US county, 2024 presidential election:
   county_fips STRING (5 digits), NAME STRING (e.g. "Autauga County, Alabama"),
-  DEMOCRAT INT64, REPUBLICAN INT64, total INT64 (total votes),
-  dem_share FLOAT64 (0..1), rep_share FLOAT64 (0..1),
-  pop INT64 (population), median_income INT64, bachelors INT64 (count with a bachelor's degree),
-  bachelors_pct FLOAT64 (bachelors / pop).
+  DEMOCRAT INT64 (Democratic votes), REPUBLICAN INT64 (Republican votes), total INT64 (total votes),
+  dem_share FLOAT64 (0..1) = Democratic vote share — use this for "Democratic/민주당 vote share / 득표율",
+  rep_share FLOAT64 (0..1) = Republican vote share — use this for "Republican/공화당 vote share / 득표율",
+  pop INT64 (population), median_income INT64 (median household income in USD — NOT a vote metric),
+  bachelors INT64 (count with a bachelor's degree), bachelors_pct FLOAT64 (bachelors / pop).
 
 Table \`${PROJECT}.elections.swing_2020_2024\` — one row per county:
   county_fips STRING, dem_2020 FLOAT64, dem_2024 FLOAT64,
@@ -55,7 +56,10 @@ export async function POST(req: NextRequest) {
         `- Select only the columns needed to answer, plus an identifier (NAME and/or county_fips) for context.\n` +
         `- Filter by state with STARTS_WITH(county_fips, '<2-digit state FIPS>'), e.g. '55'=Wisconsin, '48'=Texas, '06'=California, '13'=Georgia, '36'=New York.\n` +
         `- county_fips is a STRING; compare it to quoted strings.\n` +
+        `Example — Question: "민주당 득표율이 가장 높은 카운티 5곳" -> ` +
+        `SELECT NAME, dem_share FROM \`${PROJECT}.elections.county_2024\` ORDER BY dem_share DESC LIMIT 5\n` +
         `Return ONLY the SQL, nothing else.\nQuestion: ${question}`,
+      config: { temperature: 0 },
     });
     let sql = cleanSQL(gen.text || "");
     if (!isSafeSelect(sql)) {
