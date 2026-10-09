@@ -52,16 +52,16 @@ export async function POST(req: NextRequest) {
         `You translate a question into ONE BigQuery Standard SQL SELECT query.\n${SCHEMA}\n` +
         `Guidance:\n` +
         `- "vote share" / "득표율" means the dem_share or rep_share column (a 0..1 fraction), NOT raw vote counts.\n` +
-        `- For ranking questions use ORDER BY ... LIMIT N; never answer a ranking with SELECT *. Direction:\n` +
-        `    highest / most / largest / top / 가장 높은 / 가장 많은 / 상위  -> ORDER BY col DESC\n` +
-        `    lowest / least / smallest / fewest / 가장 낮은 / 가장 적은 / 하위  -> ORDER BY col ASC\n` +
+        `- For ranking questions use ORDER BY ... LIMIT N; never answer a ranking with SELECT *.\n` +
         `- Select only the columns needed to answer, plus an identifier (NAME and/or county_fips) for context.\n` +
         `- Filter by state with STARTS_WITH(county_fips, '<2-digit state FIPS>'), e.g. '55'=Wisconsin, '48'=Texas, '06'=California, '13'=Georgia, '36'=New York.\n` +
         `- county_fips is a STRING; compare it to quoted strings.\n` +
-        `Example (highest -> DESC) — "민주당 득표율이 가장 높은 카운티 5곳" -> ` +
-        `SELECT NAME, dem_share FROM \`${PROJECT}.elections.county_2024\` ORDER BY dem_share DESC LIMIT 5\n` +
-        `Example (lowest -> ASC) — "민주당 득표율이 가장 낮은 카운티 5곳" -> ` +
-        `SELECT NAME, dem_share FROM \`${PROJECT}.elections.county_2024\` ORDER BY dem_share ASC LIMIT 5\n` +
+        `Two worked examples (same columns, opposite direction — copy the direction from the QUESTION, not from an example):\n` +
+        `  "민주당 득표율이 가장 높은 카운티 5곳" (highest) -> SELECT NAME, dem_share FROM \`${PROJECT}.elections.county_2024\` ORDER BY dem_share DESC LIMIT 5\n` +
+        `  "민주당 득표율이 가장 낮은 카운티 5곳" (lowest)  -> SELECT NAME, dem_share FROM \`${PROJECT}.elections.county_2024\` ORDER BY dem_share ASC LIMIT 5\n` +
+        `CRITICAL last step — read the question's own words to choose the sort direction:\n` +
+        `  highest / most / largest / top / 가장 높은 / 가장 많은 / 상위  => ORDER BY ... DESC\n` +
+        `  lowest / least / smallest / fewest / 가장 낮은 / 가장 적은 / 하위  => ORDER BY ... ASC\n` +
         `Return ONLY the SQL, nothing else.\nQuestion: ${question}`,
       config: { temperature: 0 },
     });
