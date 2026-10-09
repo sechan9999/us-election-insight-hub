@@ -8,8 +8,9 @@ export const dynamic = "force-dynamic";
 const PROJECT = process.env.GOOGLE_CLOUD_PROJECT || "electoral-hub-510410";
 const LOCATION = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
 const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-// SQL generation needs reliable multilingual reasoning (flash mis-sorts Korean superlatives); summary stays on flash.
-const SQL_MODEL = process.env.GEMINI_SQL_MODEL || "gemini-2.5-pro";
+// flash picks the right columns but sometimes mis-sorts Korean superlatives; a deterministic guard below
+// fixes the ORDER BY direction, which is more reliable than swapping to pro (pro mis-maps "득표율"→swing).
+const SQL_MODEL = process.env.GEMINI_SQL_MODEL || "gemini-2.5-flash";
 
 const SCHEMA = `BigQuery project ${PROJECT}, dataset "elections".
 
@@ -32,6 +33,25 @@ const ai = new GoogleGenAI({ vertexai: true, project: PROJECT, location: LOCATIO
 
 // strip any triple-backtick fence (```sql, ```bigquery, ```) — single backticks for table names are kept
 const cleanSQL = (s: string) => s.replace(/```[a-z]*/gi, "").trim();
+
+// Deterministic ORDER BY direction from the question's superlative wording (fixes flash's Korean mis-sort).
+// Only acts when the question is unambiguously "highest" XOR "lowest" and the SQL already has an ORDER BY.
+function enforceSortDirection(sql: string, question: string): string {
+  // Skip sign/semantic orderings: "most toward Republicans" = lowest (most negative) swing, not DESC.
+  if (/\bswing\b/i.test(sql)) return sql;
+  if (/(swing|shift|toward|움직|이동|스윙|멀어|rightward|leftward)/i.test(question)) return sql;
+  const q = question.toLowerCase();
+  const high = /(highest|greatest|most\b|largest|biggest|\btop\b|가장\s*높|가장\s*많|가장\s*큰|최고|최대|상위)/.test(q);
+  const low = /(lowest|least|smallest|fewest|\bbottom\b|가장\s*낮|가장\s*적|가장\s*작|최저|최소|하위)/.test(q);
+  if (high === low) return sql; // ambiguous or neither — trust the model
+  if (!/\border\s+by\b/i.test(sql)) return sql;
+  const want = high ? "DESC" : "ASC";
+  if (/\border\s+by\b[\s\S]*?\b(asc|desc)\b/i.test(sql)) {
+    return sql.replace(/(\border\s+by\b[\s\S]*?\b)(asc|desc)\b/i, (_m, pre) => pre + want);
+  }
+  if (/\blimit\b/i.test(sql)) return sql.replace(/\blimit\b/i, `${want} LIMIT`);
+  return `${sql} ${want}`;
+}
 
 function isSafeSelect(sql: string): boolean {
   const body = sql.trim().replace(/;$/, "");
@@ -71,6 +91,7 @@ export async function POST(req: NextRequest) {
     if (!isSafeSelect(sql)) {
       return NextResponse.json({ abstain: true, reason: "I could not form a safe query for that.", sql });
     }
+    sql = enforceSortDirection(sql, question);
     if (!/\blimit\s+\d+/i.test(sql)) sql = sql.replace(/;?\s*$/, "") + "\nLIMIT 50";
 
     // 2) Run on BigQuery
