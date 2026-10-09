@@ -82,10 +82,14 @@ export async function POST(req: NextRequest) {
     const sum = await ai.models.generateContent({
       model: MODEL,
       contents:
-        `Answer the question in 1-2 sentences using ONLY these query results. Cite exact numbers. ` +
-        `Reply in the same language as the question (Korean question -> Korean answer). ` +
-        `If the results do not answer it, say so.\n` +
+        `Answer the question in 1-2 sentences using ONLY these query results. Cite exact numbers (round shares to 1 decimal %). ` +
+        `Language: detect the language of the Question text and answer ONLY in that language — English question -> English answer, Korean question -> Korean answer. ` +
+        `Do NOT default to Korean. ` +
+        `Column meaning: 'swing' = dem_2024 - dem_2020; a NEGATIVE swing means the county shifted TOWARD Republicans, a POSITIVE swing means it shifted toward Democrats. ` +
+        `'dem_share'/'rep_share' are 0..1 vote-share fractions. ` +
+        `The SQL already ordered and filtered the rows to answer the question, so trust them and summarize directly; do not claim they fail to answer unless they are truly unrelated.\n` +
         `Question: ${question}\nResults (JSON): ${JSON.stringify(clean)}`,
+      config: { temperature: 0 },
     });
 
     return NextResponse.json({
