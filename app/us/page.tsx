@@ -213,6 +213,12 @@ export default function USElectionHub() {
           </div>
           <h1 className="mt-3 text-3xl font-bold">{t(lang, 'title')}</h1>
           <p className="mt-1 text-neutral-400">{t(lang, 'subtitle', { n })}</p>
+          <a
+            href="/maps"
+            className="mt-3 inline-block rounded border border-white/15 px-3 py-1 text-sm text-blue-300 hover:bg-white/10"
+          >
+            {lang === 'ko' ? '카운티 지도 (2024 · 스윙) →' : 'County maps (2024 · swing) →'}
+          </a>
         </header>
 
         {/* Tabs */}
