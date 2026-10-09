@@ -8,6 +8,8 @@ export const dynamic = "force-dynamic";
 const PROJECT = process.env.GOOGLE_CLOUD_PROJECT || "electoral-hub-510410";
 const LOCATION = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
 const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+// SQL generation needs reliable multilingual reasoning (flash mis-sorts Korean superlatives); summary stays on flash.
+const SQL_MODEL = process.env.GEMINI_SQL_MODEL || "gemini-2.5-pro";
 
 const SCHEMA = `BigQuery project ${PROJECT}, dataset "elections".
 
@@ -47,7 +49,7 @@ export async function POST(req: NextRequest) {
 
     // 1) Natural language -> SQL
     const gen = await ai.models.generateContent({
-      model: MODEL,
+      model: SQL_MODEL,
       contents:
         `You translate a question into ONE BigQuery Standard SQL SELECT query.\n${SCHEMA}\n` +
         `Guidance:\n` +
