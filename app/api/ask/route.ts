@@ -39,8 +39,9 @@ const cleanSQL = (s: string) => s.replace(/```[a-z]*/gi, "").trim();
 function enforceSortDirection(sql: string, question: string): string {
   // Skip sign/semantic orderings: "most toward Republicans" = lowest (most negative) swing, not DESC.
   if (/\bswing\b/i.test(sql)) return sql;
-  if (/(swing|shift|toward|움직|이동|스윙|멀어|rightward|leftward)/i.test(question)) return sql;
-  const q = question.toLowerCase();
+  // Test both Unicode normal forms so Hangul keywords match whether the request arrives NFC or NFD.
+  const q = (question.normalize("NFC") + " " + question.normalize("NFD")).toLowerCase();
+  if (/(swing|shift|toward|움직|이동|스윙|멀어|rightward|leftward)/.test(q)) return sql;
   const high = /(highest|greatest|most\b|largest|biggest|\btop\b|가장\s*높|가장\s*많|가장\s*큰|최고|최대|상위)/.test(q);
   const low = /(lowest|least|smallest|fewest|\bbottom\b|가장\s*낮|가장\s*적|가장\s*작|최저|최소|하위)/.test(q);
   if (high === low) return sql; // ambiguous or neither — trust the model
