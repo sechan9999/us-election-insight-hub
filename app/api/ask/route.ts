@@ -39,14 +39,17 @@ const cleanSQL = (s: string) => s.replace(/```[a-z]*/gi, "").trim();
 function enforceSortDirection(sql: string, question: string): string {
   // Skip sign/semantic orderings: "most toward Republicans" = lowest (most negative) swing, not DESC.
   if (/\bswing\b/i.test(sql)) return sql;
-  // Normalize to NFC and match Hangul via \u code-point escapes (ASCII source) so bundling/encoding can't break it.
+  // Build Hangul keywords at runtime from code points (ASCII source) and substring-match on the
+  // space-stripped, NFC-normalized question — avoids regex/encoding pitfalls that broke literal Hangul.
+  const C = String.fromCharCode, G = C(0xAC00, 0xC7A5);
+  const highKO = [G + C(0xB192), G + C(0xB9CE), G + C(0xD070), C(0xCD5C, 0xACE0), C(0xCD5C, 0xB300), C(0xC0C1, 0xC704)];
+  const lowKO = [G + C(0xB0AE), G + C(0xC801), G + C(0xC791), C(0xCD5C, 0xC800), C(0xCD5C, 0xC18C), C(0xD558, 0xC704)];
+  const shiftKO = [C(0xC6C0, 0xC9C1), C(0xC774, 0xB3D9), C(0xC2A4, 0xC708), C(0xBA40, 0xC5B4)];
   const q = question.normalize("NFC").toLowerCase();
-  // 움직|이동|스윙|멀어
-  if (/(swing|shift|toward|움직|이동|스윈|멀어|rightward|leftward)/.test(q)) return sql;
-  // 가장 높|가장 많|가장 큰|최고|최대|상위
-  const high = /(highest|greatest|most\b|largest|biggest|\btop\b|가장\s*높|가장\s*많|가장\s*큰|최고|최대|상위)/.test(q);
-  // 가장 낮|가장 적|가장 작|최저|최소|하위
-  const low = /(lowest|least|smallest|fewest|\bbottom\b|가장\s*낮|가장\s*적|가장\s*작|최저|최소|하위)/.test(q);
+  const qc = q.replace(/\s+/g, "");
+  if (/swing|shift|toward|rightward|leftward/i.test(q) || shiftKO.some((k) => qc.includes(k))) return sql;
+  const high = /highest|greatest|most\b|largest|biggest|\btop\b/i.test(q) || highKO.some((k) => qc.includes(k));
+  const low = /lowest|least|smallest|fewest|\bbottom\b/i.test(q) || lowKO.some((k) => qc.includes(k));
   if (high === low) return sql; // ambiguous or neither — trust the model
   if (!/\border\s+by\b/i.test(sql)) return sql;
   const want = high ? "DESC" : "ASC";
