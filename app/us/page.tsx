@@ -418,7 +418,6 @@ export default function USElectionHub() {
                 <li>{t(lang, 'aSigma')}</li>
                 <li>{t(lang, 'aTau', { tau: TAU_NAT, taureg: TAU_REG })}</li>
                 <li>{t(lang, 'aRcv')}</li>
-                <li>{t(lang, 'aPollBias')}</li>
                 <li>{t(lang, 'aSenateAll')}</li>
                 <li>{t(lang, 'aHouseDistricts')}</li>
               </ul>

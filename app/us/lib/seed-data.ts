@@ -121,8 +121,12 @@ const RACE_DEFS: RaceDef[] = [
  * Build SenateRace entries: m_i from time-weighted poll aggregation as of
  * DATA_AS_OF; σ_i from total poll count (RCP polls + fresh polls).
  */
-/** Poll bias adjustment applied to poll-derived Senate margins (see MODEL_NOTES). */
-const POLL_BIAS_ADJUST = 0.7;
+/** Poll bias adjustment applied to poll-derived Senate margins (see MODEL_NOTES).
+ *  Set to 0 on 2026-10-11 per HK's decision: the D+1.34 midterm average bias
+ *  (2014 +2.72, 2018 +0.35, 2022 +0.96) was measured, but its cycle-to-cycle
+ *  instability and post-2020 pollster methodology changes make any fixed
+ *  correction too judgment-heavy. Revisit if 2026 polling error becomes clear. */
+const POLL_BIAS_ADJUST = 0;
 
 function buildRace(def: RaceDef): SenateRace {
   const agg = aggregatePolls(def.polls, { asOf: DATA_AS_OF });
@@ -246,10 +250,10 @@ export const MODEL_NOTES = {
   sims: 40000,
   seed: 20261103,
   /** Poll bias adjustment (pts, subtracted from Dem margin). See POLL_BIAS_ADJUST above.
-   *  Midterm cycles averaged D+1.34 bias (2014 +2.72, 2018 +0.35, 2022 +0.96);
-   *  we apply half (0.7) as shrinkage toward zero given cycle-to-cycle
-   *  instability and post-2020 pollster methodology changes.
-   *  Applies to poll-derived margins only (12 Senate battlegrounds), not
+   *  Currently 0 (no correction) per HK's 2026-10-11 decision. A D+1.34 average
+   *  bias was measured in midterms (2014 +2.72, 2018 +0.35, 2022 +0.96), but
+   *  cycle instability makes a fixed correction too judgment-heavy.
+   *  Would apply to poll-derived margins only (12 Senate battlegrounds), not
    *  fundamentals-based races. See scripts/backtest.py. */
   pollBiasAdjust: POLL_BIAS_ADJUST,
 };
