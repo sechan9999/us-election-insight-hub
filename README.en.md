@@ -68,7 +68,16 @@ Each simulation draws one national error s ~ N(0, τ²) shared by every race, an
 | Re-run with the same seed | identical results |
 | Senate P(Democratic majority) | 53.4%, expected 50.37 seats, 80% range 47–54 (all 35 seats modeled) |
 | House P(Democratic majority) | 96.6%, expected 240.2 seats, 80% range 224–258 (435 districts modeled individually) |
-| Per-race simulation vs closed form | within 0.01 in all 12 states |
+| Per-race simulation vs closed form | within 0.01 in all 35 races |
+
+`npm run verify:backtest` (backtest, 2010–2022 Senate, 223 races):
+
+| Check | Result |
+|---|---|
+| Brier score | 0.055 (base rate 0.25) |
+| Standardized residuals | mean +0.26 (D bias), sd 0.99 (variance well-calibrated) |
+| Calibration | mild underconfidence in close races — favorites win 5–15 pts more than predicted |
+| Limitation | in-sample (parameters fit on the same period); leave-one-cycle-out is future work |
 
 ## Data flow (production)
 

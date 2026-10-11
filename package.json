@@ -9,7 +9,11 @@
     "lint": "eslint",
     "verify:model": "tsx scripts/verify-model.ts",
     "ingest:results": "tsx scripts/ingest-results.ts",
-    "ingest:results:test": "tsx scripts/ingest-results.ts --mode test"
+    "ingest:results:test": "tsx scripts/ingest-results.ts --mode test",
+    "verify:backtest": "python3 scripts/backtest.py",
+    "calibrate:tau": "python3 scripts/calibrate-tau.py",
+    "calibrate:sigma": "python3 scripts/calibrate-sigma.py",
+    "calibrate:regions": "python3 scripts/calibrate-regions.py"
   },
   "dependencies": {
     "@google-cloud/bigquery": "^9.2.0",
