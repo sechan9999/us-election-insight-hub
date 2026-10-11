@@ -6,7 +6,7 @@ A forecast and results board for the US midterm elections on November 3, 2026. I
 
 **Live:** https://us-election-insight-hub-38273401034.us-central1.run.app/us (`?lang=en` for English)
 
-> **Status: in development (beta).** The board currently runs on sample data built from RCP averages as of 2026-10-01. Assumptions that must be replaced before launch are listed below and in the on-screen "Assumptions to replace before launch" section.
+> **Status: in development (beta).** The board currently runs on sample data built from RCP averages as of 2026-10-01.
 
 ## Screens (`/us`, English at `/us?lang=en`)
 
@@ -69,13 +69,6 @@ Each simulation draws one national error s ~ N(0, τ²) shared by every race, an
 | Senate P(Democratic majority) | 57.8%, expected 50.75 seats, 80% range 47–54 |
 | House P(Democratic majority) | 54.3%, expected 217.2 seats, 80% range 208–224 |
 | Per-race simulation vs closed form | within 0.01 in all 12 states |
-
-## Assumptions to replace before launch
-
-- σᵢ = 4.0 pts for every race. Replace with values based on poll count and spread.
-- τ = 3.5 pts. Calibrate against past-cycle polling error.
-- House: all 22 toss-ups use a D+2.0 placeholder, with 203 safe Democratic seats (assuming 11 of the 22 toss-ups are Democratic-held). **The House distribution is capped at 225 seats (203 + 22).** About 8% of simulations pile up at 225, so until the toss-up list grows or district polls arrive, the House probability is affected by this cap. Replace with safe seats from public ratings such as Cook and the full list of competitive districts.
-- Senate baseline: 53R–47D, so Democrats need 51 seats (the Vice President is Republican). 4 of the 12 battlegrounds (GA, MI, MN, NH) are Democratic-held, giving 43 safe Democratic seats.
 
 ## Data flow (production)
 
