@@ -73,7 +73,7 @@ export function analyticWinProb(demMargin: number, sigma: number, tau: number): 
 }
 
 export interface SimulateOptions {
-  tau?: number; // national error scale in points (default 3.5)
+  tau?: number; // national error scale in points (default 3.3, calibrated — see scripts/calibrate-tau.py)
   sims?: number; // simulations (default 40000)
   seed?: number; // default 20261103
 }
@@ -89,7 +89,7 @@ export function simulateChamber(
   needed: number,
   opts: SimulateOptions = {},
 ): ChamberResult {
-  const tau = opts.tau ?? 3.5;
+  const tau = opts.tau ?? 3.3;
   const sims = opts.sims ?? 40000;
   const randn = makeRandn(mulberry32(opts.seed ?? 20261103));
 

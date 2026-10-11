@@ -252,8 +252,8 @@ const S = {
     en: 'Race-level error σᵢ = {sigma} pts baseline (RCV races wider, see below)',
   },
   aTau: {
-    ko: '전국 오차 스케일 τ = {tau}pt (가정, 과거 선거의 여론조사 오차로 보정 예정)',
-    en: 'National error scale τ = {tau} pts (labeled assumption; calibrate from historical cycle polling error)',
+    ko: '전국 오차 스케일 τ = {tau}pt (2010–2022 상원 여론조사 오차로 보정, scripts/calibrate-tau.py)',
+    en: 'National error scale τ = {tau} pts (calibrated from 2010–2022 Senate polling error; see scripts/calibrate-tau.py)',
   },
   aRcv: {
     ko: 'AK·ME 상원은 결선투표제(RCV)라 σ에 +2.0pt 추가 (1순위 여론조사 ≠ 최종 라운드)',

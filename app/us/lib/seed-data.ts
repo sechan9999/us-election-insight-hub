@@ -75,8 +75,8 @@ export const HOUSE_BASELINE = {
 };
 
 export const MODEL_NOTES = {
-  tau: 3.5,
-  tauNote: 'National error scale τ = 3.5 pts (labeled assumption; calibrate from historical cycle polling error)',
+  tau: 3.3,
+  tauNote: 'National error scale τ = 3.3 pts, calibrated from historical Senate polling error (SD of cycle-level national error, 2010–2022; see scripts/calibrate-tau.py). Fat tails tested and rejected (kurtosis 2.45 vs 3.0 normal).',
   sigmaNote: 'Race-level error σ_i = 4.0 pts for all races (labeled assumption)',
   sims: 40000,
   seed: 20261103,
