@@ -46,6 +46,16 @@ A descriptive context layer built from Donald Trump's Truth Social posts. It is 
   - Never used as a forecast-model input.
   - Speculative readings are labeled "(inferred)".
 
+## Maps (`/maps`)
+
+Descriptive (not predictive) maps of county-level 2020/2024 presidential returns. Buttons in `app/maps/page.tsx` switch between `public/*.html` files shown in an iframe.
+
+- **2024 vote share**: 2024 Democratic vote share by county (Harvard MEDSL county presidential returns 2000–2024)
+- **2020→2024 swing**: county-level change in Democratic vote share, 2020→2024
+- **Diploma divide by state**: per-state education slope — from a within-state county regression (controls: income, race, age, density, population), "1pp more bachelor's graduates → +Xpp Democratic vote share". Static state map with value labels on top (gray = not significant; states with <15 counties excluded), sorted bar chart with 95% CIs below. Pooled national slope 1.49pp; strongest in NY 3.93pp, AZ 3.15pp, NC 2.60pp.
+
+Pipeline: `fetch_acs.py` (Census ACS 2022 5yr) + `join_data.py` (MEDSL join) → `make_map.py` / `make_swing.py` → `public/map_2024.html`, `public/swing_map.html`. The state map is `public/state_divide_map.html`, built by the county_robustness analysis.
+
 ## Model (`app/us/lib/forecast.ts`)
 
 Each simulation draws one national error s ~ N(0, τ²) shared by every race, and scores each race as mᵢ + s + σᵢ·εᵢ. The published race probability uses the closed form Φ(mᵢ / √(σᵢ² + τ²)). Chamber majorities come from simulation, since the shared error means there is no closed form.

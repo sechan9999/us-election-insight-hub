@@ -30,6 +30,16 @@
 - 메시지 vs 민심: 주제 대응표 v1의 4쌍(관세·무역↔경제+물가, 범죄·이민↔이민|범죄, 이란·전쟁↔전쟁·외교 합, 공화당·입법↔정부/리더십 근사)마다 선 차트. 트럼프 게시 비중(amber)·Gallup MIP(teal)·YouGov 1순위 이슈(회색 점선)를 **정규화 없이 각자 원래 %**로 표시하고 최고치 달을 사실로만 적음. Gallup 점은 채움=그 달 원자료, 빈 원=추세 열. 결측 달은 끊어 그림(보간 없음), 진행 중인 달은 최고치에서 제외. 데이터 출처·검증은 truth-analysis `data/polls/README.md`
 - 가드레일: 기술적 서술만, 인과·예측 문장 금지, 예측 모형 입력 사용 금지, 추측성 해석에는 (추정)
 
+## 지도 (`/maps`)
+
+2020·2024년 대선 카운티 개표의 기술적(descriptive) 지도입니다. 예측 모형이 아닙니다. `app/maps/page.tsx`의 버튼으로 전환하며, 각 지도는 `public/*.html`을 iframe으로 표시합니다.
+
+- **2024 vote share**: 카운티별 2024년 민주당 득표율 (Harvard MEDSL county presidential returns 2000–2024)
+- **2020→2024 swing**: 카운티별 2020→2024 민주당 득표율 변화
+- **Diploma divide by state**: 주별 학력 기울기 — 각 주 안에서 카운티 회귀(통제: 소득·인종·연령·밀도·인구)로 추정한 "대졸 비율 1%p↑ → 민주당 득표율 +X%p". 상단은 정적 주 지도(값 라벨 포함, 유의하지 않은 주는 회색, 카운티 15개 미만 주는 제외), 하단은 95% 신뢰구간 막대차트(정렬). 전국 통합 기울기 1.49pp, 최강 NY 3.93pp·AZ 3.15pp·NC 2.60pp.
+
+파이프라인: `fetch_acs.py` (Census ACS 2022 5yr) + `join_data.py` (MEDSL 결합) → `make_map.py` / `make_swing.py` → `public/map_2024.html`, `public/swing_map.html`. 주별 지도는 county_robustness 분석에서 생성한 `public/state_divide_map.html`.
+
 ## 모델 (`app/us/lib/forecast.ts`)
 
 각 시뮬레이션은 전국 공통 오차 s ~ N(0, τ²)를 하나 뽑아 모든 선거구에 공유하고, 선거구 결과 = mᵢ + s + σᵢ·εᵢ로 계산합니다. 선거구별 공개 확률은 닫힌 식 Φ(mᵢ / √(σᵢ² + τ²)), 의회 과반은 시뮬레이션(상관 때문에 닫힌 식 없음)으로 구합니다.
