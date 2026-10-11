@@ -259,6 +259,10 @@ const S = {
     ko: 'AK·ME 상원은 결선투표제(RCV)라 σ에 +2.0pt 추가 (1순위 여론조사 ≠ 최종 라운드)',
     en: 'AK/ME Senate use RCV: +2.0 pts added to σ (first-choice polls ≠ final round)',
   },
+  aSenateAll: {
+    ko: '상원 35석 전수 모델링: 12 경합주(여론조사) + 23 비경합주(펀더멘털: 주 대선+현직, σ=6.5). 34석은 선거 대상 아님.',
+    en: 'Senate: all 35 seats modeled — 12 battlegrounds (polls) + 23 non-battlegrounds (fundamentals: state pres + incumbency, σ=6.5). 34 seats not up for election.',
+  },
   aHouseDistricts: {
     ko: '하원 435개 지역구 개별 모델링 (2024 대선 베이스라인 + 제너럴밸럿 uniform swing + 현직 +2.0pt, σ=5.5). 상한 절단 없음.',
     en: 'House: 435 districts modeled individually (2024 presidential baseline + generic-ballot uniform swing + 2.0-pt incumbency bump, σ=5.5). No seat cap.',

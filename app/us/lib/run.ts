@@ -3,7 +3,7 @@
 // header next to the data date; cite it to reproduce a screenshot.
 
 import {
-  SENATE_BATTLEGROUND,
+  SENATE_ALL,
   SENATE_BASELINE,
   HOUSE_SNAPSHOT,
   HOUSE_BASELINE,
@@ -25,7 +25,7 @@ export function fnv1a(input: string): string {
 export function inputHash(): string {
   return fnv1a(
     JSON.stringify({
-      races: SENATE_BATTLEGROUND.map((r) => [r.id, r.demMargin, r.sigma]),
+      races: SENATE_ALL.map((r) => [r.id, r.demMargin, r.sigma]),
       senate: SENATE_BASELINE,
       house: [HOUSE_SNAPSHOT, HOUSE_BASELINE],
       houseDistricts: HOUSE_DISTRICTS.map((r) => [r.id, r.demMargin, r.sigma]),

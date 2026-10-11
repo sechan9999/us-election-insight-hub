@@ -143,11 +143,78 @@ function buildRace(def: RaceDef): SenateRace {
 
 export const SENATE_BATTLEGROUND: SenateRace[] = RACE_DEFS.map(buildRace);
 
-/** Senate baseline: 47 Dem-held seats, 4 of them in the battleground set above. */
+/**
+ * Non-battleground Senate seats up in 2026 (roadmap #8): 23 seats modeled
+ * with fundamentals-based margins instead of being fixed as "safe".
+ *
+ *   margin_i = state_2024_pres_margin + incumbency_bump
+ *
+ * incumbency_bump = +4 (D incumbent) / -4 (R incumbent) / ±2 (appointee) / 0 (open).
+ * σ = 6.5 for all (fundamentals-only, no polls; judgment call flagged for #9).
+ * Ratings and open-seat status from Cook Political Report, July 1, 2026.
+ */
+interface FundDef {
+  id: string; label: string; stateKo: string; region: 'NE' | 'MW' | 'S' | 'W';
+  presMargin2024: number; incumb: 'D' | 'R' | 'D-app' | 'R-app' | 'open';
+}
+
+const FUND_DEFS: FundDef[] = [
+  // Democratic-held (9)
+  { id: 'CO-SEN', label: 'Colorado', stateKo: '콜로라도', region: 'W', presMargin2024: 11.3, incumb: 'D' },
+  { id: 'DE-SEN', label: 'Delaware', stateKo: '델라웨어', region: 'S', presMargin2024: 15.0, incumb: 'D' },
+  { id: 'IL-SEN', label: 'Illinois', stateKo: '일리노이', region: 'MW', presMargin2024: 11.1, incumb: 'open' },
+  { id: 'MA-SEN', label: 'Massachusetts', stateKo: '매사추세츠', region: 'NE', presMargin2024: 25.9, incumb: 'D' },
+  { id: 'NJ-SEN', label: 'New Jersey', stateKo: '뉴저지', region: 'NE', presMargin2024: 5.7, incumb: 'D' },
+  { id: 'NM-SEN', label: 'New Mexico', stateKo: '뉴멕시코', region: 'W', presMargin2024: 6.1, incumb: 'D' },
+  { id: 'OR-SEN', label: 'Oregon', stateKo: '오리건', region: 'W', presMargin2024: 6.5, incumb: 'D' },
+  { id: 'RI-SEN', label: 'Rhode Island', stateKo: '로드아일랜드', region: 'NE', presMargin2024: 14.1, incumb: 'D' },
+  { id: 'VA-SEN', label: 'Virginia', stateKo: '버지니아', region: 'S', presMargin2024: 5.9, incumb: 'D' },
+  // Republican-held (14)
+  { id: 'AL-SEN', label: 'Alabama', stateKo: '앨라배마', region: 'S', presMargin2024: -30.9, incumb: 'open' },
+  { id: 'AR-SEN', label: 'Arkansas', stateKo: '아칸소', region: 'S', presMargin2024: -31.3, incumb: 'R' },
+  { id: 'ID-SEN', label: 'Idaho', stateKo: '아이다호', region: 'W', presMargin2024: -37.5, incumb: 'R' },
+  { id: 'KY-SEN', label: 'Kentucky', stateKo: '켄터키', region: 'S', presMargin2024: -31.0, incumb: 'open' },
+  { id: 'LA-SEN', label: 'Louisiana', stateKo: '루이지애나', region: 'S', presMargin2024: -21.4, incumb: 'open' },
+  { id: 'MS-SEN', label: 'Mississippi', stateKo: '미시시피', region: 'S', presMargin2024: -23.1, incumb: 'R' },
+  { id: 'MT-SEN', label: 'Montana', stateKo: '몬태나', region: 'W', presMargin2024: -20.6, incumb: 'open' },
+  { id: 'NE-SEN', label: 'Nebraska', stateKo: '네브래스카', region: 'MW', presMargin2024: -20.8, incumb: 'R-app' },
+  { id: 'OK-SEN', label: 'Oklahoma', stateKo: '오클라호마', region: 'S', presMargin2024: -34.9, incumb: 'open' },
+  { id: 'SC-SEN', label: 'South Carolina', stateKo: '사우스캐롤라이나', region: 'S', presMargin2024: -18.1, incumb: 'R' },
+  { id: 'SD-SEN', label: 'South Dakota', stateKo: '사우스다코타', region: 'MW', presMargin2024: -29.9, incumb: 'R' },
+  { id: 'TN-SEN', label: 'Tennessee', stateKo: '테네시', region: 'S', presMargin2024: -30.1, incumb: 'R' },
+  { id: 'WV-SEN', label: 'West Virginia', stateKo: '웨스트버지니아', region: 'S', presMargin2024: -42.7, incumb: 'R' },
+  { id: 'WY-SEN', label: 'Wyoming', stateKo: '와이오밍', region: 'W', presMargin2024: -47.0, incumb: 'open' },
+];
+
+const INCUMB_BUMP_SENATE = 4.0;
+
+function incumbBump(incumb: FundDef['incumb']): number {
+  switch (incumb) {
+    case 'D': return INCUMB_BUMP_SENATE;
+    case 'R': return -INCUMB_BUMP_SENATE;
+    case 'D-app': return INCUMB_BUMP_SENATE / 2;
+    case 'R-app': return -INCUMB_BUMP_SENATE / 2;
+    default: return 0;
+  }
+}
+
+export const SENATE_FUNDAMENTALS: RaceInput[] = FUND_DEFS.map((d) => ({
+  id: d.id,
+  label: d.label,
+  chamber: 'senate' as const,
+  demMargin: Math.round((d.presMargin2024 + incumbBump(d.incumb)) * 10) / 10,
+  sigma: 6.5,
+  region: d.region,
+}));
+
+/** All Senate seats contested in 2026: 12 battlegrounds + 23 fundamentals. */
+export const SENATE_ALL: RaceInput[] = [...SENATE_BATTLEGROUND, ...SENATE_FUNDAMENTALS];
+
+/** Senate baseline: 47 Dem-aligned seats; 13 up in 2026, so 34 are truly safe (not contested). */
 export const SENATE_BASELINE = {
-  safeDemSeats: 43,
+  safeDemSeats: 34,
   needed: 51,
-  note: '53R-47D chamber; Democrats need a net gain of 4',
+  note: '53R-47D chamber; 35 seats up in 2026 (12 battleground + 23 fundamentals-modeled); Democrats need a net gain of 4',
 };
 
 /** House snapshot (team-compiled + RCP). */

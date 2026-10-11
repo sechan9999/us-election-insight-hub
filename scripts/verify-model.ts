@@ -7,7 +7,7 @@
 
 import { analyticWinProb, mulberry32, simulateChamber } from '../app/us/lib/forecast';
 import {
-  SENATE_BATTLEGROUND,
+  SENATE_ALL,
   SENATE_BASELINE,
   HOUSE_BASELINE,
   MODEL_NOTES,
@@ -42,8 +42,8 @@ if (maxDiff > 0.003) {
 }
 
 // 2. Reproducibility
-const a = simulateChamber(SENATE_BATTLEGROUND, SENATE_BASELINE.safeDemSeats, SENATE_BASELINE.needed, { tau: tauNat, tauReg, seed: MODEL_NOTES.seed, sims: MODEL_NOTES.sims });
-const b = simulateChamber(SENATE_BATTLEGROUND, SENATE_BASELINE.safeDemSeats, SENATE_BASELINE.needed, { tau: tauNat, tauReg, seed: MODEL_NOTES.seed, sims: MODEL_NOTES.sims });
+const a = simulateChamber(SENATE_ALL, SENATE_BASELINE.safeDemSeats, SENATE_BASELINE.needed, { tau: tauNat, tauReg, seed: MODEL_NOTES.seed, sims: MODEL_NOTES.sims });
+const b = simulateChamber(SENATE_ALL, SENATE_BASELINE.safeDemSeats, SENATE_BASELINE.needed, { tau: tauNat, tauReg, seed: MODEL_NOTES.seed, sims: MODEL_NOTES.sims });
 if (JSON.stringify(a) !== JSON.stringify(b)) {
   console.error('FAIL: same seed produced different results');
   failed = true;
@@ -55,7 +55,7 @@ console.log(`run ${forecastRunId()}`);
 console.log(`Senate: P(D majority) ${(a.demWinProb * 100).toFixed(1)}%  E[D seats] ${a.expectedDemSeats.toFixed(2)}  80% band ${a.seatBand.p10}–${a.seatBand.p90}`);
 console.log(`House:  P(D majority) ${(house.demWinProb * 100).toFixed(1)}%  E[D seats] ${house.expectedDemSeats.toFixed(2)}  80% band ${house.seatBand.p10}–${house.seatBand.p90}`);
 for (const r of a.perRace) {
-  const race = SENATE_BATTLEGROUND.find((x) => x.id === r.id)!;
+  const race = SENATE_ALL.find((x) => x.id === r.id)!;
   const an = analyticWinProb(race.demMargin, race.sigma, tauNat, tauReg);
   if (Math.abs(an - r.demWinProb) > 0.01) {
     console.error(`FAIL: ${r.id} simulated ${r.demWinProb.toFixed(3)} vs analytic ${an.toFixed(3)}`);

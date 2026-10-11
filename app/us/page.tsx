@@ -19,6 +19,7 @@ import {
 import { simulateChamber, analyticWinProb, type ChamberResult } from './lib/forecast';
 import {
   SENATE_BATTLEGROUND,
+  SENATE_ALL,
   SENATE_BASELINE,
   HOUSE_SNAPSHOT,
   HOUSE_BASELINE,
@@ -152,7 +153,7 @@ export default function USElectionHub() {
 
   const runId = useMemo(() => forecastRunId(), []);
   const senate = useMemo(
-    () => simulateChamber(SENATE_BATTLEGROUND, SENATE_BASELINE.safeDemSeats, SENATE_BASELINE.needed, SIM_OPTS),
+    () => simulateChamber(SENATE_ALL, SENATE_BASELINE.safeDemSeats, SENATE_BASELINE.needed, SIM_OPTS),
     [],
   );
   const house = useMemo(
@@ -417,6 +418,7 @@ export default function USElectionHub() {
                 <li>{t(lang, 'aSigma')}</li>
                 <li>{t(lang, 'aTau', { tau: TAU_NAT, taureg: TAU_REG })}</li>
                 <li>{t(lang, 'aRcv')}</li>
+                <li>{t(lang, 'aSenateAll')}</li>
                 <li>{t(lang, 'aHouseDistricts')}</li>
               </ul>
               <h3 className="mt-4 font-semibold">{t(lang, 'sources')}</h3>
