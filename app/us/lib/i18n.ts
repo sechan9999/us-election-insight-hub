@@ -248,12 +248,16 @@ const S = {
   // Rendered in place of the English notes in seed-data.ts. Those strings feed the
   // run-ID hash (run.ts), so the data stays unchanged and only the display is localized.
   aSigma: {
-    ko: '지역별 오차 σᵢ = {sigma}pt, 모든 지역 일괄 적용 (가정)',
-    en: 'Race-level error σᵢ = {sigma} pts for all races (labeled assumption)',
+    ko: '지역별 오차 σᵢ 기본 {sigma}pt (RCV 지역은 추가 오차, 아래 참조)',
+    en: 'Race-level error σᵢ = {sigma} pts baseline (RCV races wider, see below)',
   },
   aTau: {
     ko: '전국 오차 스케일 τ = {tau}pt (가정, 과거 선거의 여론조사 오차로 보정 예정)',
     en: 'National error scale τ = {tau} pts (labeled assumption; calibrate from historical cycle polling error)',
+  },
+  aRcv: {
+    ko: 'AK·ME 상원은 결선투표제(RCV)라 σ에 +2.0pt 추가 (1순위 여론조사 ≠ 최종 라운드)',
+    en: 'AK/ME Senate use RCV: +2.0 pts added to σ (first-choice polls ≠ final round)',
   },
   aHouseDistricts: {
     ko: '하원 435개 지역구 개별 모델링 (2024 대선 베이스라인 + 제너럴밸럿 uniform swing, σ=5.5). 상한 절단 없음.',

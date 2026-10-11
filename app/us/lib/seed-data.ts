@@ -22,6 +22,18 @@ export interface SenateRace extends RaceInput {
   note?: string;
 }
 
+/**
+ * Extra race-level error for ranked-choice voting races (AK-SEN, ME-SEN).
+ * Polls report first-choice margins, but the winner is decided in the final
+ * RCV round; transfer flows are unpolled, so σ is widened:
+ * σ_eff = √(σ_base² + RCV_EXTRA_SIGMA²). Directional transfer adjustments
+ * need round-by-round polling that the seed does not have (roadmap: revisit
+ * when RCV-tabulated polls arrive).
+ */
+export const RCV_EXTRA_SIGMA = 2.0;
+const rcvSigma = (base: number) =>
+  Math.sqrt(base * base + RCV_EXTRA_SIGMA * RCV_EXTRA_SIGMA);
+
 export const SENATE_BATTLEGROUND: SenateRace[] = [
   { id: 'NC-SEN', label: 'North Carolina', stateKo: '노스캐롤라이나', chamber: 'senate', demMargin: 9.0, sigma: 4.0, demCandidate: 'Roy Cooper', repCandidate: 'Michael Whatley', rating: 'Leans D', note: 'R-held open' },
   { id: 'GA-SEN', label: 'Georgia', stateKo: '조지아', chamber: 'senate', demMargin: 8.0, sigma: 4.0, demCandidate: 'Jon Ossoff (inc.)', repCandidate: 'Mike Collins', rating: 'Leans D', note: 'D-held' },
@@ -29,10 +41,10 @@ export const SENATE_BATTLEGROUND: SenateRace[] = [
   { id: 'OH-SEN', label: 'Ohio', stateKo: '오하이오', chamber: 'senate', demMargin: 3.7, sigma: 4.0, demCandidate: 'Sherrod Brown', repCandidate: 'Jon Husted (appt.)', rating: 'Toss Up', note: 'R-held special' },
   { id: 'MI-SEN', label: 'Michigan', stateKo: '미시간', chamber: 'senate', demMargin: 3.4, sigma: 4.0, demCandidate: 'Abdul El-Sayed', repCandidate: 'Mike Rogers', rating: 'Toss Up', note: 'D-held open' },
   { id: 'TX-SEN', label: 'Texas', stateKo: '텍사스', chamber: 'senate', demMargin: 2.7, sigma: 4.0, demCandidate: 'James Talarico', repCandidate: 'Ken Paxton', rating: 'Toss Up', note: 'R-held open' },
-  { id: 'AK-SEN', label: 'Alaska', stateKo: '알래스카', chamber: 'senate', demMargin: 2.3, sigma: 4.0, demCandidate: 'Mary Peltola', repCandidate: 'Dan Sullivan (inc.)', rating: 'Toss Up', note: 'R-held' },
+  { id: 'AK-SEN', label: 'Alaska', stateKo: '알래스카', chamber: 'senate', demMargin: 2.3, sigma: rcvSigma(4.0), demCandidate: 'Mary Peltola', repCandidate: 'Dan Sullivan (inc.)', rating: 'Toss Up', note: 'R-held · RCV' },
   { id: 'MN-SEN', label: 'Minnesota', stateKo: '미네소타', chamber: 'senate', demMargin: 1.6, sigma: 4.0, demCandidate: 'Peggy Flanagan', repCandidate: 'Michele Tafoya', rating: 'Toss Up', note: 'D-held open' },
   { id: 'IA-SEN', label: 'Iowa', stateKo: '아이오와', chamber: 'senate', demMargin: 0.3, sigma: 4.0, demCandidate: 'Josh Turek', repCandidate: 'Ashley Hinson', rating: 'Toss Up', note: 'R-held open' },
-  { id: 'ME-SEN', label: 'Maine', stateKo: '메인', chamber: 'senate', demMargin: -0.2, sigma: 4.0, demCandidate: 'Troy Jackson', repCandidate: 'Susan Collins (inc.)', rating: 'Toss Up', note: 'R-held' },
+  { id: 'ME-SEN', label: 'Maine', stateKo: '메인', chamber: 'senate', demMargin: -0.2, sigma: rcvSigma(4.0), demCandidate: 'Troy Jackson', repCandidate: 'Susan Collins (inc.)', rating: 'Toss Up', note: 'R-held · RCV' },
   { id: 'KS-SEN', label: 'Kansas', stateKo: '캔자스', chamber: 'senate', demMargin: -1.5, sigma: 4.0, demCandidate: 'Adam Hamilton', repCandidate: 'Roger Marshall (inc.)', rating: 'Toss Up', note: 'R-held' },
   { id: 'FL-SEN', label: 'Florida', stateKo: '플로리다', chamber: 'senate', demMargin: -6.6, sigma: 4.0, demCandidate: 'Angie Nixon', repCandidate: 'Ashley Moody (appt.)', rating: 'Leans R', note: 'R-held special' },
 ];
