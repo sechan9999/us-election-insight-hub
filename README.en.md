@@ -66,7 +66,7 @@ Each simulation draws one national error s ~ N(0, τ²) shared by every race, an
 |---|---|
 | Monte Carlo (200k runs) vs closed form, margins −8 to +8 | max difference 0.0017 |
 | Re-run with the same seed | identical results |
-| Senate P(Democratic majority) | 53.4%, expected 50.37 seats, 80% range 47–54 (all 35 seats modeled) |
+| Senate P(Democratic majority) | 46.7%, expected 49.93 seats, 80% range 46–53 (all 35 seats + poll bias adjustment) |
 | House P(Democratic majority) | 96.6%, expected 240.2 seats, 80% range 224–258 (435 districts modeled individually) |
 | Per-race simulation vs closed form | within 0.01 in all 35 races |
 

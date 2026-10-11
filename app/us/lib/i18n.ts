@@ -263,6 +263,10 @@ const S = {
     ko: '상원 35석 전수 모델링: 12 경합주(여론조사) + 23 비경합주(펀더멘털: 주 대선+현직, σ=6.5). 34석은 선거 대상 아님.',
     en: 'Senate: all 35 seats modeled — 12 battlegrounds (polls) + 23 non-battlegrounds (fundamentals: state pres + incumbency, σ=6.5). 34 seats not up for election.',
   },
+  aPollBias: {
+    ko: '여론조사 편향 보정: 경합주 마진에서 민주 +0.7pt 차감 (중간선거 평균 D+1.34의 절반; 사이클 불안정 감안한 shrinkage)',
+    en: 'Poll bias adjustment: −0.7 pts from Dem margin in battlegrounds (half the D+1.34 midterm average; shrinkage for cycle instability)',
+  },
   aHouseDistricts: {
     ko: '하원 435개 지역구 개별 모델링 (2024 대선 베이스라인 + 제너럴밸럿 uniform swing + 현직 +2.0pt, σ=5.5). 상한 절단 없음.',
     en: 'House: 435 districts modeled individually (2024 presidential baseline + generic-ballot uniform swing + 2.0-pt incumbency bump, σ=5.5). No seat cap.',

@@ -121,6 +121,9 @@ const RACE_DEFS: RaceDef[] = [
  * Build SenateRace entries: m_i from time-weighted poll aggregation as of
  * DATA_AS_OF; σ_i from total poll count (RCP polls + fresh polls).
  */
+/** Poll bias adjustment applied to poll-derived Senate margins (see MODEL_NOTES). */
+const POLL_BIAS_ADJUST = 0.7;
+
 function buildRace(def: RaceDef): SenateRace {
   const agg = aggregatePolls(def.polls, { asOf: DATA_AS_OF });
   const nTotal = def.nRcpPolls + (def.polls.length - 1);
@@ -128,7 +131,7 @@ function buildRace(def: RaceDef): SenateRace {
     id: def.id,
     label: def.label,
     chamber: 'senate',
-    demMargin: Math.round(agg.margin * 10) / 10,
+    demMargin: Math.round((agg.margin - POLL_BIAS_ADJUST) * 10) / 10,
     sigma: senateSigma(nTotal, def.rcv ?? false),
     region: def.region,
     stateKo: def.stateKo,
@@ -242,6 +245,13 @@ export const MODEL_NOTES = {
   sigmaNote: 'Race-level error σ_i = √(σ_sys² + σ_poll²/n_i), σ_sys=4.1, σ_poll=5.45 (calibrated; see scripts/calibrate-sigma.py)',
   sims: 40000,
   seed: 20261103,
+  /** Poll bias adjustment (pts, subtracted from Dem margin). See POLL_BIAS_ADJUST above.
+   *  Midterm cycles averaged D+1.34 bias (2014 +2.72, 2018 +0.35, 2022 +0.96);
+   *  we apply half (0.7) as shrinkage toward zero given cycle-to-cycle
+   *  instability and post-2020 pollster methodology changes.
+   *  Applies to poll-derived margins only (12 Senate battlegrounds), not
+   *  fundamentals-based races. See scripts/backtest.py. */
+  pollBiasAdjust: POLL_BIAS_ADJUST,
 };
 
 export const SOURCE_URLS = [
