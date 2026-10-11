@@ -219,11 +219,11 @@ const S = {
   liveReporting: { ko: '개표율', en: 'Reporting' },
   methodTitle: { ko: '방법론', en: 'Methodology' },
   method1: {
-    ko: '각 시뮬레이션은 전국 공통 오차 s ~ N(0, τ²) 하나를 뽑고, 각 지역의 결과 = mᵢ + s + σᵢ·εᵢ 로 계산합니다. s가 모든 지역에 공통 적용되므로 지역들이 함께 움직이는 효과가 반영됩니다.',
-    en: 'Each simulation draws one national error s ~ N(0, τ²), then scores every race as mᵢ + s + σᵢ·εᵢ. Because s is shared, races move together the way they do in real elections.',
+    ko: '각 시뮬레이션은 전국 공통 오차 s_nat ~ N(0, τ_nat²) 하나와 권역(센서스 4권역)별 오차 s_reg ~ N(0, τ_reg²)를 뽑고, 각 지역의 결과 = mᵢ + s_nat + s_reg + σᵢ·εᵢ 로 계산합니다. 전국 오차는 모든 지역이, 권역 오차는 같은 권역이 함께 움직이는 효과를 반영합니다.',
+    en: 'Each simulation draws one national error s_nat ~ N(0, τ_nat²) and one error per Census region s_reg ~ N(0, τ_reg²), then scores every race as mᵢ + s_nat + s_reg + σᵢ·εᵢ. The national error moves all races together; the regional error moves races within a region together.',
   },
-  mTau: { ko: 'τ = {tau}pt (전국 오차 스케일, 과거 선거의 여론조사 오차로 보정 예정)', en: 'τ = {tau} pts (national error; to be calibrated on past cycles)' },
-  mSigma: { ko: 'σᵢ = 4.0pt (지역별 오차, 현재 일괄 적용)', en: 'σᵢ = 4.0 pts (race error, same for all races for now)' },
+  mTau: { ko: 'τ_nat = {tau}pt (전국 오차), τ_reg = {taureg}pt (권역 오차) — 2010–2022 상원 여론조사 오차로 보정', en: 'τ_nat = {tau} pts (national), τ_reg = {taureg} pts (regional) — calibrated on 2010–2022 Senate polling error' },
+  mSigma: { ko: 'σᵢ = √(4.1² + 5.45²/n) (여론조사 수 반영, 과거 데이터로 보정)', en: 'σᵢ = √(4.1² + 5.45²/n) by poll count, calibrated' },
   mSims: { ko: '{n}회 시뮬레이션 · seed {seed} (같은 입력이면 같은 결과)', en: '{n} simulations · seed {seed} (same inputs give the same result)' },
   mGeneric: { ko: '전국 여론조사는 지역구 결과로 1:1 환원되지 않으므로 직접 사용하지 않음', en: 'The generic ballot is not mapped 1:1 to districts and is not used directly' },
   sources: { ko: '출처', en: 'Sources' },
@@ -252,8 +252,8 @@ const S = {
     en: 'Race-level error σᵢ = √(4.24² + 5.45²/n) by poll count, calibrated (RCV races wider)',
   },
   aTau: {
-    ko: '전국 오차 스케일 τ = {tau}pt (2010–2022 상원 여론조사 오차로 보정, scripts/calibrate-tau.py)',
-    en: 'National error scale τ = {tau} pts (calibrated from 2010–2022 Senate polling error; see scripts/calibrate-tau.py)',
+    ko: '전국 오차 τ_nat = {tau}pt, 권역 오차 τ_reg = {taureg}pt (2010–2022 상원 여론조사 오차 분해, scripts/calibrate-regions.py)',
+    en: 'National error τ_nat = {tau} pts, regional error τ_reg = {taureg} pts (decomposed from 2010–2022 Senate polling error; see scripts/calibrate-regions.py)',
   },
   aRcv: {
     ko: 'AK·ME 상원은 결선투표제(RCV)라 σ에 +2.0pt 추가 (1순위 여론조사 ≠ 최종 라운드)',

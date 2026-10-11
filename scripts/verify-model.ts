@@ -16,7 +16,8 @@ import { HOUSE_DISTRICTS } from '../app/us/lib/house-districts';
 import { forecastRunId } from '../app/us/lib/run';
 
 let failed = false;
-const tau = MODEL_NOTES.tau;
+const tauNat = MODEL_NOTES.tau;
+const tauReg = MODEL_NOTES.tauReg;
 
 // 1. Monte Carlo vs analytic, single race at a time (200k sims each)
 const rand = mulberry32(7);
@@ -30,8 +31,8 @@ for (const m of [-8, -4, -2, -0.5, 0, 0.5, 2, 4, 8]) {
   const sigma = 4;
   let wins = 0;
   const n = 200_000;
-  for (let i = 0; i < n; i++) if (m + tau * randn() + sigma * randn() > 0) wins++;
-  const diff = Math.abs(wins / n - analyticWinProb(m, sigma, tau));
+  for (let i = 0; i < n; i++) if (m + tauNat * randn() + tauReg * randn() + sigma * randn() > 0) wins++;
+  const diff = Math.abs(wins / n - analyticWinProb(m, sigma, tauNat, tauReg));
   maxDiff = Math.max(maxDiff, diff);
 }
 console.log(`MC vs analytic: max |diff| = ${maxDiff.toFixed(4)}`);
@@ -41,21 +42,21 @@ if (maxDiff > 0.003) {
 }
 
 // 2. Reproducibility
-const a = simulateChamber(SENATE_BATTLEGROUND, SENATE_BASELINE.safeDemSeats, SENATE_BASELINE.needed, { tau, seed: MODEL_NOTES.seed, sims: MODEL_NOTES.sims });
-const b = simulateChamber(SENATE_BATTLEGROUND, SENATE_BASELINE.safeDemSeats, SENATE_BASELINE.needed, { tau, seed: MODEL_NOTES.seed, sims: MODEL_NOTES.sims });
+const a = simulateChamber(SENATE_BATTLEGROUND, SENATE_BASELINE.safeDemSeats, SENATE_BASELINE.needed, { tau: tauNat, tauReg, seed: MODEL_NOTES.seed, sims: MODEL_NOTES.sims });
+const b = simulateChamber(SENATE_BATTLEGROUND, SENATE_BASELINE.safeDemSeats, SENATE_BASELINE.needed, { tau: tauNat, tauReg, seed: MODEL_NOTES.seed, sims: MODEL_NOTES.sims });
 if (JSON.stringify(a) !== JSON.stringify(b)) {
   console.error('FAIL: same seed produced different results');
   failed = true;
 }
 
 // 3. Headline numbers
-const house = simulateChamber(HOUSE_DISTRICTS, HOUSE_BASELINE.safeDemSeats, HOUSE_BASELINE.needed, { tau, seed: MODEL_NOTES.seed, sims: MODEL_NOTES.sims });
+const house = simulateChamber(HOUSE_DISTRICTS, HOUSE_BASELINE.safeDemSeats, HOUSE_BASELINE.needed, { tau: tauNat, tauReg, seed: MODEL_NOTES.seed, sims: MODEL_NOTES.sims });
 console.log(`run ${forecastRunId()}`);
 console.log(`Senate: P(D majority) ${(a.demWinProb * 100).toFixed(1)}%  E[D seats] ${a.expectedDemSeats.toFixed(2)}  80% band ${a.seatBand.p10}–${a.seatBand.p90}`);
 console.log(`House:  P(D majority) ${(house.demWinProb * 100).toFixed(1)}%  E[D seats] ${house.expectedDemSeats.toFixed(2)}  80% band ${house.seatBand.p10}–${house.seatBand.p90}`);
 for (const r of a.perRace) {
   const race = SENATE_BATTLEGROUND.find((x) => x.id === r.id)!;
-  const an = analyticWinProb(race.demMargin, race.sigma, tau);
+  const an = analyticWinProb(race.demMargin, race.sigma, tauNat, tauReg);
   if (Math.abs(an - r.demWinProb) > 0.01) {
     console.error(`FAIL: ${r.id} simulated ${r.demWinProb.toFixed(3)} vs analytic ${an.toFixed(3)}`);
     failed = true;

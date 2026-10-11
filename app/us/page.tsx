@@ -36,11 +36,12 @@ import { daysSince, nextRun, STALE_AFTER_DAYS } from './lib/schedule';
 import MessageTab from './components/MessageTab';
 import { t, tl, tRating, type Lang } from './lib/i18n';
 
-const TAU = MODEL_NOTES.tau;
+const TAU_NAT = MODEL_NOTES.tau;
+const TAU_REG = MODEL_NOTES.tauReg;
 const DEM_BLUE = '#60a5fa';
 const REP_RED = '#f87171';
 const Z90 = 1.6449;
-const SIM_OPTS = { tau: TAU, sims: MODEL_NOTES.sims, seed: MODEL_NOTES.seed };
+const SIM_OPTS = { tau: TAU_NAT, tauReg: TAU_REG, sims: MODEL_NOTES.sims, seed: MODEL_NOTES.seed };
 
 type Tab = 'forecast' | 'messages';
 
@@ -164,11 +165,11 @@ export default function USElectionHub() {
       [...SENATE_BATTLEGROUND]
         .sort((a, b) => b.demMargin - a.demMargin)
         .map((r) => {
-          const spread = Z90 * Math.sqrt(r.sigma * r.sigma + TAU * TAU);
+          const spread = Z90 * Math.sqrt(r.sigma * r.sigma + TAU_NAT * TAU_NAT + TAU_REG * TAU_REG);
           return {
             ...r,
             name: lang === 'ko' ? r.stateKo : r.label,
-            pWin: analyticWinProb(r.demMargin, r.sigma, TAU),
+            pWin: analyticWinProb(r.demMargin, r.sigma, TAU_NAT, TAU_REG),
             lo: r.demMargin - spread,
             hi: r.demMargin + spread,
           };
@@ -404,9 +405,9 @@ export default function USElectionHub() {
             <section className="mt-8 rounded-xl border border-white/10 bg-white/5 p-5 text-sm">
               <h2 className="text-xl font-semibold">{t(lang, 'methodTitle')}</h2>
               <p className="mt-3 text-neutral-300">{t(lang, 'method1')}</p>
-              <p className="mt-2 font-mono text-neutral-300">P(D wins race i | s) = Φ((mᵢ + s) / σᵢ), published P = Φ(mᵢ / √(σᵢ² + τ²))</p>
+              <p className="mt-2 font-mono text-neutral-300">P(D wins i) = Φ(mᵢ / √(σᵢ² + τ_nat² + τ_reg²)); race outcome = mᵢ + s_nat + s_reg + σᵢ·εᵢ</p>
               <ul className="mt-3 list-disc space-y-1 pl-5 text-neutral-400">
-                <li>{t(lang, 'mTau', { tau: TAU })}</li>
+                <li>{t(lang, 'mTau', { tau: TAU_NAT, taureg: TAU_REG })}</li>
                 <li>{t(lang, 'mSigma')}</li>
                 <li>{t(lang, 'mSims', { n, seed: MODEL_NOTES.seed })}</li>
                 <li>{t(lang, 'mGeneric')}</li>
@@ -414,7 +415,7 @@ export default function USElectionHub() {
               <h3 className="mt-4 font-semibold text-amber-300">{t(lang, 'assumptions')}</h3>
               <ul className="mt-2 list-disc space-y-1 pl-5 text-amber-200/80">
                 <li>{t(lang, 'aSigma')}</li>
-                <li>{t(lang, 'aTau', { tau: TAU })}</li>
+                <li>{t(lang, 'aTau', { tau: TAU_NAT, taureg: TAU_REG })}</li>
                 <li>{t(lang, 'aRcv')}</li>
                 <li>{t(lang, 'aHouseDistricts')}</li>
               </ul>

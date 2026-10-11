@@ -1,12 +1,33 @@
 // Correlated-error election forecast model (US midterm workstream).
 //
-// Per-race:  P(D wins race i | s) = Φ((m_i + s) / σ_i),  s ~ N(0, τ²)
-// The single shared national error s makes races move together.
-// Published per-race probabilities marginalize s:
-//   P(D wins i) = Φ(m_i / √(σ_i² + τ²))
+// Two-factor structure (roadmap #5):
+//   outcome_i = m_i + s_nat + s_reg[r(i)] + σ_i·ε_i
+//   s_nat ~ N(0, τ_nat²)            — national error, shared by all races
+//   s_reg ~ N(0, τ_reg²)            — Census-region error, shared within region
+//   ε_i ~ N(0, 1)                   — race-specific error
+//
+// Per-race:  P(D wins race i) = Φ(m_i / √(σ_i² + τ_nat² + τ_reg²))
+// (marginalizing both common factors; only their sum matters per race).
 // Chamber control is simulated (correlation has no closed form).
 //
+// Calibration (scripts/calibrate-tau.py, calibrate-regions.py):
+//   τ_nat = 3.1, τ_reg = 1.2 — from decomposing cycle polling error into
+//   national + regional components (2010–2022 Senate polls).
+//
 // Framework-free (like app/lib/analytics.ts) so it can be unit-tested.
+
+export type CensusRegion = 'NE' | 'MW' | 'S' | 'W';
+
+/** State postal abbreviation → Census region. */
+export const STATE_REGION: Record<string, CensusRegion> = {
+  CT: 'NE', ME: 'NE', MA: 'NE', NH: 'NE', RI: 'NE', VT: 'NE', NJ: 'NE', NY: 'NE', PA: 'NE',
+  IL: 'MW', IN: 'MW', MI: 'MW', OH: 'MW', WI: 'MW', IA: 'MW', KS: 'MW', MN: 'MW',
+  MO: 'MW', NE: 'MW', ND: 'MW', SD: 'MW',
+  DE: 'S', FL: 'S', GA: 'S', MD: 'S', NC: 'S', SC: 'S', VA: 'S', WV: 'S',
+  AL: 'S', KY: 'S', MS: 'S', TN: 'S', AR: 'S', LA: 'S', OK: 'S', TX: 'S',
+  AZ: 'W', CO: 'W', ID: 'W', MT: 'W', NV: 'W', NM: 'W', UT: 'W', WY: 'W',
+  AK: 'W', CA: 'W', HI: 'W', OR: 'W', WA: 'W',
+};
 
 export interface RaceInput {
   id: string; // e.g. 'NH-SEN'
@@ -14,6 +35,7 @@ export interface RaceInput {
   chamber: 'senate' | 'house';
   demMargin: number; // m_i: Democratic polling margin in points (D minus R)
   sigma: number; // σ_i: race-level polling error scale (points)
+  region: CensusRegion; // Census region for the regional error factor
 }
 
 export interface ChamberResult {
@@ -67,21 +89,27 @@ function makeRandn(rand: () => number): () => number {
   };
 }
 
-/** Closed-form per-race Dem win probability (national error marginalized out). */
-export function analyticWinProb(demMargin: number, sigma: number, tau: number): number {
-  return normalCdf(demMargin / Math.sqrt(sigma * sigma + tau * tau));
+/** Closed-form per-race Dem win probability (common errors marginalized out). */
+export function analyticWinProb(
+  demMargin: number,
+  sigma: number,
+  tauNat: number,
+  tauReg = 0,
+): number {
+  return normalCdf(demMargin / Math.sqrt(sigma * sigma + tauNat * tauNat + tauReg * tauReg));
 }
 
 export interface SimulateOptions {
-  tau?: number; // national error scale in points (default 3.3, calibrated — see scripts/calibrate-tau.py)
+  tau?: number; // national error scale in points (default 3.1, calibrated)
+  tauReg?: number; // regional error scale in points (default 1.2, calibrated)
   sims?: number; // simulations (default 40000)
   seed?: number; // default 20261103
 }
 
 /**
- * Simulate chamber control. Each simulation draws ONE national error s shared
- * across races, then each race outcome = m_i + s + σ_i·ε_i. Democrats win the
- * race if the outcome is positive.
+ * Simulate chamber control. Each simulation draws ONE national error shared
+ * across races and ONE regional error per Census region, then each race
+ * outcome = m_i + s_nat + s_reg + σ_i·ε_i. Democrats win the race if positive.
  */
 export function simulateChamber(
   races: RaceInput[],
@@ -89,21 +117,25 @@ export function simulateChamber(
   needed: number,
   opts: SimulateOptions = {},
 ): ChamberResult {
-  const tau = opts.tau ?? 3.3;
+  const tauNat = opts.tau ?? 3.1;
+  const tauReg = opts.tauReg ?? 1.2;
   const sims = opts.sims ?? 40000;
   const randn = makeRandn(mulberry32(opts.seed ?? 20261103));
 
+  const regions = [...new Set(races.map((r) => r.region))];
   const wins = new Array<number>(races.length).fill(0);
   const hist = new Map<number, number>();
   let chamberWins = 0;
   let seatTotal = 0;
 
   for (let s = 0; s < sims; s++) {
-    const national = tau * randn();
+    const national = tauNat * randn();
+    const regErr = new Map<CensusRegion, number>();
+    for (const rg of regions) regErr.set(rg, tauReg * randn());
     let demSeats = safeDemSeats;
     for (let i = 0; i < races.length; i++) {
       const r = races[i];
-      if (r.demMargin + national + r.sigma * randn() > 0) {
+      if (r.demMargin + national + (regErr.get(r.region) ?? 0) + r.sigma * randn() > 0) {
         demSeats++;
         wins[i]++;
       }
