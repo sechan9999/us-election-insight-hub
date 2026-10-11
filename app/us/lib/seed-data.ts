@@ -49,33 +49,17 @@ export const HOUSE_SNAPSHOT = {
   genericBallotDemMargin: 8.1, // RCP average, Sept 22, 2026
   genericBallotSource: 'RealClearPolitics generic ballot average',
   competitiveDistricts: { dem: 49, rep: 47, n: 37, dates: 'Sept 8–11', source: 'team-compiled district polls' },
-  tossUps: 22,
 };
 
 /**
- * House toss-up placeholder races. District-level polls are not in the seed;
- * every toss-up uses the competitive-district average margin (D+2.0) until the
- * daily ingest replaces them. Labeled SAMPLE wherever shown.
- */
-export function houseTossupSeed(): RaceInput[] {
-  return Array.from({ length: HOUSE_SNAPSHOT.tossUps }, (_, i) => ({
-    id: `TOSSUP-${String(i + 1).padStart(2, '0')}`,
-    label: `Toss-up ${i + 1}`,
-    chamber: 'house' as const,
-    demMargin: HOUSE_SNAPSHOT.competitiveDistricts.dem - HOUSE_SNAPSHOT.competitiveDistricts.rep,
-    sigma: 4.0,
-  }));
-}
-
-/**
- * House baseline. ASSUMPTION: of the 22 toss-ups, 11 are currently D-held, so
- * 214 - 11 = 203 safe Dem seats; 218 needed for a majority. Replace with the
- * Cook-rated baseline before any public release.
+ * House baseline. All 435 districts are modeled individually (see
+ * house-districts.ts), so there are no "safe" seats outside the model;
+ * 218 needed for a majority. No cap, no truncation.
  */
 export const HOUSE_BASELINE = {
-  safeDemSeats: 203,
+  safeDemSeats: 0,
   needed: 218,
-  note: 'ASSUMPTION — replace with Cook-rated safe-seat baseline',
+  note: '435 districts modeled individually; 218 needed for a majority',
 };
 
 export const MODEL_NOTES = {

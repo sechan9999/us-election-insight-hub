@@ -18,7 +18,7 @@ const S = {
   houseKpi: { ko: '하원 민주당 과반 확률', en: 'P(Democratic House majority)' },
   expected: { ko: '기대 의석 {e}석 · 과반 기준 {need}석', en: 'Expected {e} seats · majority = {need}' },
   band: { ko: '80% 범위 {lo}–{hi}석', en: '80% range {lo}–{hi} seats' },
-  houseAssume: { ko: '22개 경합 지역구 시뮬레이션 (가정: 민주 안전 의석 {safe}석)', en: '22 toss-up districts simulated (assumes {safe} safe Dem seats)' },
+  houseAssume: { ko: '435개 지역구 개별 시뮬레이션 (2024 대선 베이스라인 + 제너럴밸럿)', en: '435 districts simulated individually (2024 presidential baseline + generic ballot)' },
   distTitle: { ko: '민주당 의석 분포', en: 'Democratic seat distribution' },
   distNote: {
     ko: '막대 = 시뮬레이션에서 각 의석수가 나온 비율. 음영 = 80% 범위, 점선 = 과반 기준.',
@@ -175,10 +175,10 @@ const S = {
   houseTitle: { ko: '하원', en: 'House' },
   generic: { ko: '전국 여론조사 평균 (generic ballot)', en: 'Generic ballot average' },
   compDist: { ko: '경합 지역구 조사 ({n}곳)', en: 'Competitive-district polls ({n})' },
-  houseSim: { ko: '경합 지역구 시뮬레이션', en: 'Toss-up simulation' },
+  houseSim: { ko: '435 지역구 시뮬레이션', en: '435-district simulation' },
   houseNote: {
-    ko: '지역구별 여론조사가 아직 없어 22개 경합 지역구에 평균(D+2.0)을 일괄 적용한 샘플 시뮬레이션입니다. 일일 여론조사 적재가 시작되면 실제 지역구 수치로 교체됩니다.',
-    en: 'District-level polls are not ingested yet, so all 22 toss-ups use the competitive-district average (D+2.0). This is a sample simulation until the daily poll ingest replaces it.',
+    ko: '435개 지역구 각각에 2024 대선 결과 기반 베이스라인 + 제너럴밸럿(D+8.1) uniform swing을 적용했습니다. 지역구별 여론조사는 아직 없어 σ=5.5 일괄 적용.',
+    en: 'Each of the 435 districts uses a 2024 presidential baseline plus the generic ballot (D+8.1) uniform swing. District polls are not ingested yet, so σ=5.5 for all districts.',
   },
   liveTitle: { ko: '개표일 실시간 트래커', en: 'Election-night tracker' },
   livePre: {
@@ -255,13 +255,9 @@ const S = {
     ko: '전국 오차 스케일 τ = {tau}pt (가정, 과거 선거의 여론조사 오차로 보정 예정)',
     en: 'National error scale τ = {tau} pts (labeled assumption; calibrate from historical cycle polling error)',
   },
-  aHouseSafe: {
-    ko: '하원 민주 안전 의석 {safe}석 (가정, Cook 레이팅 기준 안전 의석으로 교체 예정)',
-    en: 'House safe Democratic seats = {safe} (assumption; replace with Cook-rated safe-seat baseline)',
-  },
-  aHouseTossup: {
-    ko: '하원 경합 지역구 {n}곳에 D+2.0 임시값 일괄 적용',
-    en: 'House toss-ups: D+2.0 placeholder × {n}',
+  aHouseDistricts: {
+    ko: '하원 435개 지역구 개별 모델링 (2024 대선 베이스라인 + 제너럴밸럿 uniform swing, σ=5.5). 상한 절단 없음.',
+    en: 'House: 435 districts modeled individually (2024 presidential baseline + generic-ballot uniform swing, σ=5.5). No seat cap.',
   },
   liveSource: {
     ko: '개표 시작 전 · 투표 마감 전에는 결과를 표시하지 않습니다',

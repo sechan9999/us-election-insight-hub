@@ -10,9 +10,9 @@ import {
   SENATE_BATTLEGROUND,
   SENATE_BASELINE,
   HOUSE_BASELINE,
-  houseTossupSeed,
   MODEL_NOTES,
 } from '../app/us/lib/seed-data';
+import { HOUSE_DISTRICTS } from '../app/us/lib/house-districts';
 import { forecastRunId } from '../app/us/lib/run';
 
 let failed = false;
@@ -49,7 +49,7 @@ if (JSON.stringify(a) !== JSON.stringify(b)) {
 }
 
 // 3. Headline numbers
-const house = simulateChamber(houseTossupSeed(), HOUSE_BASELINE.safeDemSeats, HOUSE_BASELINE.needed, { tau, seed: MODEL_NOTES.seed, sims: MODEL_NOTES.sims });
+const house = simulateChamber(HOUSE_DISTRICTS, HOUSE_BASELINE.safeDemSeats, HOUSE_BASELINE.needed, { tau, seed: MODEL_NOTES.seed, sims: MODEL_NOTES.sims });
 console.log(`run ${forecastRunId()}`);
 console.log(`Senate: P(D majority) ${(a.demWinProb * 100).toFixed(1)}%  E[D seats] ${a.expectedDemSeats.toFixed(2)}  80% band ${a.seatBand.p10}–${a.seatBand.p90}`);
 console.log(`House:  P(D majority) ${(house.demWinProb * 100).toFixed(1)}%  E[D seats] ${house.expectedDemSeats.toFixed(2)}  80% band ${house.seatBand.p10}–${house.seatBand.p90}`);

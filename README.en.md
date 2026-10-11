@@ -60,14 +60,14 @@ Pipeline: `fetch_acs.py` (Census ACS 2022 5yr) + `join_data.py` (MEDSL join) →
 
 Each simulation draws one national error s ~ N(0, τ²) shared by every race, and scores each race as mᵢ + s + σᵢ·εᵢ. The published race probability uses the closed form Φ(mᵢ / √(σᵢ² + τ²)). Chamber majorities come from simulation, since the shared error means there is no closed form.
 
-`npm run verify:model` (run on 2026-10-02):
+`npm run verify:model` (run on 2026-10-11):
 
 | Check | Result |
 |---|---|
 | Monte Carlo (200k runs) vs closed form, margins −8 to +8 | max difference 0.0017 |
 | Re-run with the same seed | identical results |
 | Senate P(Democratic majority) | 57.8%, expected 50.75 seats, 80% range 47–54 |
-| House P(Democratic majority) | 54.3%, expected 217.2 seats, 80% range 208–224 |
+| House P(Democratic majority) | 96.3%, expected 246.6 seats, 80% range 225–270 (435 districts modeled individually) |
 | Per-race simulation vs closed form | within 0.01 in all 12 states |
 
 ## Data flow (production)

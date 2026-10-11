@@ -10,6 +10,7 @@ import {
   MODEL_NOTES,
   DATA_AS_OF,
 } from './seed-data';
+import { HOUSE_DISTRICTS } from './house-districts';
 
 /** FNV-1a 32-bit, hex. Not cryptographic — a stable input fingerprint. */
 export function fnv1a(input: string): string {
@@ -27,6 +28,7 @@ export function inputHash(): string {
       races: SENATE_BATTLEGROUND.map((r) => [r.id, r.demMargin, r.sigma]),
       senate: SENATE_BASELINE,
       house: [HOUSE_SNAPSHOT, HOUSE_BASELINE],
+      houseDistricts: HOUSE_DISTRICTS.map((r) => [r.id, r.demMargin, r.sigma]),
       model: [MODEL_NOTES.tau, MODEL_NOTES.sims, MODEL_NOTES.seed],
     }),
   );

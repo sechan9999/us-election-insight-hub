@@ -22,12 +22,12 @@ import {
   SENATE_BASELINE,
   HOUSE_SNAPSHOT,
   HOUSE_BASELINE,
-  houseTossupSeed,
   MODEL_NOTES,
   DATA_AS_OF,
   DATA_SOURCE,
   SOURCE_URLS,
 } from './lib/seed-data';
+import { HOUSE_DISTRICTS } from './lib/house-districts';
 import { ELECTION_DAY } from './lib/live';
 import LiveTracker from './components/LiveTracker';
 import { NYT_SIENA_OCT_2026, OTHER_RECENT_POLLS, POLL_SOURCE_URLS, type PollRace } from './lib/polls';
@@ -155,7 +155,7 @@ export default function USElectionHub() {
     [],
   );
   const house = useMemo(
-    () => simulateChamber(houseTossupSeed(), HOUSE_BASELINE.safeDemSeats, HOUSE_BASELINE.needed, SIM_OPTS),
+    () => simulateChamber(HOUSE_DISTRICTS, HOUSE_BASELINE.safeDemSeats, HOUSE_BASELINE.needed, SIM_OPTS),
     [],
   );
 
@@ -179,7 +179,7 @@ export default function USElectionHub() {
   const n = MODEL_NOTES.sims.toLocaleString(lang === 'ko' ? 'ko-KR' : 'en-US');
   const kpis = [
     { key: 'senateKpi' as const, r: senate, need: SENATE_BASELINE.needed, extra: null },
-    { key: 'houseKpi' as const, r: house, need: HOUSE_BASELINE.needed, extra: t(lang, 'houseAssume', { safe: HOUSE_BASELINE.safeDemSeats }) },
+    { key: 'houseKpi' as const, r: house, need: HOUSE_BASELINE.needed, extra: t(lang, 'houseAssume') },
   ];
 
   return (
@@ -415,8 +415,7 @@ export default function USElectionHub() {
               <ul className="mt-2 list-disc space-y-1 pl-5 text-amber-200/80">
                 <li>{t(lang, 'aSigma', { sigma: SENATE_BATTLEGROUND[0].sigma.toFixed(1) })}</li>
                 <li>{t(lang, 'aTau', { tau: TAU })}</li>
-                <li>{t(lang, 'aHouseSafe', { safe: HOUSE_BASELINE.safeDemSeats })}</li>
-                <li>{t(lang, 'aHouseTossup', { n: HOUSE_SNAPSHOT.tossUps })}</li>
+                <li>{t(lang, 'aHouseDistricts')}</li>
               </ul>
               <h3 className="mt-4 font-semibold">{t(lang, 'sources')}</h3>
               <ul className="mt-2 list-disc space-y-1 pl-5 text-neutral-400">
