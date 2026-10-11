@@ -260,8 +260,8 @@ const S = {
     en: 'AK/ME Senate use RCV: +2.0 pts added to σ (first-choice polls ≠ final round)',
   },
   aHouseDistricts: {
-    ko: '하원 435개 지역구 개별 모델링 (2024 대선 베이스라인 + 제너럴밸럿 uniform swing, σ=5.5). 상한 절단 없음.',
-    en: 'House: 435 districts modeled individually (2024 presidential baseline + generic-ballot uniform swing, σ=5.5). No seat cap.',
+    ko: '하원 435개 지역구 개별 모델링 (2024 대선 베이스라인 + 제너럴밸럿 uniform swing + 현직 +2.0pt, σ=5.5). 상한 절단 없음.',
+    en: 'House: 435 districts modeled individually (2024 presidential baseline + generic-ballot uniform swing + 2.0-pt incumbency bump, σ=5.5). No seat cap.',
   },
   liveSource: {
     ko: '개표 시작 전 · 투표 마감 전에는 결과를 표시하지 않습니다',
