@@ -248,8 +248,8 @@ const S = {
   // Rendered in place of the English notes in seed-data.ts. Those strings feed the
   // run-ID hash (run.ts), so the data stays unchanged and only the display is localized.
   aSigma: {
-    ko: '지역별 오차 σᵢ 기본 {sigma}pt (RCV 지역은 추가 오차, 아래 참조)',
-    en: 'Race-level error σᵢ = {sigma} pts baseline (RCV races wider, see below)',
+    ko: '지역별 오차 σᵢ = √(4.24² + 5.45²/n) (여론조사 수 반영, 과거 데이터로 보정; RCV 지역은 추가 오차)',
+    en: 'Race-level error σᵢ = √(4.24² + 5.45²/n) by poll count, calibrated (RCV races wider)',
   },
   aTau: {
     ko: '전국 오차 스케일 τ = {tau}pt (2010–2022 상원 여론조사 오차로 보정, scripts/calibrate-tau.py)',

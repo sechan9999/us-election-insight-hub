@@ -413,7 +413,7 @@ export default function USElectionHub() {
               </ul>
               <h3 className="mt-4 font-semibold text-amber-300">{t(lang, 'assumptions')}</h3>
               <ul className="mt-2 list-disc space-y-1 pl-5 text-amber-200/80">
-                <li>{t(lang, 'aSigma', { sigma: SENATE_BATTLEGROUND[0].sigma.toFixed(1) })}</li>
+                <li>{t(lang, 'aSigma')}</li>
                 <li>{t(lang, 'aTau', { tau: TAU })}</li>
                 <li>{t(lang, 'aRcv')}</li>
                 <li>{t(lang, 'aHouseDistricts')}</li>
