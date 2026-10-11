@@ -23,7 +23,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Cloud Run injects $PORT (default 8080); Next standalone server.js honors it.
 ENV PORT=8080
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
-COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
