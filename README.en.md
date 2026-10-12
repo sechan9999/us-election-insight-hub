@@ -8,6 +8,23 @@ A forecast and results board for the US midterm elections on November 3, 2026. I
 
 > **Status: in development (beta).** The board currently runs on sample data built from RCP averages as of 2026-10-01.
 
+## 📢 Promo video (60 seconds)
+
+A 60-second Korean-language promo for the 2026 midterm forecast platform. It visually explains how the model works: 40,000 Monte Carlo simulations with correlated national + regional error, all 35 Senate seats and 435 House districts modeled individually, and county-level analysis across 3,100+ counties.
+
+🎬 https://youtu.be/DDS0h9IOusg
+
+### Explore
+
+🗺️ **County maps** — https://app.ohmycodellc.com/maps
+All 3,100 US counties at a glance. Switch between three views: 2024 presidential vote-share map, 2020→2024 swing map, and the state-level diploma divide map. Bachelor's share vs. Democratic vote share: r = +0.44 — America's geography in numbers.
+
+❓ **Ask the Data** — https://app.ohmycodellc.com/ask
+"Which Texas counties shifted most toward Republicans?" Ask in English and AI writes the SQL. Explore 3,100 counties of election data by conversation, not queries.
+
+📣 **Trump Truth Social message analysis** — https://app.ohmycodellc.com/us?tab=messages
+Trump's Truth Social posts, classified by topic and tracked over time. What he said, when, and how much — reading message strategy through data.
+
 ## Screens (`/us`, English at `/us?lang=en`)
 
 The page has two tabs: **Forecast** (default) and **Message analysis** (`?tab=messages`). Both combine with the language parameter, e.g. `?lang=en&tab=messages`. Switching tabs is client-side state only, so the 40,000-run simulation is not re-run.
