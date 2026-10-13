@@ -14,6 +14,9 @@ const S = {
   staleOld: { ko: '입력 {d}일째 갱신 안 됨', en: 'Inputs not updated for {d} days' },
   nextRun: { ko: '다음 업데이트 {date} (매주 월요일)', en: 'Next update {date} (every Monday)' },
   dataAsOf: { ko: '여론조사 기준일', en: 'Polls as of' },
+  historyTitle: { ko: '예측 변화 기록', en: 'Forecast history' },
+  historyNote: { ko: '같은 여론조사 입력(2026-10-09 기준)에 모델 개선을 적용한 결과입니다. 새 여론조사가 들어온 변화가 아닙니다.', en: 'Same poll inputs (2026-10-09 vintage); changes reflect modeling improvements, not new polls.' },
+  kpiUpdated: { ko: '여론조사 기준일 {date} · {d}일 전 입력 · run {run}', en: 'Polls as of {date} · inputs {d} days old · run {run}' },
   senateKpi: { ko: '상원 민주당 과반 확률', en: 'P(Democratic Senate majority)' },
   houseKpi: { ko: '하원 민주당 과반 확률', en: 'P(Democratic House majority)' },
   expected: { ko: '기대 의석 {e}석 · 과반 기준 {need}석', en: 'Expected {e} seats · majority = {need}' },
@@ -225,6 +228,7 @@ const S = {
   mTau: { ko: 'τ_nat = {tau}pt (전국 오차), τ_reg = {taureg}pt (권역 오차) — 2010–2022 상원 여론조사 오차로 보정', en: 'τ_nat = {tau} pts (national), τ_reg = {taureg} pts (regional) — calibrated on 2010–2022 Senate polling error' },
   mSigma: { ko: 'σᵢ = √(4.1² + 5.45²/n) (여론조사 수 반영, 과거 데이터로 보정)', en: 'σᵢ = √(4.1² + 5.45²/n) by poll count, calibrated' },
   mSims: { ko: '{n}회 시뮬레이션 · seed {seed} (같은 입력이면 같은 결과)', en: '{n} simulations · seed {seed} (same inputs give the same result)' },
+  mPollBias: { ko: '여론조사 편향: 백테스트에서 민주당 +1.4%p 편향을 확인했으나, 사이클별 불안정성 때문에 보정하지 않음 (고정값 보정은 자의적 판단).', en: 'Poll bias: backtest found a +1.4pt Democratic lean, left unadjusted due to cycle-to-cycle instability (a fixed correction would be judgmental).' },
   mGeneric: { ko: '전국 여론조사는 지역구 결과로 1:1 환원되지 않으므로 직접 사용하지 않음', en: 'The generic ballot is not mapped 1:1 to districts and is not used directly' },
   sources: { ko: '출처', en: 'Sources' },
   charterTitle: { ko: '편집 원칙', en: 'Editorial charter' },
@@ -244,7 +248,7 @@ const S = {
       'The model is in beta for its first cycle and will be scored against actual results after the election.',
     ],
   },
-  assumptions: { ko: '공개 전 교체해야 할 가정', en: 'Assumptions to replace before launch' },
+  assumptions: { ko: '모델 가정', en: 'Model assumptions' },
   // Rendered in place of the English notes in seed-data.ts. Those strings feed the
   // run-ID hash (run.ts), so the data stays unchanged and only the display is localized.
   aSigma: {
