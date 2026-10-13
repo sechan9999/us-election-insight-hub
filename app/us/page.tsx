@@ -26,6 +26,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const lang = langFrom(await searchParams);
   return {
+    metadataBase: new URL('https://app.ohmycodellc.com'),
     title: TITLES[lang],
     description: DESCRIPTIONS[lang],
     openGraph: {
