@@ -12,7 +12,7 @@
 import type { RaceInput } from './forecast';
 import { aggregatePolls, type DatedPoll } from './poll-aggregation';
 
-export const DATA_AS_OF = '2026-10-09';
+export const DATA_AS_OF = '2026-10-13';
 export const DATA_SOURCE = 'RealClearPolitics polling averages (via uspresidentialelectionnews.com) + individual polls';
 
 export interface SenateRace extends RaceInput {
