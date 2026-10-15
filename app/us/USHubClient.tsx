@@ -38,6 +38,7 @@ import { NYT_SIENA_OCT_2026, OTHER_RECENT_POLLS, POLL_SOURCE_URLS, type PollRace
 import { forecastRunId } from './lib/run';
 import { daysSince, nextRun, STALE_AFTER_DAYS } from './lib/schedule';
 import MessageTab from './components/MessageTab';
+import GeorgiaTab from './components/GeorgiaTab';
 import { t, tl, tRating, type Lang } from './lib/i18n';
 
 const TAU_NAT = MODEL_NOTES.tau;
@@ -47,7 +48,7 @@ const REP_RED = '#f87171';
 const Z90 = 1.6449;
 const SIM_OPTS = { tau: TAU_NAT, tauReg: TAU_REG, sims: MODEL_NOTES.sims, seed: MODEL_NOTES.seed };
 
-type Tab = 'forecast' | 'messages';
+type Tab = 'forecast' | 'messages' | 'georgia';
 
 const pct = (p: number) => `${(p * 100).toFixed(1)}%`;
 const margin = (m: number) => `${m > 0 ? 'D+' : m < 0 ? 'R+' : ''}${Math.abs(m).toFixed(1)}`;
@@ -146,6 +147,7 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
     setTab(next);
     const url = new URL(window.location.href);
     if (next === 'messages') url.searchParams.set('tab', 'messages');
+    else if (next === 'georgia') url.searchParams.set('tab', 'georgia');
     else url.searchParams.delete('tab');
     window.history.replaceState(null, '', url);
   };
@@ -246,7 +248,7 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
 
         {/* Tabs */}
         <div role="tablist" aria-label={t(lang, 'title')} className="flex gap-1 border-b border-white/10">
-          {(['forecast', 'messages'] as const).map((k) => (
+          {(['forecast', 'messages', 'georgia'] as const).map((k) => (
             <button
               key={k}
               type="button"
@@ -257,12 +259,14 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
                 tab === k ? 'border-white/10 border-b-neutral-950 bg-neutral-950 text-neutral-100' : 'border-transparent text-neutral-400 hover:text-neutral-200'
               }`}
             >
-              {t(lang, k === 'forecast' ? 'tabForecast' : 'tabMessages')}
+              {t(lang, k === 'forecast' ? 'tabForecast' : k === 'messages' ? 'tabMessages' : 'tabGeorgia')}
             </button>
           ))}
         </div>
 
         {tab === 'messages' && <MessageTab lang={lang} races={races} />}
+
+        {tab === 'georgia' && <GeorgiaTab lang={lang} />}
 
         {tab === 'forecast' && (
           <div className="mt-6">

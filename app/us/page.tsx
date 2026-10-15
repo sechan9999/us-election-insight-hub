@@ -53,6 +53,10 @@ export default async function USPage({
   const params = await searchParams;
   const initialLang = langFrom(params);
   const initialTab =
-    params.tab === 'messages' || params.tab === 'truth' ? 'messages' : 'forecast';
+    params.tab === 'messages' || params.tab === 'truth'
+      ? 'messages'
+      : params.tab === 'georgia'
+        ? 'georgia'
+        : 'forecast';
   return <USHubClient initialLang={initialLang} initialTab={initialTab} />;
 }
