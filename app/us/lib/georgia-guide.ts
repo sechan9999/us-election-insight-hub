@@ -194,7 +194,6 @@ export const GA_SAMPLE: {
       candidates: [
         { name: 'Josh Tolbert', ko: '조시 톨버트', party: 'R' as const, note: tx('', '') },
         { name: 'Shelia Edwards', ko: '실리아 에드워즈', party: 'D' as const, note: tx('', '') },
-        { name: 'Thomas Blooming', ko: '토머스 블루밍', party: tx('자유당', 'Libertarian'), note: tx('', '') },
       ],
       explainer: tx(
         '위원은 지구별로 뽑지만 결정은 주 전체에 적용됩니다. 그래서 내 지구가 아닌 위원 선거도 투표용지에 함께 나옵니다.',
@@ -229,11 +228,11 @@ export const GA_SAMPLE: {
       office: tx('토양·수자원 보전지구 감독관 · GWINNETT SOIL & WATER CONSERVATION DISTRICT SUPERVISOR', 'GWINNETT SOIL & WATER CONSERVATION DISTRICT SUPERVISOR'),
       headline: tx('땅과 물을 지키는 지역 감독관', 'Protects local land and water'),
       candidates: [
-        { name: 'Benjamin Van Landingham', ko: '벤저민 밴랜딩햄', party: null, incumbent: true, note: tx('', '') },
+        { name: 'David VanLandingham', ko: '데이비드 밴랜딩햄', party: null, incumbent: true, note: tx('', '') },
       ],
       explainer: tx(
-        '토양 침식 방지, 수질 보호 같은 지역 환경 보전을 맡는 자리입니다. 최종 후보 명단은 내 샘플 투표용지에서 확인하세요.',
-        'Oversees local soil conservation and water protection. Check your own sample ballot for the final candidate list.',
+        '토양 침식 방지, 수질 보호 같은 지역 환경 보전을 맡는 자리입니다. 후보가 한 명뿐이어서 이름 아래 빈칸(Write-in)에 다른 이름을 적어 넣을 수도 있습니다.',
+        'Oversees local soil conservation and water protection. Only one candidate is listed, so you may also write in a different name.',
       ),
     },
   ],
