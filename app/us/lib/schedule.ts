@@ -5,8 +5,8 @@ import { ELECTION_DAY } from './live';
 /** Inputs older than this many days get an amber "stale" badge in the header. */
 export const STALE_AFTER_DAYS = 3;
 
-/** Poll inputs are refreshed every Monday (ET), starting Monday 2026-10-05, through Election Day. */
-export const RUN_WEEKDAY = 1; // Monday
+/** Poll inputs are refreshed 3x/week — Monday, Wednesday, Friday (ET) — through Election Day. */
+export const RUN_WEEKDAYS = [1, 3, 5]; // Mon, Wed, Fri
 export const RUN_SCHEDULE_START = '2026-10-05';
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
@@ -23,9 +23,12 @@ export function todayET(now: number = Date.now()): string {
 export function nextRun(dataAsOf: string, now: number = Date.now()): string | null {
   const today = todayET(now);
   const d = new Date(`${today}T12:00:00Z`);
-  const isRunDay = d.getUTCDay() === RUN_WEEKDAY;
+  const dow = d.getUTCDay();
+  const isRunDay = RUN_WEEKDAYS.includes(dow);
   if (!(isRunDay && dataAsOf < today)) {
-    d.setUTCDate(d.getUTCDate() + ((RUN_WEEKDAY - d.getUTCDay() + 7) % 7 || 7));
+    let add = 1;
+    while (!RUN_WEEKDAYS.includes((dow + add) % 7)) add++;
+    d.setUTCDate(d.getUTCDate() + add);
   }
   const next = ymd(d) < RUN_SCHEDULE_START ? RUN_SCHEDULE_START : ymd(d);
   return next <= ELECTION_DAY ? next : null;

@@ -12,7 +12,7 @@ const S = {
   runId: { ko: '예측 run ID', en: 'Forecast run ID' },
   staleFresh: { ko: '입력 {d}일 경과', en: 'Inputs {d} days old' },
   staleOld: { ko: '입력 {d}일째 갱신 안 됨', en: 'Inputs not updated for {d} days' },
-  nextRun: { ko: '다음 업데이트 {date} (매주 월요일)', en: 'Next update {date} (every Monday)' },
+  nextRun: { ko: '다음 업데이트 {date} (주 3회 · 월/수/금)', en: 'Next update {date} (3×/week · Mon/Wed/Fri)' },
   dataAsOf: { ko: '여론조사 기준일', en: 'Polls as of' },
   historyTitle: { ko: '예측 변화 기록', en: 'Forecast history' },
   historyNote: { ko: '같은 여론조사 입력(2026-10-09 기준)에 모델 개선을 적용한 결과입니다. 새 여론조사가 들어온 변화가 아닙니다.', en: 'Same poll inputs (2026-10-09 vintage); changes reflect modeling improvements, not new polls.' },
