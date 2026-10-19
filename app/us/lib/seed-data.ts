@@ -6,15 +6,16 @@
 //
 // Senate battleground margins: time-weighted averages (roadmap #6) of dated
 // polls — the RCP average as compiled Oct 18, 2026 (uspresidentialelectionnews.com)
-// as a consensus pseudo-poll. All recent individual polls are inside the RCP
-// window, so no separate fresh-poll entries (avoids double-counting).
+// as a consensus pseudo-poll, plus fresh individual polls released after the
+// Oct 18 compilation (CBS News/YouGov, UH Hobby School, ActiVote) added as
+// dated entries so they are not double-counted.
 // m_i is the Democratic margin in points (D minus R) as of DATA_AS_OF.
 
 import type { RaceInput } from './forecast';
 import { aggregatePolls, type DatedPoll } from './poll-aggregation';
 
-export const DATA_AS_OF = '2026-10-18';
-export const DATA_SOURCE = 'RealClearPolitics polling averages (via uspresidentialelectionnews.com), Oct 18, 2026 compilation';
+export const DATA_AS_OF = '2026-10-19';
+export const DATA_SOURCE = 'RealClearPolitics polling averages (via uspresidentialelectionnews.com), Oct 18, 2026 compilation; fresh individual polls released Oct 18 added as dated entries';
 
 export interface SenateRace extends RaceInput {
   stateKo: string;
@@ -74,10 +75,9 @@ const senateSigma = (nPolls: number, rcv = false) => {
  * its component polls (RCP averages compiled 10-18 draw on late-September to
  * mid-October polls), not the 10-18 compilation date.
  *
- * No separate fresh-poll entries: every recent individual poll (NYT/Siena,
- * SurveyUSA, Trafalgar, Suffolk, UT-Austin, Marist, Mason-Dixon, Fox) is
- * already inside the RCP average window; adding them separately would
- * double-count. The daily ingest will supply exact poll lists.
+ * Fresh individual polls released after the Oct 18 compilation are added as
+ * dated entries below (they are NOT inside the RCP window, so no
+ * double-counting). The daily ingest will supply exact poll lists.
  */
 const RCP_DATE = '2026-10-05';
 const rcp = (margin: number, nRcpPolls: number): DatedPoll => ({
@@ -100,11 +100,14 @@ const RACE_DEFS: RaceDef[] = [
   { id: 'NH-SEN', label: 'New Hampshire', stateKo: '뉴햄프셔', demCandidate: 'Chris Pappas', repCandidate: 'John E. Sununu', rating: 'Leans D', note: 'D-held open', region: 'NE', nRcpPolls: 7,
     polls: [rcp(6.5, 7)] },
   { id: 'OH-SEN', label: 'Ohio', stateKo: '오하이오', demCandidate: 'Sherrod Brown', repCandidate: 'Jon Husted (appt.)', rating: 'Toss Up', note: 'R-held special', region: 'MW', nRcpPolls: 10,
-    polls: [rcp(3.3, 10)] },
+    polls: [rcp(3.3, 10),
+      { margin: -0.4, fieldEnd: '2026-10-18', n: 400, label: 'ActiVote (published Oct 18)' }] },
   { id: 'MI-SEN', label: 'Michigan', stateKo: '미시간', demCandidate: 'Abdul El-Sayed', repCandidate: 'Mike Rogers', rating: 'Toss Up', note: 'D-held open', region: 'MW', nRcpPolls: 10,
     polls: [rcp(2.6, 10)] },
   { id: 'TX-SEN', label: 'Texas', stateKo: '텍사스', demCandidate: 'James Talarico', repCandidate: 'Ken Paxton', rating: 'Toss Up', note: 'R-held open', region: 'S', nRcpPolls: 10,
-    polls: [rcp(2.2, 10)] },
+    polls: [rcp(2.2, 10),
+      { margin: 2, fieldEnd: '2026-10-16', n: 1492, label: 'CBS News/YouGov (released Oct 18)' },
+      { margin: 2, fieldEnd: '2026-10-14', n: 2000, label: 'UH Hobby School (released Oct 18)' }] },
   { id: 'AK-SEN', label: 'Alaska', stateKo: '알래스카', demCandidate: 'Mary Peltola', repCandidate: 'Dan Sullivan (inc.)', rating: 'Toss Up', note: 'R-held · RCV', region: 'W', nRcpPolls: 5, rcv: true,
     polls: [rcp(2.5, 5)] },
   { id: 'MN-SEN', label: 'Minnesota', stateKo: '미네소타', demCandidate: 'Peggy Flanagan', repCandidate: 'Michele Tafoya', rating: 'Toss Up', note: 'D-held open', region: 'MW', nRcpPolls: 7,

@@ -38,7 +38,8 @@ export const NYT_SIENA_OCT_2026: PollRelease = {
   ],
 };
 
-/** Recent individual polls (display-only; all are inside the RCP average window). */
+/** Recent individual polls (display-only; the Oct 18 releases also feed the model
+ * as dated entries in seed-data.ts, since they are outside the RCP window). */
 export const OTHER_RECENT_POLLS: (PollRace & { pollster: string; released: string; url: string })[] = [
   {
     id: 'NC-SEN', pollster: 'SurveyUSA/WRAL', released: '2026-10-13', url: 'https://www.270towin.com/2026-senate-polls/north-carolina',
@@ -56,10 +57,25 @@ export const OTHER_RECENT_POLLS: (PollRace & { pollster: string; released: strin
     id: 'ME-SEN', pollster: 'Suffolk University', released: '2026-10-12', url: 'https://www.270towin.com/2026-senate-polls/maine',
     dem: 'Troy Jackson', demPct: 49, rep: 'Susan Collins', repPct: 47, n: 500, moe: 4.4, dates: 'Oct 8–11',
   },
+  {
+    id: 'TX-SEN', pollster: 'CBS News/YouGov', released: '2026-10-18', url: 'https://www.newsmax.com/politics/poll-texas-senate/2026/10/18/id/1273214',
+    dem: 'James Talarico', demPct: 51, rep: 'Ken Paxton', repPct: 49, n: 1492, moe: 3.5, dates: 'Oct 8–16',
+  },
+  {
+    id: 'TX-SEN', pollster: 'UH Hobby School of Public Affairs', released: '2026-10-18', url: 'https://www.usatoday.com/story/news/politics/elections/2026/10/19/texas-senate-talarico-paxton-poll-governor-statewide-races-early-voting/92324533007/',
+    dem: 'James Talarico', demPct: 48, rep: 'Ken Paxton', repPct: 46, n: 2000, moe: 2.2, dates: 'Oct 10–14',
+  },
+  {
+    id: 'OH-SEN', pollster: 'ActiVote', released: '2026-10-18', url: 'https://www.kratko.news/en/article/jon-husted-narrowly-ahead-of-sherrod-brown-in-ohio-senate-race-poll',
+    dem: 'Sherrod Brown', demPct: 49.8, rep: 'Jon Husted', repPct: 50.2, n: 400, moe: 4.9, dates: 'Sep 26–Oct 18',
+  },
 ];
 
 export const POLL_SOURCE_URLS = [
   NYT_SIENA_OCT_2026.url,
+  'https://www.usatoday.com/story/news/politics/elections/2026/10/19/texas-senate-talarico-paxton-poll-governor-statewide-races-early-voting/92324533007/',
+  'https://www.newsmax.com/politics/poll-texas-senate/2026/10/18/id/1273214',
+  'https://www.kratko.news/en/article/jon-husted-narrowly-ahead-of-sherrod-brown-in-ohio-senate-race-poll',
   'https://www.newsweek.com/democrats-flip-3-senate-seats-polling-12520448',
   'https://www.270towin.com/2026-senate-polls/georgia',
 ];
