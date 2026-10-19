@@ -57,6 +57,7 @@ const S = {
   tabForecast: { ko: '예측', en: 'Forecast' },
   tabMessages: { ko: '메시지 분석', en: 'Message analysis' },
   tabGeorgia: { ko: '조지아 투표 안내', en: 'Georgia voting guide' },
+  tabPaper: { ko: '연구 논문', en: 'Research' },
   msgTitle: { ko: '트럼프 트루스소셜 메시지 분석', en: "Trump's Truth Social messaging, analyzed" },
   msgMeta: {
     ko: '2025.01–{end} · {total}건 수집 · 본문 {n}건 분석',

@@ -57,6 +57,8 @@ export default async function USPage({
       ? 'messages'
       : params.tab === 'georgia'
         ? 'georgia'
-        : 'forecast';
+        : params.tab === 'paper'
+          ? 'paper'
+          : 'forecast';
   return <USHubClient initialLang={initialLang} initialTab={initialTab} />;
 }
