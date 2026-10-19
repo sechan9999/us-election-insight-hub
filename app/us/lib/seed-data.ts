@@ -5,15 +5,16 @@
 // BigQuery ingest (electoral_hub.us_polls -> electoral_hub.us_race_forecasts).
 //
 // Senate battleground margins: time-weighted averages (roadmap #6) of dated
-// polls — the RCP average as compiled Oct 1, 2026 (uspresidentialelectionnews.com)
-// as a consensus pseudo-poll, plus fresh individual polls released since.
+// polls — the RCP average as compiled Oct 18, 2026 (uspresidentialelectionnews.com)
+// as a consensus pseudo-poll. All recent individual polls are inside the RCP
+// window, so no separate fresh-poll entries (avoids double-counting).
 // m_i is the Democratic margin in points (D minus R) as of DATA_AS_OF.
 
 import type { RaceInput } from './forecast';
 import { aggregatePolls, type DatedPoll } from './poll-aggregation';
 
-export const DATA_AS_OF = '2026-10-13';
-export const DATA_SOURCE = 'RealClearPolitics polling averages (via uspresidentialelectionnews.com) + individual polls';
+export const DATA_AS_OF = '2026-10-18';
+export const DATA_SOURCE = 'RealClearPolitics polling averages (via uspresidentialelectionnews.com), Oct 18, 2026 compilation';
 
 export interface SenateRace extends RaceInput {
   stateKo: string;
@@ -58,26 +59,27 @@ const senateSigma = (nPolls: number, rcv = false) => {
 };
 
 /**
- * Poll counts underpinning each RCP average. ESTIMATES (Oct 2026) by race
+ * Poll counts underpinning each RCP average. ESTIMATES (Oct 18, 2026) by race
  * salience tier — the daily ingest will provide exact counts:
- *   Tier A (n=8): NC, GA, TX, OH, MI — most-polled battlegrounds
- *   Tier B (n=5): NH, IA, ME, MN
- *   Tier C (n=3): AK, KS, FL — lightly polled
+ *   Tier A (n=10): NC, GA, TX, OH, MI — most-polled battlegrounds
+ *   Tier B (n=7): NH, IA, ME, MN
+ *   Tier C (n=5): AK, KS, FL — lightly polled
  */
 /**
  * Dated poll lists per race (roadmap #6). Each list starts with the RCP
- * average as compiled 2026-10-01 as a consensus pseudo-poll
- * (n = nRcpPolls × 600), followed by fresh individual polls released since.
+ * average as compiled 2026-10-18 as a consensus pseudo-poll
+ * (n = nRcpPolls × 600).
  *
- * The RCP consensus is dated 2026-09-20 — the estimated MEDIAN field date of
- * its component polls (RCP averages compiled 10-01 draw on mid-to-late
- * September polls), not the 10-01 compilation date. Dating it at compilation
- * would make it look newer than the fresh polls and underweight them.
+ * The RCP consensus is dated 2026-10-05 — the estimated MEDIAN field date of
+ * its component polls (RCP averages compiled 10-18 draw on late-September to
+ * mid-October polls), not the 10-18 compilation date.
  *
- * Fresh polls may overlap the RCP window slightly; the time-decay weighting
- * limits double-counting. The daily ingest will supply exact poll lists.
+ * No separate fresh-poll entries: every recent individual poll (NYT/Siena,
+ * SurveyUSA, Trafalgar, Suffolk, UT-Austin, Marist, Mason-Dixon, Fox) is
+ * already inside the RCP average window; adding them separately would
+ * double-count. The daily ingest will supply exact poll lists.
  */
-const RCP_DATE = '2026-09-20';
+const RCP_DATE = '2026-10-05';
 const rcp = (margin: number, nRcpPolls: number): DatedPoll => ({
   margin, fieldEnd: RCP_DATE, n: nRcpPolls * 600, label: `RCP average (${nRcpPolls} polls)`,
 });
@@ -91,30 +93,30 @@ interface RaceDef {
 }
 
 const RACE_DEFS: RaceDef[] = [
-  { id: 'NC-SEN', label: 'North Carolina', stateKo: '노스캐롤라이나', demCandidate: 'Roy Cooper', repCandidate: 'Michael Whatley', rating: 'Leans D', note: 'R-held open', region: 'S', nRcpPolls: 8,
-    polls: [rcp(9.0, 8)] },
-  { id: 'GA-SEN', label: 'Georgia', stateKo: '조지아', demCandidate: 'Jon Ossoff (inc.)', repCandidate: 'Mike Collins', rating: 'Leans D', note: 'D-held', region: 'S', nRcpPolls: 8,
-    polls: [rcp(8.0, 8), { margin: 10, fieldEnd: '2026-10-04', n: 600, label: 'Wedgewood' }] },
-  { id: 'NH-SEN', label: 'New Hampshire', stateKo: '뉴햄프셔', demCandidate: 'Chris Pappas', repCandidate: 'John E. Sununu', rating: 'Leans D', note: 'D-held open', region: 'NE', nRcpPolls: 5,
-    polls: [rcp(6.4, 5)] },
-  { id: 'OH-SEN', label: 'Ohio', stateKo: '오하이오', demCandidate: 'Sherrod Brown', repCandidate: 'Jon Husted (appt.)', rating: 'Toss Up', note: 'R-held special', region: 'MW', nRcpPolls: 8,
-    polls: [rcp(3.7, 8), { margin: 3, fieldEnd: '2026-10-01', n: 616, label: 'NYT/Siena' }] },
-  { id: 'MI-SEN', label: 'Michigan', stateKo: '미시간', demCandidate: 'Abdul El-Sayed', repCandidate: 'Mike Rogers', rating: 'Toss Up', note: 'D-held open', region: 'MW', nRcpPolls: 8,
-    polls: [rcp(3.4, 8)] },
-  { id: 'TX-SEN', label: 'Texas', stateKo: '텍사스', demCandidate: 'James Talarico', repCandidate: 'Ken Paxton', rating: 'Toss Up', note: 'R-held open', region: 'S', nRcpPolls: 8,
-    polls: [rcp(2.7, 8), { margin: 6, fieldEnd: '2026-09-30', n: 615, label: 'NYT/Siena' }] },
-  { id: 'AK-SEN', label: 'Alaska', stateKo: '알래스카', demCandidate: 'Mary Peltola', repCandidate: 'Dan Sullivan (inc.)', rating: 'Toss Up', note: 'R-held · RCV', region: 'W', nRcpPolls: 3, rcv: true,
-    polls: [rcp(2.3, 3), { margin: 7, fieldEnd: '2026-10-01', n: 504, label: 'NYT/Siena' }] },
-  { id: 'MN-SEN', label: 'Minnesota', stateKo: '미네소타', demCandidate: 'Peggy Flanagan', repCandidate: 'Michele Tafoya', rating: 'Toss Up', note: 'D-held open', region: 'MW', nRcpPolls: 5,
-    polls: [rcp(1.6, 5)] },
-  { id: 'IA-SEN', label: 'Iowa', stateKo: '아이오와', demCandidate: 'Josh Turek', repCandidate: 'Ashley Hinson', rating: 'Toss Up', note: 'R-held open', region: 'MW', nRcpPolls: 5,
-    polls: [rcp(0.3, 5), { margin: -1, fieldEnd: '2026-10-01', n: 606, label: 'NYT/Siena' }] },
-  { id: 'ME-SEN', label: 'Maine', stateKo: '메인', demCandidate: 'Troy Jackson', repCandidate: 'Susan Collins (inc.)', rating: 'Toss Up', note: 'R-held · RCV', region: 'NE', nRcpPolls: 5, rcv: true,
-    polls: [rcp(-0.2, 5)] },
-  { id: 'KS-SEN', label: 'Kansas', stateKo: '캔자스', demCandidate: 'Adam Hamilton', repCandidate: 'Roger Marshall (inc.)', rating: 'Toss Up', note: 'R-held', region: 'MW', nRcpPolls: 3,
-    polls: [rcp(-1.5, 3), { margin: 0, fieldEnd: '2026-09-30', n: 605, label: 'NYT/Siena' }] },
-  { id: 'FL-SEN', label: 'Florida', stateKo: '플로리다', demCandidate: 'Angie Nixon', repCandidate: 'Ashley Moody (appt.)', rating: 'Leans R', note: 'R-held special', region: 'S', nRcpPolls: 3,
-    polls: [rcp(-6.6, 3)] },
+  { id: 'NC-SEN', label: 'North Carolina', stateKo: '노스캐롤라이나', demCandidate: 'Roy Cooper', repCandidate: 'Michael Whatley', rating: 'Leans D', note: 'R-held open', region: 'S', nRcpPolls: 10,
+    polls: [rcp(9.6, 10)] },
+  { id: 'GA-SEN', label: 'Georgia', stateKo: '조지아', demCandidate: 'Jon Ossoff (inc.)', repCandidate: 'Mike Collins', rating: 'Leans D', note: 'D-held', region: 'S', nRcpPolls: 10,
+    polls: [rcp(9.0, 10)] },
+  { id: 'NH-SEN', label: 'New Hampshire', stateKo: '뉴햄프셔', demCandidate: 'Chris Pappas', repCandidate: 'John E. Sununu', rating: 'Leans D', note: 'D-held open', region: 'NE', nRcpPolls: 7,
+    polls: [rcp(6.5, 7)] },
+  { id: 'OH-SEN', label: 'Ohio', stateKo: '오하이오', demCandidate: 'Sherrod Brown', repCandidate: 'Jon Husted (appt.)', rating: 'Toss Up', note: 'R-held special', region: 'MW', nRcpPolls: 10,
+    polls: [rcp(3.3, 10)] },
+  { id: 'MI-SEN', label: 'Michigan', stateKo: '미시간', demCandidate: 'Abdul El-Sayed', repCandidate: 'Mike Rogers', rating: 'Toss Up', note: 'D-held open', region: 'MW', nRcpPolls: 10,
+    polls: [rcp(2.6, 10)] },
+  { id: 'TX-SEN', label: 'Texas', stateKo: '텍사스', demCandidate: 'James Talarico', repCandidate: 'Ken Paxton', rating: 'Toss Up', note: 'R-held open', region: 'S', nRcpPolls: 10,
+    polls: [rcp(2.2, 10)] },
+  { id: 'AK-SEN', label: 'Alaska', stateKo: '알래스카', demCandidate: 'Mary Peltola', repCandidate: 'Dan Sullivan (inc.)', rating: 'Toss Up', note: 'R-held · RCV', region: 'W', nRcpPolls: 5, rcv: true,
+    polls: [rcp(2.5, 5)] },
+  { id: 'MN-SEN', label: 'Minnesota', stateKo: '미네소타', demCandidate: 'Peggy Flanagan', repCandidate: 'Michele Tafoya', rating: 'Toss Up', note: 'D-held open', region: 'MW', nRcpPolls: 7,
+    polls: [rcp(2.8, 7)] },
+  { id: 'IA-SEN', label: 'Iowa', stateKo: '아이오와', demCandidate: 'Josh Turek', repCandidate: 'Ashley Hinson', rating: 'Toss Up', note: 'R-held open', region: 'MW', nRcpPolls: 7,
+    polls: [rcp(0.6, 7)] },
+  { id: 'ME-SEN', label: 'Maine', stateKo: '메인', demCandidate: 'Troy Jackson', repCandidate: 'Susan Collins (inc.)', rating: 'Toss Up', note: 'R-held · RCV', region: 'NE', nRcpPolls: 7, rcv: true,
+    polls: [rcp(1.6, 7)] },
+  { id: 'KS-SEN', label: 'Kansas', stateKo: '캔자스', demCandidate: 'Adam Hamilton', repCandidate: 'Roger Marshall (inc.)', rating: 'Toss Up', note: 'R-held', region: 'MW', nRcpPolls: 5,
+    polls: [rcp(-0.3, 5)] },
+  { id: 'FL-SEN', label: 'Florida', stateKo: '플로리다', demCandidate: 'Angie Nixon', repCandidate: 'Ashley Moody (appt.)', rating: 'Leans R', note: 'R-held special', region: 'S', nRcpPolls: 5,
+    polls: [rcp(-7.0, 5)] },
 ];
 
 /**
@@ -226,7 +228,7 @@ export const SENATE_BASELINE = {
 
 /** House snapshot (team-compiled + RCP). */
 export const HOUSE_SNAPSHOT = {
-  genericBallotDemMargin: 8.1, // RCP average, Sept 22, 2026
+  genericBallotDemMargin: 8.3, // RCP average, Oct 13, 2026
   genericBallotSource: 'RealClearPolitics generic ballot average',
   competitiveDistricts: { dem: 49, rep: 47, n: 37, dates: 'Sept 8–11', source: 'team-compiled district polls' },
 };

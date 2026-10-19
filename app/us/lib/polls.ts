@@ -38,11 +38,23 @@ export const NYT_SIENA_OCT_2026: PollRelease = {
   ],
 };
 
-/** Other recent polls for battleground states the NYT/Siena release did not cover. */
+/** Recent individual polls (display-only; all are inside the RCP average window). */
 export const OTHER_RECENT_POLLS: (PollRace & { pollster: string; released: string; url: string })[] = [
   {
-    id: 'GA-SEN', pollster: 'Wedgewood', released: '2026-10-04', url: 'https://www.270towin.com/2026-senate-polls/georgia',
-    dem: 'Jon Ossoff', demPct: 55, rep: 'Mike Collins', repPct: 45, n: 600, moe: 4.0, dates: 'Oct 4',
+    id: 'NC-SEN', pollster: 'SurveyUSA/WRAL', released: '2026-10-13', url: 'https://www.270towin.com/2026-senate-polls/north-carolina',
+    dem: 'Roy Cooper', demPct: 54, rep: 'Michael Whatley', repPct: 40, n: 643, moe: 5.0, dates: 'Oct 7–11',
+  },
+  {
+    id: 'NC-SEN', pollster: 'Trafalgar Group', released: '2026-10-10', url: 'https://www.270towin.com/2026-senate-polls/north-carolina',
+    dem: 'Roy Cooper', demPct: 48.8, rep: 'Michael Whatley', repPct: 40.9, n: 1091, moe: 2.9, dates: 'Oct 8–10',
+  },
+  {
+    id: 'TX-SEN', pollster: 'Siena College', released: '2026-10-13', url: 'https://www.270towin.com/2026-senate-polls/texas',
+    dem: 'James Talarico', demPct: 48, rep: 'Ken Paxton', repPct: 44, n: 617, moe: 4.0, dates: 'Oct 13',
+  },
+  {
+    id: 'ME-SEN', pollster: 'Suffolk University', released: '2026-10-12', url: 'https://www.270towin.com/2026-senate-polls/maine',
+    dem: 'Troy Jackson', demPct: 49, rep: 'Susan Collins', repPct: 47, n: 500, moe: 4.4, dates: 'Oct 8–11',
   },
 ];
 
