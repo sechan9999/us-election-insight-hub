@@ -18,7 +18,7 @@ export const PAPER_HERO = {
     '카운티 수준의 학력 격차: 교육, 소득, 그리고 2024년 미국 대선 스윙의 지리',
     'The Diploma Divide at the County Level: Education, Income, and the Geography of the 2024 U.S. Presidential Swing',
   ),
-  author: tx('Heekyoung "HK" Chun, ScD', 'Heekyoung "HK" Chun, ScD'),
+  author: tx('HK Chun', 'HK Chun'),
   lede: tx(
     '2024년 대선에서 "학력이 소득을 대신했다"는 주장을 미국 3,100개 이상 카운티의 공개 데이터로 검증한 논문입니다. 모든 수치와 지도는 공개 출처로 거슬러 올라갈 수 있습니다.',
     'A paper testing the claim that education replaced income as the central socioeconomic fault line in the 2024 presidential election — with fully open, reproducible county-level data.',
