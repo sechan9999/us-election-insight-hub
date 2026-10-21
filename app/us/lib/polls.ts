@@ -20,7 +20,7 @@ export interface PollRelease {
   released: string; // YYYY-MM-DD
   population: string;
   url: string;
-  races: PollRace[];
+  races: PollRace[]
 }
 
 /** New York Times / Siena College, likely voters, released Oct 3, 2026. */
@@ -69,6 +69,26 @@ export const OTHER_RECENT_POLLS: (PollRace & { pollster: string; released: strin
     id: 'OH-SEN', pollster: 'ActiVote', released: '2026-10-18', url: 'https://www.kratko.news/en/article/jon-husted-narrowly-ahead-of-sherrod-brown-in-ohio-senate-race-poll',
     dem: 'Sherrod Brown', demPct: 49.8, rep: 'Jon Husted', repPct: 50.2, n: 400, moe: 4.9, dates: 'Sep 26–Oct 18',
   },
+  {
+    id: 'OH-SEN', pollster: 'Marist College (NPR/PBS)', released: '2026-10-20', url: 'https://focalnews.org/columbus-oh/politics/acton-and-brown-hold-leads-in-ohio-midterm-poll-but-voters-see-governor-race-differently',
+    dem: 'Sherrod Brown', demPct: 48, rep: 'Jon Husted', repPct: 44, n: 1176, moe: 3.9, dates: 'Oct 15–18',
+  },
+  {
+    id: 'GA-SEN', pollster: 'ActiVote', released: '2026-10-20', url: 'https://www.activote.net/polls/2026/ga-u-s-senate/',
+    dem: 'Jon Ossoff', demPct: 52, rep: 'Mike Collins', repPct: 44, n: 400, moe: 4.9, dates: 'Oct 6–20',
+  },
+  {
+    id: 'GA-SEN', pollster: 'Quantus Insights', released: '2026-10-20', url: 'https://www.ellisinsight.com/category/senate/',
+    dem: 'Jon Ossoff', demPct: 51.8, rep: 'Mike Collins', repPct: 44.9, n: 755, moe: 4.0, dates: 'Oct 15–17',
+  },
+  {
+    id: 'IA-SEN', pollster: 'co/efficient', released: '2026-10-20', url: 'https://www.ellisinsight.com/category/senate/',
+    dem: 'Josh Turek', demPct: 45, rep: 'Ashley Hinson', repPct: 48, n: 863, moe: 4.0, dates: 'Oct 15–19',
+  },
+  {
+    id: 'NH-SEN', pollster: 'National Public Affairs', released: '2026-10-20', url: 'https://www.ellisinsight.com/category/senate/',
+    dem: 'Chris Pappas', demPct: 50, rep: 'John E. Sununu', repPct: 43, n: 600, moe: 4.0, dates: 'Oct 8–12',
+  },
 ];
 
 export const POLL_SOURCE_URLS = [
@@ -78,4 +98,7 @@ export const POLL_SOURCE_URLS = [
   'https://www.kratko.news/en/article/jon-husted-narrowly-ahead-of-sherrod-brown-in-ohio-senate-race-poll',
   'https://www.newsweek.com/democrats-flip-3-senate-seats-polling-12520448',
   'https://www.270towin.com/2026-senate-polls/georgia',
+  'https://focalnews.org/columbus-oh/politics/acton-and-brown-hold-leads-in-ohio-midterm-poll-but-voters-see-governor-race-differently',
+  'https://www.activote.net/polls/2026/ga-u-s-senate/',
+  'https://www.ellisinsight.com/category/senate/',
 ];
