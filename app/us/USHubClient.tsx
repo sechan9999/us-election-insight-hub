@@ -40,6 +40,7 @@ import { daysSince, nextRun, STALE_AFTER_DAYS } from './lib/schedule';
 import MessageTab from './components/MessageTab';
 import GeorgiaTab from './components/GeorgiaTab';
 import PaperTab from './components/PaperTab';
+import PolymarketTab from './components/PolymarketTab';
 import { t, tl, tRating, type Lang } from './lib/i18n';
 
 const TAU_NAT = MODEL_NOTES.tau;
@@ -49,7 +50,7 @@ const REP_RED = '#f87171';
 const Z90 = 1.6449;
 const SIM_OPTS = { tau: TAU_NAT, tauReg: TAU_REG, sims: MODEL_NOTES.sims, seed: MODEL_NOTES.seed };
 
-type Tab = 'forecast' | 'messages' | 'georgia' | 'paper';
+type Tab = 'forecast' | 'messages' | 'georgia' | 'paper' | 'polymarket';
 
 const pct = (p: number) => `${(p * 100).toFixed(1)}%`;
 const margin = (m: number) => `${m > 0 ? 'D+' : m < 0 ? 'R+' : ''}${Math.abs(m).toFixed(1)}`;
@@ -150,6 +151,7 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
     if (next === 'messages') url.searchParams.set('tab', 'messages');
     else if (next === 'georgia') url.searchParams.set('tab', 'georgia');
     else if (next === 'paper') url.searchParams.set('tab', 'paper');
+    else if (next === 'polymarket') url.searchParams.set('tab', 'polymarket');
     else url.searchParams.delete('tab');
     window.history.replaceState(null, '', url);
   };
@@ -250,7 +252,7 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
 
         {/* Tabs */}
         <div role="tablist" aria-label={t(lang, 'title')} className="flex gap-1 border-b border-white/10">
-          {(['forecast', 'messages', 'georgia', 'paper'] as const).map((k) => (
+          {(['forecast', 'messages', 'georgia', 'paper', 'polymarket'] as const).map((k) => (
             <button
               key={k}
               type="button"
@@ -261,7 +263,7 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
                 tab === k ? 'border-white/10 border-b-neutral-950 bg-neutral-950 text-neutral-100' : 'border-transparent text-neutral-400 hover:text-neutral-200'
               }`}
             >
-              {t(lang, k === 'forecast' ? 'tabForecast' : k === 'messages' ? 'tabMessages' : k === 'georgia' ? 'tabGeorgia' : 'tabPaper')}
+              {t(lang, k === 'forecast' ? 'tabForecast' : k === 'messages' ? 'tabMessages' : k === 'georgia' ? 'tabGeorgia' : k === 'paper' ? 'tabPaper' : 'tabPolymarket')}
             </button>
           ))}
         </div>
@@ -271,6 +273,8 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
         {tab === 'georgia' && <GeorgiaTab lang={lang} />}
 
         {tab === 'paper' && <PaperTab lang={lang} />}
+
+        {tab === 'polymarket' && <PolymarketTab lang={lang} />}
 
         {tab === 'forecast' && (
           <div className="mt-6">
