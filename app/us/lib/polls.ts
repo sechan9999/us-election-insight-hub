@@ -38,8 +38,10 @@ export const NYT_SIENA_OCT_2026: PollRelease = {
   ],
 };
 
-/** Recent individual polls (display-only; the Oct 18 releases also feed the model
- * as dated entries in seed-data.ts, since they are outside the RCP window). */
+/** Recent individual polls (display-only). Individual polls feed the forecast
+ * model only as dated entries in seed-data.ts once released after the latest
+ * RCP compilation; Oct 18–20 releases are inside the Oct 21 RCP window and
+ * were folded into the consensus pseudo-poll instead. */
 export const OTHER_RECENT_POLLS: (PollRace & { pollster: string; released: string; url: string })[] = [
   {
     id: 'NC-SEN', pollster: 'SurveyUSA/WRAL', released: '2026-10-13', url: 'https://www.270towin.com/2026-senate-polls/north-carolina',
@@ -89,6 +91,43 @@ export const OTHER_RECENT_POLLS: (PollRace & { pollster: string; released: strin
     id: 'NH-SEN', pollster: 'National Public Affairs', released: '2026-10-20', url: 'https://www.ellisinsight.com/category/senate/',
     dem: 'Chris Pappas', demPct: 50, rep: 'John E. Sununu', repPct: 43, n: 600, moe: 4.0, dates: 'Oct 8–12',
   },
+  // --- Released Oct 21–23, 2026 (added as dated entries in seed-data.ts) ---
+  {
+    id: 'OH-SEN', pollster: 'Fox News/Beacon Research/Shaw & Company', released: '2026-10-22', url: 'https://www.actionnetwork.com/politics/texas-senate-race-talarico-and-paxton-tied-fox-news-poll-still-favors-talarico',
+    dem: 'Sherrod Brown', demPct: 52, rep: 'Jon Husted', repPct: 47, n: 1592, moe: 2.5, dates: 'Oct 15–19',
+  },
+  {
+    id: 'ME-SEN', pollster: 'Fox News/Beacon Research/Shaw & Company', released: '2026-10-22', url: 'https://political.org/2026-senate-elections/',
+    dem: 'Troy Jackson', demPct: 49, rep: 'Susan Collins', repPct: 49, n: 1514, moe: 2.5, dates: 'Oct 16–20',
+  },
+  {
+    id: 'TX-SEN', pollster: 'Fox News/Beacon Research/Shaw & Company', released: '2026-10-22', url: 'https://www.actionnetwork.com/politics/texas-senate-race-talarico-and-paxton-tied-fox-news-poll-still-favors-talarico',
+    dem: 'James Talarico', demPct: 49, rep: 'Ken Paxton', repPct: 49, n: 1398, moe: 2.5, dates: 'Oct 15–19',
+  },
+  {
+    id: 'TX-SEN', pollster: 'Emerson College/The Hill', released: '2026-10-22', url: 'https://www.newsmax.com/politics/texas-ken-paxton-james-talarico/2026/10/22/id/1273664',
+    dem: 'James Talarico', demPct: 48, rep: 'Ken Paxton', repPct: 46, n: 1000, moe: 3.0, dates: 'Oct 17–19',
+  },
+  {
+    id: 'TX-SEN', pollster: 'Texas Public Opinion Research/Slingshot Strategies', released: '2026-10-22', url: 'https://texaspublicopinionresearch.substack.com/p/october-poll-in-texas-general-election',
+    dem: 'James Talarico', demPct: 51, rep: 'Ken Paxton', repPct: 47, n: 969, moe: 3.9, dates: 'Oct 15–18',
+  },
+  {
+    id: 'NH-SEN', pollster: 'Saint Anselm College Survey Center', released: '2026-10-22', url: 'https://politicalwire.com/2026/10/22/pappas-leads-sununu-in-senate-race/',
+    dem: 'Chris Pappas', demPct: 50, rep: 'John E. Sununu', repPct: 43, n: 1672, moe: 2.4, dates: 'ended Oct 20',
+  },
+  {
+    id: 'NC-SEN', pollster: 'Carolina Journal/Harper Polling', released: '2026-10-22', url: 'https://politicalwire.com/2026/10/22/roy-cooper-solidly-ahead-in-north-carolina/',
+    dem: 'Roy Cooper', demPct: 49, rep: 'Michael Whatley', repPct: 39, n: 600, moe: 4.0, dates: 'ended Oct 20',
+  },
+  {
+    id: 'MN-SEN', pollster: 'Rasmussen Reports', released: '2026-10-23', url: 'https://pollingsource.com/senate/MN',
+    dem: 'Peggy Flanagan', demPct: 48, rep: 'Michele Tafoya', repPct: 45, n: 1182, moe: 3.0, dates: 'completed Oct 21',
+  },
+  {
+    id: 'MI-SEN', pollster: 'Marist College', released: '2026-10-21', url: 'https://www.270towin.com/2026-senate-polls/michigan',
+    dem: 'Abdul El-Sayed', demPct: 50, rep: 'Mike Rogers', repPct: 48, n: 1185, moe: 4.3, dates: 'Oct 15–18',
+  },
 ];
 
 export const POLL_SOURCE_URLS = [
@@ -101,4 +140,12 @@ export const POLL_SOURCE_URLS = [
   'https://focalnews.org/columbus-oh/politics/acton-and-brown-hold-leads-in-ohio-midterm-poll-but-voters-see-governor-race-differently',
   'https://www.activote.net/polls/2026/ga-u-s-senate/',
   'https://www.ellisinsight.com/category/senate/',
+  'https://www.actionnetwork.com/politics/texas-senate-race-talarico-and-paxton-tied-fox-news-poll-still-favors-talarico',
+  'https://political.org/2026-senate-elections/',
+  'https://www.newsmax.com/politics/texas-ken-paxton-james-talarico/2026/10/22/id/1273664',
+  'https://texaspublicopinionresearch.substack.com/p/october-poll-in-texas-general-election',
+  'https://politicalwire.com/2026/10/22/pappas-leads-sununu-in-senate-race/',
+  'https://politicalwire.com/2026/10/22/roy-cooper-solidly-ahead-in-north-carolina/',
+  'https://pollingsource.com/senate/MN',
+  'https://www.270towin.com/2026-senate-polls/michigan',
 ];
