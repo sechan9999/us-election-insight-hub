@@ -192,6 +192,13 @@ export default async function KoreaPage({
           >
             {tr(lang, 'githubCta')}
           </a>
+          <span className="mx-2 text-neutral-600">·</span>
+          <a
+            href={`/kr/about?lang=${lang}`}
+            className="mt-2 inline-block text-sm font-medium text-blue-300 hover:underline"
+          >
+            {lang === 'ko' ? '프로젝트 소개 전문 →' : 'Read the full project introduction →'}
+          </a>
         </div>
       </div>
     </div>
