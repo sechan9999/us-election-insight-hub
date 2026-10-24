@@ -142,6 +142,19 @@ export default async function KoreaAboutPage({
             If you find an error, we would rather hear about it than have it stand: every page in
             these archives exists so that the numbers can be argued with — on evidence.
           </p>
+          <p className="text-sm text-neutral-400">
+            These archives are free to use. If they saved you time, you can help cover their
+            hosting costs via{' '}
+            <a
+              href="https://paypal.me/HeeKyoungChun"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-blue-300 hover:underline"
+            >
+              PayPal
+            </a>
+            .
+          </p>
         </div>
       </div>
     </div>
