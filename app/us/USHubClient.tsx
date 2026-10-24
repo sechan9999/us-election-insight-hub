@@ -38,6 +38,7 @@ import { NYT_SIENA_OCT_2026, OTHER_RECENT_POLLS, POLL_SOURCE_URLS, type PollRace
 import { forecastRunId } from './lib/run';
 import { daysSince, nextRun, STALE_AFTER_DAYS } from './lib/schedule';
 import MessageTab from './components/MessageTab';
+import CountrySwitch from '../components/CountrySwitch';
 import GeorgiaTab from './components/GeorgiaTab';
 import PaperTab from './components/PaperTab';
 import PolymarketTab from './components/PolymarketTab';
@@ -192,6 +193,7 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100" lang={lang}>
       <div className="mx-auto max-w-6xl px-4 py-8">
+        <CountrySwitch lang={lang} active="us" />
         {/* Header */}
         <header className="mb-6">
           <div className="flex flex-wrap items-center gap-2 text-xs">
