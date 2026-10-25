@@ -90,8 +90,8 @@ const ELECTIONS: {
     term: { ko: '18대', en: '18th' },
     year: 2012,
     desc: {
-      ko: '분류 결과와 미분류표 K값 · 251개 구 · 공식 투표구 결과 17,871행',
-      en: 'Ballot-sorter results and the unclassified-ballot K value · 251 districts · 17,871 rows of official precinct results',
+      ko: '분류 결과와 미분류표 K값 · 251개 구 · 공식 투표구 결과 17,871행 · 개표 원본 스캔 73,363장(251개 구 전부, Project Boo 동의 하에 복제 게재)',
+      en: 'Ballot-sorter results and the unclassified-ballot K value · 251 districts · 17,871 rows of official precinct results · 73,363 original counting-document scans, all 251 districts (republished with Project Boo permission)',
     },
     url: 'https://storage.googleapis.com/k18-archive/index.html',
   },

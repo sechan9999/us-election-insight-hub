@@ -35,7 +35,7 @@ export async function generateMetadata({
 const ARCHIVES: { heading: string; body: string; url: string }[] = [
   {
     heading: '18th presidential election (December 19, 2012)',
-    body: 'Ballot-sorter operation results for all 251 cities, counties, and districts, together with the official precinct-level results: 17,871 rows covering six candidates.',
+    body: 'Ballot-sorter operation results for all 251 cities, counties, and districts, together with the official precinct-level results: 17,871 rows covering six candidates. The original counting documents are also public: 73,363 scanned pages from all 251 districts, republished with permission from Project Boo\u2019s 2012 archive (projectboo.com) with attribution; files the source board never embedded are marked as partially missing rather than silently omitted.',
     url: 'https://storage.googleapis.com/k18-archive/index.html',
   },
   {
