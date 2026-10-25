@@ -67,11 +67,59 @@ function isSafeSelect(sql: string): boolean {
   return !/\b(insert|update|delete|drop|create|alter|merge|truncate|grant|revoke)\b/i.test(body);
 }
 
+// Table allowlist: the generated SQL may reference ONLY these two public tables.
+// This closes prompt-injection exfiltration even if the runtime service account
+// can read other datasets in the project.
+const ALLOWED_TABLES = [
+  `${PROJECT}.elections.county_2024`,
+  `${PROJECT}.elections.swing_2020_2024`,
+];
+function onlyAllowedTables(sql: string): boolean {
+  let rest = sql;
+  for (const t of ALLOWED_TABLES) rest = rest.split(`\`${t}\``).join("");
+  // Any remaining backtick-quoted identifier containing a dot = another table reference.
+  if (/`[^`]*\.[^`]*`/.test(rest)) return false;
+  // At least one allowed table must be present.
+  return ALLOWED_TABLES.some((t) => sql.includes(`\`${t}\``));
+}
+
+// Per-IP rate limit (in-memory, per instance): 20 requests / 60s / IP.
+// Cloud Run may run several instances, so this is a flood brake, not a hard
+// global cap — the hard cap belongs at Cloud Armor / a shared store later.
+const RATE_WINDOW_MS = 60_000;
+const RATE_LIMIT = 20;
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  if (rateBuckets.size > 10_000) {
+    for (const [k, v] of rateBuckets) if (v.resetAt <= now) rateBuckets.delete(k);
+  }
+  const b = rateBuckets.get(ip);
+  if (!b || b.resetAt <= now) {
+    rateBuckets.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  b.count += 1;
+  return b.count > RATE_LIMIT;
+}
+function clientIp(req: NextRequest): string {
+  const fwd = req.headers.get("x-forwarded-for");
+  return (fwd ? fwd.split(",")[0].trim() : null) || "unknown";
+}
+
+const MAX_QUESTION_CHARS = 500;
+
 export async function POST(req: NextRequest) {
   try {
+    if (rateLimited(clientIp(req))) {
+      return NextResponse.json({ error: "Too many requests. Please wait a minute and try again." }, { status: 429 });
+    }
     const { question } = await req.json();
     if (!question || typeof question !== "string") {
       return NextResponse.json({ error: "Missing question" }, { status: 400 });
+    }
+    if (question.length > MAX_QUESTION_CHARS) {
+      return NextResponse.json({ error: `Question too long (max ${MAX_QUESTION_CHARS} characters).` }, { status: 400 });
     }
 
     // 1) Natural language -> SQL
@@ -98,11 +146,15 @@ export async function POST(req: NextRequest) {
     if (!isSafeSelect(sql)) {
       return NextResponse.json({ abstain: true, reason: "I could not form a safe query for that.", sql });
     }
+    if (!onlyAllowedTables(sql)) {
+      return NextResponse.json({ abstain: true, reason: "I could not form a safe query for that.", sql });
+    }
     sql = enforceSortDirection(sql, question);
     if (!/\blimit\s+\d+/i.test(sql)) sql = sql.replace(/;?\s*$/, "") + "\nLIMIT 50";
 
-    // 2) Run on BigQuery
-    const [rows] = await bq.query({ query: sql });
+    // 2) Run on BigQuery — maximumBytesBilled caps the scan (legit queries
+    // scan megabytes; a CROSS JOIN attack would blow past 1 GB and fail).
+    const [rows] = await bq.query({ query: sql, maximumBytesBilled: "1000000000" });
     if (!rows || rows.length === 0) {
       return NextResponse.json({ abstain: true, reason: "The data does not cover that — no matching rows.", sql });
     }
@@ -129,7 +181,9 @@ export async function POST(req: NextRequest) {
       source: `BigQuery · ${PROJECT}.elections · ${MODEL}`,
     });
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : "error";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    // Never leak internals to the client (raw errors can reveal project
+    // details); the message still lands in Cloud Logging server-side.
+    console.error("ask route error:", e instanceof Error ? e.message : e);
+    return NextResponse.json({ error: "Internal error. Please try again." }, { status: 500 });
   }
 }
