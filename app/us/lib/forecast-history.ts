@@ -19,4 +19,5 @@ export const FORECAST_HISTORY: HistoryEntry[] = [
   { date: '2026-10-19', label: 'Poll refresh Oct 19 (CBS/YouGov + UH TX, ActiVote OH)', labelKo: '여론조사 업데이트 10-19 (CBS/YouGov·UH 텍사스, ActiVote 오하이오)', senateP: 54.8, houseP: 97.1 },
   { date: '2026-10-21', label: 'Poll refresh Oct 21 (RCP compilation; Marist OH, ActiVote+Quantus GA, co/efficient IA, NPA NH)', labelKo: '여론조사 업데이트 10-21 (RCP 집계; Marist 오하이오, ActiVote·Quantus 조지아, co/efficient 아이오와, NPA 뉴햄프셔)', senateP: 52.9, houseP: 97.1 },
   { date: '2026-10-23', label: 'Poll refresh Oct 23 (Fox News OH/ME/TX, Emerson TX, TPOR TX, St Anselm NH, CJ/Harper NC, Rasmussen MN, Marist MI)', labelKo: '여론조사 업데이트 10-23 (Fox News 오하이오·메인·텍사스, Emerson 텍사스, TPOR 텍사스, St Anselm 뉴햄프셔, CJ/Harper 노스캐롤라이나, Rasmussen 미네소타, Marist 미시간)', senateP: 52.9, houseP: 97.1 },
+  { date: '2026-10-26', label: 'Poll refresh Oct 26 (Trafalgar ME)', labelKo: '여론조사 업데이트 10-26 (Trafalgar 메인)', senateP: 52.7, houseP: 97.1 },
 ];

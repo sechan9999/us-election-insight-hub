@@ -16,8 +16,8 @@
 import type { RaceInput } from './forecast';
 import { aggregatePolls, type DatedPoll } from './poll-aggregation';
 
-export const DATA_AS_OF = '2026-10-23';
-export const DATA_SOURCE = 'RealClearPolitics polling averages (via uspresidentialelectionnews.com), Oct 21, 2026 compilation; RCP component polls fielded ~Sept 14–Oct 11; fresh individual polls released Oct 21–23 added as dated entries';
+export const DATA_AS_OF = '2026-10-26';
+export const DATA_SOURCE = 'RealClearPolitics polling averages (via uspresidentialelectionnews.com), Oct 21, 2026 compilation; RCP component polls fielded ~Sept 14–Oct 11; fresh individual polls released Oct 21–23 added as dated entries; Trafalgar Group ME released Oct 25 added as dated entry';
 
 export interface SenateRace extends RaceInput {
   stateKo: string;
@@ -83,7 +83,8 @@ const senateSigma = (nPolls: number, rcv = false) => {
  * Fox News/Beacon-Shaw OH (released Oct 22), Fox News/Beacon-Shaw ME (Oct 22),
  * Fox News/Beacon-Shaw TX (Oct 22), Emerson/The Hill TX (Oct 22), TPOR/Slingshot
  * TX (Oct 22), Saint Anselm NH (Oct 22), Carolina Journal/Harper NC (Oct 22),
- * Rasmussen MN (Oct 23), Marist MI (released Oct 21, after the morning check).
+ * Rasmussen MN (Oct 23), Marist MI (released Oct 21, after the morning check),
+ * Trafalgar Group ME (released Oct 25, field Oct 21–23).
  * The daily ingest will supply exact poll lists.
  */
 const RCP_DATE = '2026-10-08';
@@ -128,7 +129,8 @@ const RACE_DEFS: RaceDef[] = [
     polls: [rcp(-0.1, 7)] },
   { id: 'ME-SEN', label: 'Maine', stateKo: '메인', demCandidate: 'Troy Jackson', repCandidate: 'Susan Collins (inc.)', rating: 'Toss Up', note: 'R-held · RCV', region: 'NE', nRcpPolls: 7, rcv: true,
     polls: [rcp(1.6, 7),
-      { margin: 0, fieldEnd: '2026-10-20', n: 1514, label: 'Fox News/Beacon-Shaw (released Oct 22)' }] },
+      { margin: 0, fieldEnd: '2026-10-20', n: 1514, label: 'Fox News/Beacon-Shaw (released Oct 22)' },
+      { margin: 0, fieldEnd: '2026-10-23', n: 1077, label: 'Trafalgar Group (released Oct 25)' }] },
   { id: 'KS-SEN', label: 'Kansas', stateKo: '캔자스', demCandidate: 'Adam Hamilton', repCandidate: 'Roger Marshall (inc.)', rating: 'Toss Up', note: 'R-held', region: 'MW', nRcpPolls: 5,
     polls: [rcp(-0.3, 5)] },
   { id: 'FL-SEN', label: 'Florida', stateKo: '플로리다', demCandidate: 'Angie Nixon', repCandidate: 'Ashley Moody (appt.)', rating: 'Leans R', note: 'R-held special', region: 'S', nRcpPolls: 5,
