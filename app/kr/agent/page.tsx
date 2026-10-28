@@ -3,7 +3,7 @@
 // kr_precinct) and renders the short answer first, then the tool trace and the
 // archive-index citations. Every number shown comes from a tool call.
 "use client";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 // Minimal answer renderer: the model returns Markdown, but the page used to
 // show it as plain text (literal ** markers). Render bold, links, headers,
@@ -93,8 +93,53 @@ const EXAMPLES = [
   "Who won 서울특별시|송파구 in 2025, and by how much?",
 ];
 
-function stepSummary(s: Step): string {
-  if (!s.ok) return s.error ? `${s.error.code}: ${s.error.message_ko || s.error.message_en}` : "failed";
+// UI chrome strings. The toggle switches page titles/labels only; the agent
+// still answers in the language the question was asked in.
+type Lang = "ko" | "en";
+const T: Record<Lang, {
+  back: string; title: string; desc: string; placeholder: string; ask: string;
+  emptyQ: string; unavailable: string; notConfigured: string; abstain: string;
+  fallback: string; trace: string; details: string; sources: string;
+  citationSuffix: string; failed: string;
+}> = {
+  ko: {
+    back: "← 한국 대선 데이터로 돌아가기",
+    title: "선거 증거 에이전트",
+    desc: "한국 대통령 선거 18대(2012)–21대(2025)에 대해 물어보세요. 모든 숫자는 BigQuery 도구 호출에서 가져오며, 모델이 지어낸 수치는 없습니다. 출처는 선거별 아카이브 색인 페이지입니다. Ask in Korean or English — the agent answers in the language you asked in.",
+    placeholder: "예: 부천시 투표율 추이 2012 → 2025?",
+    ask: "묻기",
+    emptyQ: "질문을 입력하세요.",
+    unavailable: "에이전트를 사용할 수 없습니다.",
+    notConfigured: "서비스에 Meta Model API 키가 설정되지 않았습니다. 관리자가 META_MODEL_API_KEY를 설정한 뒤 다시 시도하세요.",
+    abstain: "자료에서 답할 수 없습니다.",
+    fallback: "Meta API 문제로 Gemini가 대신 답했습니다. 수치 출처(도구)는 동일합니다.",
+    trace: "도구 호출 기록 (Tool trace)",
+    details: "자세히 보기",
+    sources: "출처: ",
+    citationSuffix: "년 선거 아카이브 색인 →",
+    failed: "실패",
+  },
+  en: {
+    back: "← Back to Korean election data",
+    title: "Electoral Evidence Agent",
+    desc: "Ask about Korean presidential elections, 18th (2012) – 21st (2025). Every number comes from a BigQuery tool call — never invented by the model. Citations are the election archive index pages. Ask in Korean or English — the agent answers in the language you asked in.",
+    placeholder: "e.g. Bucheon turnout trend 2012 → 2025?",
+    ask: "Ask",
+    emptyQ: "Enter a question.",
+    unavailable: "The agent is unavailable.",
+    notConfigured: "The Meta Model API key is not configured for this service. An administrator must set META_MODEL_API_KEY and try again.",
+    abstain: "Cannot answer from the data.",
+    fallback: "Meta API issue — Gemini answered instead. The numbers still come from the same tools.",
+    trace: "Tool trace",
+    details: "Details",
+    sources: "Sources: ",
+    citationSuffix: " election archive index →",
+    failed: "failed",
+  },
+};
+
+function stepSummary(s: Step, lang: Lang): string {
+  if (!s.ok) return s.error ? `${s.error.code}: ${lang === "en" ? (s.error.message_en || s.error.message_ko) : (s.error.message_ko || s.error.message_en)}` : T[lang].failed;
   const d = s.data as Record<string, unknown> | undefined;
   if (!d) return "ok";
   if (typeof d.turnout_pct === "number") return `turnout ${d.turnout_pct}%`;
@@ -112,10 +157,21 @@ export default function Agent() {
   const [loading, setLoading] = useState(false);
   const [res, setRes] = useState<Res | null>(null);
   const [err, setErr] = useState("");
+  const [lang, setLang] = useState<Lang>("ko");
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("lang") === "en") setLang("en");
+  }, []);
+  const t = T[lang];
+  function setLanguage(l: Lang) {
+    setLang(l);
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", l);
+    window.history.replaceState(null, "", url);
+  }
 
   async function ask(question?: string) {
     const query = (question ?? q).trim();
-    if (!query) { setErr("질문을 입력하세요."); return; }
+    if (!query) { setErr(t.emptyQ); return; }
     setErr(""); setLoading(true); setRes(null);
     try {
       const r = await fetch("/api/agent", {
@@ -133,24 +189,32 @@ export default function Agent() {
 
   return (
     <main className="mx-auto min-h-screen max-w-3xl px-4 py-8 text-neutral-200">
-      <a href="/kr" className="text-sm text-blue-300">← 한국 대선 데이터로 돌아가기</a>
-      <h1 className="mt-3 text-3xl font-bold">선거 증거 에이전트</h1>
+      <div className="flex items-center justify-between">
+        <a href="/kr" className="text-sm text-blue-300">{t.back}</a>
+        <div className="flex overflow-hidden rounded-lg border border-white/15 text-sm">
+          {(["ko", "en"] as Lang[]).map((l) => (
+            <button key={l} onClick={() => setLanguage(l)}
+              className={`px-3 py-1 ${lang === l ? "bg-teal-800 text-white" : "text-neutral-400"}`}>
+              {l === "ko" ? "한국어" : "English"}
+            </button>
+          ))}
+        </div>
+      </div>
+      <h1 className="mt-3 text-3xl font-bold">{t.title}</h1>
       <p className="mt-1 text-sm text-neutral-400">
-        한국 대통령 선거 18대(2012)–21대(2025)에 대해 물어보세요. 모든 숫자는 BigQuery 도구 호출에서 가져오며,
-        모델이 지어낸 수치는 없습니다. 출처는 선거별 아카이브 색인 페이지입니다.
-        Ask in Korean or English — the agent answers in the language you asked in.
+        {t.desc}
       </p>
 
       <div className="mt-6 flex gap-2">
         <input
           value={q} onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && ask()}
-          placeholder="예: 부천시 투표율 추이 2012 → 2025?"
+          placeholder={t.placeholder}
           className="flex-1 rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-neutral-100 placeholder:text-neutral-500"
         />
         <button onClick={() => ask()} disabled={loading}
           className="rounded-lg border border-white/15 bg-teal-800 px-5 py-2.5 font-medium text-white disabled:opacity-50">
-          {loading ? "…" : "묻기"}
+          {loading ? "…" : t.ask}
         </button>
       </div>
 
@@ -166,17 +230,17 @@ export default function Agent() {
       {err && <p className="mt-4 text-red-400">{err}</p>}
       {res?.error && (
         <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4">
-          <strong>에이전트를 사용할 수 없습니다.</strong>
+          <strong>{t.unavailable}</strong>
           <p className="mt-1 text-sm text-neutral-400">
             {res.error === "agent_not_configured"
-              ? "서비스에 Meta Model API 키가 설정되지 않았습니다. 관리자가 META_MODEL_API_KEY를 설정한 뒤 다시 시도하세요."
+              ? t.notConfigured
               : `Error: ${res.error}`}
           </p>
         </div>
       )}
       {res?.abstain && (
         <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4">
-          <strong>자료에서 답할 수 없습니다.</strong>
+          <strong>{t.abstain}</strong>
           <p className="mt-1 text-sm text-neutral-400">{res.reason}</p>
         </div>
       )}
@@ -184,7 +248,7 @@ export default function Agent() {
         <div className="mt-6">
           {res.fallback && (
             <div className="mb-3 rounded-xl border border-amber-400/30 bg-amber-400/10 p-3 text-sm text-amber-200">
-              Meta API 문제로 Gemini가 대신 답했습니다. 수치 출처(도구)는 동일합니다.
+              {t.fallback}
             </div>
           )}
           <div className="rounded-xl border border-white/10 bg-white/5 p-5">
@@ -193,16 +257,16 @@ export default function Agent() {
 
           {res.steps && res.steps.length > 0 && (
             <div className="mt-4">
-              <h2 className="text-sm font-semibold text-neutral-300">도구 호출 기록 (Tool trace)</h2>
+              <h2 className="text-sm font-semibold text-neutral-300">{t.trace}</h2>
               <ul className="mt-2 space-y-2">
                 {res.steps.map((s, i) => (
                   <li key={i} className="rounded-lg border border-white/10 bg-black/30 p-3 text-sm">
                     <span className={s.ok ? "text-emerald-300" : "text-red-300"}>
                       {s.ok ? "✓" : "✗"} {s.tool}
                     </span>
-                    <span className="ml-2 text-neutral-400">{stepSummary(s)}</span>
+                    <span className="ml-2 text-neutral-400">{stepSummary(s, lang)}</span>
                     <details className="mt-1">
-                      <summary className="cursor-pointer text-xs text-neutral-500">자세히 보기</summary>
+                      <summary className="cursor-pointer text-xs text-neutral-500">{t.details}</summary>
                       <pre className="mt-1 overflow-x-auto text-xs text-neutral-400">{JSON.stringify({ args: s.args, data: s.data, error: s.error }, null, 2)}</pre>
                     </details>
                   </li>
@@ -213,11 +277,11 @@ export default function Agent() {
 
           {res.citations && res.citations.length > 0 && (
             <div className="mt-4 text-sm">
-              <span className="text-neutral-400">출처: </span>
+              <span className="text-neutral-400">{t.sources}</span>
               {res.citations.map((c) => (
                 <a key={c.election} href={c.citation_url} target="_blank" rel="noopener noreferrer"
                   className="mr-3 text-blue-300 hover:underline">
-                  {c.election_year}년 선거 아카이브 색인 →
+                  {c.election_year}{t.citationSuffix}
                 </a>
               ))}
             </div>
