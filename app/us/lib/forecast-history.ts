@@ -20,4 +20,5 @@ export const FORECAST_HISTORY: HistoryEntry[] = [
   { date: '2026-10-21', label: 'Poll refresh Oct 21 (RCP compilation; Marist OH, ActiVote+Quantus GA, co/efficient IA, NPA NH)', labelKo: '여론조사 업데이트 10-21 (RCP 집계; Marist 오하이오, ActiVote·Quantus 조지아, co/efficient 아이오와, NPA 뉴햄프셔)', senateP: 52.9, houseP: 97.1 },
   { date: '2026-10-23', label: 'Poll refresh Oct 23 (Fox News OH/ME/TX, Emerson TX, TPOR TX, St Anselm NH, CJ/Harper NC, Rasmussen MN, Marist MI)', labelKo: '여론조사 업데이트 10-23 (Fox News 오하이오·메인·텍사스, Emerson 텍사스, TPOR 텍사스, St Anselm 뉴햄프셔, CJ/Harper 노스캐롤라이나, Rasmussen 미네소타, Marist 미시간)', senateP: 52.9, houseP: 97.1 },
   { date: '2026-10-26', label: 'Poll refresh Oct 26 (Trafalgar ME)', labelKo: '여론조사 업데이트 10-26 (Trafalgar 메인)', senateP: 52.7, houseP: 97.1 },
+  { date: '2026-10-28', label: 'Poll refresh Oct 28 (12 polls, 8 races: Echelon x5, NYT/Siena MN/FL, Suffolk OH, Glengariff MI, Univision TX, Marist ME, ActiVote FL)', labelKo: '여론조사 업데이트 10-28 (12건, 8개주: Echelon 5건, NYT/Siena 미네소타·플로리다, Suffolk 오하이오, Glengariff 미시간, Univision 텍사스, Marist 메인, ActiVote 플로리다)', senateP: 56.3, houseP: 97.1 },
 ];
