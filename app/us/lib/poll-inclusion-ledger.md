@@ -12,7 +12,17 @@ change between refreshes. Inclusion window rule: a poll qualifies when it was
 released after the current DATA_AS_OF and is not inside the Oct 21, 2026 RCP
 compilation window (to avoid double-counting the RCP consensus pseudo-poll).
 
+Standing inclusion principle (HK, 2026-10-28): include EVERY poll unless it
+comes from a firm that deliberately manipulates public opinion; when a poll
+has a sponsor, disclose the sponsor. Partisan lean alone is not a reason to
+exclude. This principle supersedes the Oct 26, 2026 reversal decision (see
+the superseded rows below).
+
 ## Carried exclusions (decided earlier, still in force)
+
+The six Oct 22–23 rows below are SUPERSEDED: they were INCLUDED on
+2026-10-28 under the standing inclusion principle above. They are kept here
+so the decision history stays readable.
 
 | Poll | Race | Figures | Decision date | Reason |
 |---|---|---|---|---|
@@ -27,8 +37,27 @@ compilation window (to avoid double-counting the RCP consensus pseudo-poll).
 
 Note on the reversal: on 2026-10-26 HK first decided to include the six
 Oct 22–23 polls at the Oct 28 refresh, then reversed the decision the same
-day. The reversal is the standing decision; a later refresh reuses it unless
-HK changes it.
+day. On 2026-10-28 HK replaced the reversal with the standing inclusion
+principle above, and the six were included the same day (see the amendment
+section below). The reversal no longer governs any refresh.
+
+## Refresh 2026-10-28 (amendment) — six Oct 22–23 polls included
+
+Decision date 2026-10-28 (HK): the six are included under the standing
+inclusion principle — none of the three firms is a deliberate-manipulation
+firm, and partisan lean alone does not exclude. No separate sponsor exists
+for these six beyond the firm name itself. Result vs the published Oct 28
+run: Senate 56.3% → 55.9% (−0.4pp), expected seats 50.57 → 50.55, band
+47–54 unchanged, House unchanged.
+
+| Poll | Race | Field dates | n | Margin (D−R) | Source |
+|---|---|---|---|---|---|
+| InsiderAdvantage | OH-SEN | Oct 21–22 | 1,200 LV | +3 (Brown 47 / Husted 44) | 270toWin OH page |
+| InsiderAdvantage | MI-SEN | Oct 21–22 | 1,200 LV | +1 (El-Sayed 47 / Rogers 46) | 270toWin MI page |
+| InsiderAdvantage | IA-SEN | Oct 21–22 | 1,200 LV | −2 (Turek 45 / Hinson 47) | 270toWin IA page |
+| InsiderAdvantage | KS-SEN | ended Oct 22 | 1,200 LV | −1 (Hamilton 47 / Marshall 48) | PollingSource KS |
+| RedBox Research | MI-SEN | ended Oct 23 | 2,696 LV | +5 (El-Sayed 49 / Rogers 44) | PollingSource |
+| Verasight | TX-SEN | ended Oct 23 | 601 LV | +3 (Talarico 48 / Paxton 45) | 270toWin TX page |
 
 ## Refresh 2026-10-28 — included (12 polls, 8 races)
 
