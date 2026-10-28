@@ -1,15 +1,22 @@
 // Electoral Evidence Agent API — Muse Spark (Meta Model API) function calling
-// over BigQuery kr_precinct. Mirrors /api/ask's discipline: per-IP rate limit,
-// 500-char question cap, 1 GB scan cap (in tools.ts), generic errors.
-// Every number in the answer comes from a tool call; the model never generates
-// figures. Citations are archive index pages, never per-figure sheet URLs (v1).
+// over BigQuery kr_precinct, with a labeled Gemini fallback.
+// The fallback runs ONLY when Meta fails to deliver an answer (API error, or
+// no final message after the loop). It never triggers on tool errors: a tool
+// error (NOT_FOUND, AMBIGUOUS_DISTRICT, ...) is normal guardrail behavior and
+// is answered by the model in the same loop. Tool execution is shared, so
+// figures come from the same BigQuery tools either way; the response labels
+// which model answered.
+// Mirrors /api/ask's discipline: per-IP rate limit, 500-char question cap,
+// 1 GB scan cap (in tools.ts), generic errors.
 import { NextRequest, NextResponse } from "next/server";
 import { TOOLS, citationsFor, type ToolResult } from "./lib/tools";
+import { runGeminiLoop, type LoopResult, type Step } from "./lib/gemini";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const MODEL = "muse-spark-1.3";
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 const META_API = "https://api.meta.ai/v1/responses";
 const MAX_QUESTION_CHARS = 500;
 const MAX_ITERATIONS = 4;
@@ -140,6 +147,48 @@ function finalText(output: MsgItem[]): string {
   return "";
 }
 
+async function runMetaLoop(apiKey: string, question: string): Promise<LoopResult> {
+  const input: MsgItem[] = [
+    { role: "user", content: [{ type: "input_text", text: question }] },
+  ];
+  const steps: Step[] = [];
+  const elections = new Set<number>();
+  for (let iter = 0; iter < MAX_ITERATIONS; iter++) {
+    const { output, error } = await callSpark(apiKey, input);
+    if (error) return { answer: "", steps, elections: [...elections], error };
+    const calls = output.filter((o) => o.type === "function_call");
+    input.push(...output);
+    if (!calls.length) {
+      return { answer: finalText(output), steps, elections: [...elections] };
+    }
+    for (const call of calls) {
+      const name = call.name as string;
+      let args: Record<string, unknown> = {};
+      try { args = JSON.parse((call.arguments as string) || "{}"); } catch { args = {}; }
+      const fn = TOOLS[name];
+      let result: ToolResult;
+      if (!fn) {
+        result = { ok: false, error: { code: "UNKNOWN_TOOL", message_en: `Unknown tool "${name}".`, message_ko: `알 수 없는 도구 "${name}"입니다.`, suggestions: [] } };
+      } else {
+        result = await fn(args);
+      }
+      if (result.ok) {
+        for (const c of result.citations as { election: number }[]) elections.add(c.election);
+        steps.push({ tool: name, args, ok: true, data: result.data });
+      } else {
+        steps.push({ tool: name, args, ok: false, error: result.error });
+      }
+      input.push({ type: "function_call_output", call_id: call.call_id, output: JSON.stringify(result) });
+    }
+    if (iter === MAX_ITERATIONS - 1) {
+      const { output: last, error: lastError } = await callSpark(apiKey, input);
+      if (lastError) return { answer: "", steps, elections: [...elections], error: lastError };
+      return { answer: finalText(last), steps, elections: [...elections] };
+    }
+  }
+  return { answer: "", steps, elections: [...elections], error: "Meta loop ended without a final answer." };
+}
+
 export async function POST(req: NextRequest) {
   try {
     if (rateLimited(clientIp(req))) {
@@ -147,6 +196,8 @@ export async function POST(req: NextRequest) {
     }
     const apiKey = process.env.META_MODEL_API_KEY;
     if (!apiKey) {
+      // Missing key is a configuration signal, not a runtime failure: do NOT
+      // silently fall back, so a misconfigured service stays visible.
       return NextResponse.json({
         error: "agent_not_configured",
         reason: "The agent's Meta Model API key is not set on this service. Set META_MODEL_API_KEY and redeploy.",
@@ -160,56 +211,33 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: `Question too long (max ${MAX_QUESTION_CHARS} characters).` }, { status: 400 });
     }
 
-    const input: MsgItem[] = [
-      { role: "user", content: [{ type: "input_text", text: question }] },
-    ];
-    const steps: { tool: string; args: Record<string, unknown>; ok: boolean; data?: unknown; error?: unknown }[] = [];
-    const usedElections = new Set<number>();
-    let answer = "";
-    for (let iter = 0; iter < MAX_ITERATIONS; iter++) {
-      const { output, error } = await callSpark(apiKey, input);
-      if (error) {
-        return NextResponse.json({ error, steps }, { status: 502 });
-      }
-      const calls = output.filter((o) => o.type === "function_call");
-      input.push(...output);
-      if (!calls.length) {
-        answer = finalText(output);
-        break;
-      }
-      for (const call of calls) {
-        const name = call.name as string;
-        let args: Record<string, unknown> = {};
-        try { args = JSON.parse((call.arguments as string) || "{}"); } catch { args = {}; }
-        const fn = TOOLS[name];
-        let result: ToolResult;
-        if (!fn) {
-          result = { ok: false, error: { code: "UNKNOWN_TOOL", message_en: `Unknown tool "${name}".`, message_ko: `알 수 없는 도구 "${name}"입니다.`, suggestions: [] } };
-        } else {
-          result = await fn(args);
-        }
-        if (result.ok) {
-          for (const c of result.citations as { election: number }[]) usedElections.add(c.election);
-          steps.push({ tool: name, args, ok: true, data: result.data });
-        } else {
-          steps.push({ tool: name, args, ok: false, error: result.error });
-        }
-        input.push({ type: "function_call_output", call_id: call.call_id, output: JSON.stringify(result) });
-      }
-      // If the model only emitted calls, loop again for its final message.
-      if (iter === MAX_ITERATIONS - 1) {
-        const { output: last } = await callSpark(apiKey, input);
-        answer = finalText(last);
-      }
+    const meta = await runMetaLoop(apiKey, question);
+    if (meta.answer) {
+      return NextResponse.json({
+        answer: meta.answer, steps: meta.steps,
+        citations: citationsFor(meta.elections.sort((a, b) => a - b)),
+        source: `Meta Model API · ${MODEL} · BigQuery electoral-hub-510410.elections.kr_precinct`,
+        model: MODEL, fallback: false,
+      });
     }
-    if (!answer) {
-      return NextResponse.json({ abstain: true, reason: "The agent did not produce a final answer.", steps }, { status: 200 });
+    // Meta failed to deliver (API error incl. exhausted credits, or no final
+    // message): fall back to Gemini with the same tools, labeled as such.
+    const fallbackReason = meta.error || "Meta Model API returned no final answer.";
+    console.error("agent falling back to Gemini:", fallbackReason);
+    const gemini = await runGeminiLoop(question, SYSTEM, TOOLS_SCHEMA);
+    if (gemini.answer) {
+      return NextResponse.json({
+        answer: gemini.answer, steps: gemini.steps,
+        citations: citationsFor(gemini.elections.sort((a, b) => a - b)),
+        source: `Gemini (fallback) · ${GEMINI_MODEL} · BigQuery electoral-hub-510410.elections.kr_precinct`,
+        model: GEMINI_MODEL, fallback: true, fallback_reason: fallbackReason,
+      });
     }
     return NextResponse.json({
-      answer, steps,
-      citations: citationsFor([...usedElections].sort((a, b) => a - b)),
-      source: `Meta Model API · ${MODEL} · BigQuery electoral-hub-510410.elections.kr_precinct`,
-    });
+      error: "Both Meta and Gemini failed to answer.",
+      meta_error: fallbackReason, gemini_error: gemini.error || "no answer",
+      steps: gemini.steps.length ? gemini.steps : meta.steps,
+    }, { status: 502 });
   } catch (e: unknown) {
     console.error("agent route error:", e instanceof Error ? e.message : e);
     return NextResponse.json({ error: "Internal error. Please try again." }, { status: 500 });

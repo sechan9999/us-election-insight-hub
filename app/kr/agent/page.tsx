@@ -13,6 +13,7 @@ type Citation = { election: number; election_year: number; citation_url: string 
 type Res = {
   answer?: string; steps?: Step[]; citations?: Citation[]; source?: string;
   abstain?: boolean; reason?: string; error?: string;
+  model?: string; fallback?: boolean; fallback_reason?: string;
 };
 
 const EXAMPLES = [
@@ -111,6 +112,11 @@ export default function Agent() {
       )}
       {res?.answer && (
         <div className="mt-6">
+          {res.fallback && (
+            <div className="mb-3 rounded-xl border border-amber-400/30 bg-amber-400/10 p-3 text-sm text-amber-200">
+              Meta API 문제로 Gemini가 대신 답했습니다. 수치 출처(도구)는 동일합니다.
+            </div>
+          )}
           <div className="rounded-xl border border-white/10 bg-white/5 p-5">
             <div className="whitespace-pre-wrap text-base leading-relaxed text-neutral-100">{res.answer}</div>
           </div>
