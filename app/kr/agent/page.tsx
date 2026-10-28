@@ -86,7 +86,7 @@ type Res = {
   model?: string; fallback?: boolean; fallback_reason?: string;
 };
 
-const EXAMPLES = [
+const EXAMPLES_KO = [
   "부천시 투표율 추이 2012 → 2025?",
   "2017→2022년 심상정 득표율이 가장 많이 떨어진 지역 5곳은?",
   "2025년 서울특별시|송파구 1위와 2위의 표 차이는?",
@@ -136,6 +136,19 @@ const T: Record<Lang, {
     citationSuffix: " election archive index →",
     failed: "failed",
   },
+};
+
+// Sample questions follow the UI language. English chips keep Korean proper
+// nouns (district keys, candidate names) because the tools match on those;
+// the question framing is English, as in the verified Songpa question.
+const EXAMPLES: Record<Lang, string[]> = {
+  ko: EXAMPLES_KO,
+  en: [
+    "Who won 서울특별시|송파구 in 2025, and by how much?",
+    "Show the turnout trend for 경기도|부천시 from 2012 to 2025.",
+    "Which 5 districts lost the most 심상정 vote share from 2017 to 2022?",
+    "What was the margin in 서울특별시|송파구 in 2025?",
+  ],
 };
 
 function stepSummary(s: Step, lang: Lang): string {
@@ -219,7 +232,7 @@ export default function Agent() {
       </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
-        {EXAMPLES.map((ex) => (
+        {EXAMPLES[lang].map((ex) => (
           <button key={ex} onClick={() => { setQ(ex); ask(ex); }}
             className="rounded-md border border-white/15 px-2 py-1 text-xs text-blue-300 hover:bg-white/10">
             {ex}
