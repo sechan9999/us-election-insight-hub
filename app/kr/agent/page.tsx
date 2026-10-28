@@ -3,7 +3,77 @@
 // kr_precinct) and renders the short answer first, then the tool trace and the
 // archive-index citations. Every number shown comes from a tool call.
 "use client";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
+
+// Minimal answer renderer: the model returns Markdown, but the page used to
+// show it as plain text (literal ** markers). Render bold, links, headers,
+// and lists. Text is never injected as HTML — React escapes all string
+// children — so a model answer containing HTML tags displays as text.
+function renderInline(text: string, keyPrefix: string): ReactNode[] {
+  const nodes: ReactNode[] = [];
+  const re = /(\*\*[^*]+\*\*)|(https?:\/\/[^\s)]+)/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let i = 0;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) nodes.push(text.slice(last, m.index));
+    if (m[1]) {
+      nodes.push(<strong key={`${keyPrefix}-b${i}`}>{m[1].slice(2, -2)}</strong>);
+    } else if (m[2]) {
+      nodes.push(<a key={`${keyPrefix}-a${i}`} href={m[2]} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">{m[2]}</a>);
+    }
+    last = m.index + m[0].length;
+    i++;
+  }
+  if (last < text.length) nodes.push(text.slice(last));
+  return nodes;
+}
+
+function renderAnswer(text: string): ReactNode[] {
+  const lines = text.split("\n");
+  const blocks: ReactNode[] = [];
+  let i = 0;
+  let key = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (line.trim() === "") { i++; continue; }
+    if (/^\s*-\s+/.test(line)) {
+      const items: string[] = [];
+      while (i < lines.length && /^\s*-\s+/.test(lines[i])) {
+        items.push(lines[i].replace(/^\s*-\s+/, ""));
+        i++;
+      }
+      blocks.push(
+        <ul key={key++} className="list-disc space-y-1 pl-5">
+          {items.map((it, j) => <li key={j}>{renderInline(it, `ul${key}-${j}`)}</li>)}
+        </ul>,
+      );
+      continue;
+    }
+    if (/^\s*\d+\.\s+/.test(line)) {
+      const items: string[] = [];
+      while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
+        items.push(lines[i].replace(/^\s*\d+\.\s+/, ""));
+        i++;
+      }
+      blocks.push(
+        <ol key={key++} className="list-decimal space-y-1 pl-5">
+          {items.map((it, j) => <li key={j}>{renderInline(it, `ol${key}-${j}`)}</li>)}
+        </ol>,
+      );
+      continue;
+    }
+    const header = line.match(/^#{1,6}\s+(.*)$/);
+    if (header) {
+      blocks.push(<p key={key++} className="font-semibold">{renderInline(header[1], `h${key}`)}</p>);
+      i++;
+      continue;
+    }
+    blocks.push(<p key={key++}>{renderInline(line, `p${key}`)}</p>);
+    i++;
+  }
+  return blocks;
+}
 
 type Step = {
   tool: string; args: Record<string, unknown>; ok: boolean;
@@ -118,7 +188,7 @@ export default function Agent() {
             </div>
           )}
           <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-            <div className="whitespace-pre-wrap text-base leading-relaxed text-neutral-100">{res.answer}</div>
+            <div className="space-y-3 text-base leading-relaxed text-neutral-100">{renderAnswer(res.answer)}</div>
           </div>
 
           {res.steps && res.steps.length > 0 && (
