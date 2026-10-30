@@ -169,3 +169,27 @@ Adjudication notes for this refresh (2026-10-30):
   values do not replace the average (Oct 28 precedent).
 - Result vs the Oct 28 run: Senate 55.9% → 58.1% (+2.2pp), expected seats
   50.55 → 50.68, band 47–54 unchanged, House unchanged (97.1%).
+
+## Catch-up decision for Monday 2026-11-02 refresh (HK decision 2026-10-30)
+
+Three pre-Oct-28 releases the Oct 28 run had the opportunity to include but
+did not: INCLUDE all three as catch-up items in the Monday Nov 2, 2026
+refresh, even though their release dates predate the current DATA_AS_OF
+(2026-10-30) and the normal "released after DATA_AS_OF" window rule would
+skip them. This exception applies to these three polls only.
+
+| Poll | Race | Release | Notes |
+|---|---|---|---|
+| St. Pete Polls | FL-SEN | Oct 27 | Topline, field dates, n to be verified from the primary source at the Monday run and recorded in that refresh's section. |
+| High Point University | NC-SEN | Oct 27 | Same — verify from the primary source at the Monday run. |
+| Rasmussen Reports | NH-SEN | Oct 25 | Same — verify from the primary source at the Monday run. |
+
+Notes:
+- Each poll gets its own ledger row in the Monday refresh section with
+  verified figures; no figure is recorded here in advance because none was
+  verified before this decision.
+- Sponsor disclosure follows the standing inclusion principle (HK,
+  2026-10-28): lean alone never excludes; only deliberate manipulation
+  would.
+- After the Monday Nov 2 run includes these polls, remove the one-time
+  catch-up paragraph from the refresh cron body.
