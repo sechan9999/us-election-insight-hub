@@ -104,3 +104,68 @@ Adjudication notes for this refresh (decision date 2026-10-28):
   and +8.3 must not be presented as an Oct 28 reading. A new national
   datapoint exists (Echelon/NetChoice generic ballot, Dem +5, single poll,
   released Oct 27) but a single poll does not replace the RCP average.
+
+## Catch-up decision for Friday 2026-10-30 refresh (HK decision 2026-10-29)
+
+MSU State of the State Survey / YouGov, MI-SEN: INCLUDE as a catch-up item
+in the Friday Oct 30, 2026 refresh, even though its field dates (Oct 2–19)
+and release date (Oct 26) predate the current DATA_AS_OF (2026-10-28).
+Without this flag the normal "released after DATA_AS_OF" window rule would
+skip it a second time. This exception applies to this one poll only and
+does not change the window rule for other polls.
+
+| Poll | Race | Field dates | n | Margin (D−R) | Source |
+|---|---|---|---|---|---|
+| MSU State of the State Survey / YouGov | MI-SEN | Oct 2–19 | 836 LV | +3.5 (El-Sayed 47.7 / Rogers 44.2) | Detroit Free Press, Oct 26; 270toWin MI page |
+
+Notes:
+- Margin uses the detailed split (47.7/44.2), consistent with the
+  Glengariff MI precedent (detailed 51.4/45.1 → margin 6.3). The rounded
+  topline (48/46, margin +2) is NOT the model input.
+- Sample-size conflict: one aggregator lists 863 LV; the Free Press /
+  270toWin pair gives 836 LV, which is the recorded value. The 27-person
+  difference is immaterial to the aggregation.
+- fieldEnd = 2026-10-19 (end of field period, not the Oct 26 release
+  date), per the model's recency-weighting convention.
+- Sponsor: Michigan State University (university survey, no separate
+  sponsor disclosed). No deliberate-manipulation concern; included under
+  the standing inclusion principle (HK, 2026-10-28).
+- After the Friday Oct 30 run includes this poll, remove the one-time
+  catch-up paragraph from the refresh cron body.
+
+## Refresh 2026-10-30 — included (9 polls, 6 races)
+
+| Poll | Race | Field dates | n | Margin (D−R) | Source |
+|---|---|---|---|---|---|
+| CNN / SSRS | MI-SEN | Oct 20–27 | 768 LV | +7 (El-Sayed 49 / Rogers 42) | CNN, Oct 29 |
+| CNN / SSRS | TX-SEN | Oct 20–27 | 923 LV | +6 (Talarico 49 / Paxton 43) | CNN, Oct 29 |
+| CNN / SSRS | ME-SEN | Oct 20–26 | 783 LV | +4 (Jackson 49 / Collins 45) | CNN, Oct 29 |
+| CNN / SSRS | KS-SEN | Oct 20–26 | 838 LV | +4 (Hamilton 49 / Marshall 45) | CNN, Oct 29 |
+| MSU State of the State Survey / YouGov | MI-SEN | Oct 2–19 | 836 LV | +3.5 (El-Sayed 47.7 / Rogers 44.2) | Detroit Free Press, Oct 26; HK catch-up decision Oct 29 |
+| CBS Detroit / Mitchell Research | MI-SEN | Oct 26–27 | 636 LV | +7 (El-Sayed 51 / Rogers 44) | Political Wire, Oct 28 6:44pm ET; CBS Detroit report |
+| Texas Southern University / YouGov | TX-SEN | Oct 21–25 | 2,000 LV | +2 (Talarico 49 / Paxton 47) | USA Today, Oct 29 (released Oct 29) |
+| UMass Lowell / YouGov | NH-SEN | Oct 2–19 | 600 LV | +7 (Pappas 48 / Sununu 41) | UMass Lowell release, Oct 28; 270toWin NH page |
+| co/efficient | IA-SEN | Oct 28 | 1,020 LV | −2 (Turek 46 / Hinson 48) | co/efficient battlegrounds page (fielded Oct 28) |
+
+Adjudication notes for this refresh (2026-10-30):
+- Timing boundary: the Oct 28 refresh ran at 08:00 EDT Oct 28. CBS/Mitchell
+  MI (Oct 28 evening), UMass Lowell NH (Oct 28 release), and co/efficient
+  IA (fielded Oct 28) all postdate that run's data collection, so they
+  qualify as new for this run even though their dates equal DATA_AS_OF's
+  predecessor date. RCP groups the CNN polls under Oct 28, but CNN's own
+  article is dated Oct 29, which governs (primary-source-date rule, as in
+  the Oct 28 adjudication). TSU TX is likewise dated Oct 29 by USA Today.
+- Sponsorship: co/efficient IA is flagged R-sponsored by PollingSource.
+  Under the standing inclusion principle, sponsorship is disclosed, not
+  a reason to exclude; no deliberate-manipulation concern was found.
+- NOT added (boundary, for HK decision): pre-Oct-28 releases the Oct 28
+  run had the opportunity to include but did not — e.g. St. Pete Polls FL
+  (Oct 27), High Point NC (Oct 27), Rasmussen NH (Oct 25). Re-adjudicating
+  those is not this run's scope; only the HK-flagged MSU catch-up was
+  pulled back across the window. If HK wants them, they enter at a later
+  refresh with their own ledger row.
+- House: generic-ballot input UNCHANGED at Dem +8.3 (last verified value);
+  no new RCP generic-ballot average was adopted, and single-poll national
+  values do not replace the average (Oct 28 precedent).
+- Result vs the Oct 28 run: Senate 55.9% → 58.1% (+2.2pp), expected seats
+  50.55 → 50.68, band 47–54 unchanged, House unchanged (97.1%).

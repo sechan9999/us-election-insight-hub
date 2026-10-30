@@ -22,4 +22,5 @@ export const FORECAST_HISTORY: HistoryEntry[] = [
   { date: '2026-10-26', label: 'Poll refresh Oct 26 (Trafalgar ME)', labelKo: '여론조사 업데이트 10-26 (Trafalgar 메인)', senateP: 52.7, houseP: 97.1 },
   { date: '2026-10-28', label: 'Poll refresh Oct 28 (12 polls, 8 races: Echelon x5, NYT/Siena MN/FL, Suffolk OH, Glengariff MI, Univision TX, Marist ME, ActiVote FL)', labelKo: '여론조사 업데이트 10-28 (12건, 8개주: Echelon 5건, NYT/Siena 미네소타·플로리다, Suffolk 오하이오, Glengariff 미시간, Univision 텍사스, Marist 메인, ActiVote 플로리다)', senateP: 56.3, houseP: 97.1 },
   { date: '2026-10-28', label: 'Six Oct 22–23 polls added (HK inclusion principle)', labelKo: '10-22–23일 6건 추가 (HK 포함 원칙)', senateP: 55.9, houseP: 97.1 },
+  { date: '2026-10-30', label: 'Poll refresh Oct 30 (9 polls, 6 races: CNN/SSRS x4, MSU MI catch-up, CBS/Mitchell MI, TSU TX, UMass Lowell NH, co/efficient IA)', labelKo: '여론조사 업데이트 10-30 (9건, 6개주: CNN/SSRS 4건, MSU 미시간 보충, CBS/Mitchell 미시간, TSU 텍사스, UMass Lowell 뉴햄프셔, co/efficient 아이오와)', senateP: 58.1, houseP: 97.1 },
 ];
