@@ -26,6 +26,12 @@
 //     "firstChoiceOnly": true, "note": "free text, ignored by the merge" }
 // Only the fields present are applied. A race with no feed row is created
 // only when countSource is given; otherwise it is skipped with a warning.
+//
+// Special key "HOUSE": { "called": "D"|"R", "calledBy": "NYT" } sets the
+// feed-level House-majority call (feed.houseCalled / feed.houseCalledBy).
+// It creates NO race row. Like race calls, it comes only from an operator
+// override citing NYT — never from automated data — and it is shown only
+// while present in the overrides file.
 
 import type { LiveFeed, LiveRace } from '../../app/us/lib/live';
 
@@ -50,6 +56,19 @@ export function applyOverrides(feed: LiveFeed, overrides: Overrides | null): { w
   const warnings: string[] = [];
   if (!overrides) return { warnings };
   for (const [raceId, o] of Object.entries(overrides)) {
+    if (raceId === 'HOUSE') {
+      if (o.called !== 'D' && o.called !== 'R') {
+        warnings.push(`HOUSE: bad called value ${JSON.stringify(o.called)}, skipped`);
+        continue;
+      }
+      if (!o.calledBy) {
+        warnings.push('HOUSE: called without calledBy, skipped');
+        continue;
+      }
+      feed.houseCalled = o.called;
+      feed.houseCalledBy = o.calledBy;
+      continue;
+    }
     if (o.called !== undefined && o.called !== 'D' && o.called !== 'R') {
       warnings.push(`${raceId}: bad called value ${JSON.stringify(o.called)}, skipped`);
       continue;

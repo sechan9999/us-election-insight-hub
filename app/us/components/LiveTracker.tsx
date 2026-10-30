@@ -91,6 +91,11 @@ export default function LiveTracker({ lang, races, daysLeft }: { lang: Lang; rac
 
       {feed && (
         <div className="mt-4 overflow-x-auto">
+          {feed.houseCalled && (
+            <p className="mb-3 rounded bg-amber-400/10 px-3 py-2 text-sm font-medium text-amber-300">
+              {t(lang, 'liveHouseCalled', { p: feed.houseCalled, s: feed.houseCalledBy ?? 'NYT' })}
+            </p>
+          )}
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-white/10 text-neutral-400">

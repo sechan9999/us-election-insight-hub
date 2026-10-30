@@ -41,6 +41,10 @@ export interface LiveFeed {
   mode?: 'general' | 'test';
   races: LiveRace[];
   sources?: SourceStatus[];
+  // House-majority call: set ONLY from an operator override citing NYT
+  // (overrides key "HOUSE"), never from automated data. Absent until NYT calls it.
+  houseCalled?: 'D' | 'R' | null;
+  houseCalledBy?: string;
 }
 
 export const ELECTION_DAY = '2026-11-03';

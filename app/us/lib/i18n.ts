@@ -222,6 +222,7 @@ const S = {
   liveCountSource: { ko: '개표 출처', en: 'Count source' },
   liveDays: { ko: '선거일까지 {d}일', en: '{d} days to Election Day' },
   liveCalled: { ko: '확정', en: 'Called' },
+  liveHouseCalled: { ko: '하원 과반 판정: {p} (출처: {s})', en: 'House majority called: {p} (source: {s})' },
   liveReporting: { ko: '개표율', en: 'Reporting' },
   methodTitle: { ko: '방법론', en: 'Methodology' },
   method1: {
