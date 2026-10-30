@@ -2,6 +2,7 @@
 //
 //   npx tsx scripts/ingest-results.ts --mode general --out results.json   # election window
 //   npx tsx scripts/ingest-results.ts --mode test                         # 2026 primaries, checks known values
+//   npx tsx scripts/ingest-results.ts --mode test --overrides o.json --out f.json  # merge operator overrides (test only)
 //   npx tsx scripts/ingest-results.ts --mode general --rehearsal          # ignore poll-close gates to exercise
 //                                                                         # states' pre-election TEST files (output marked mode: test)
 //   --previous feed.json   keep a state's last good row if its fetch fails
@@ -10,6 +11,7 @@
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { runIngest, summaryLines } from '../ingest/results/run';
+import { parseOverrides } from '../ingest/results/overrides';
 import type { LiveFeed } from '../app/us/lib/live';
 
 const args = Object.fromEntries(
@@ -18,7 +20,8 @@ const args = Object.fromEntries(
 
 async function main() {
   const previous = args.previous ? (JSON.parse(readFileSync(args.previous, 'utf8')) as LiveFeed) : null;
-  const r = await runIngest({ jobs: args.mode === 'test' ? 'test' : 'general', rehearsal: 'rehearsal' in args, previous });
+  const overrides = args.overrides ? parseOverrides(JSON.parse(readFileSync(args.overrides, 'utf8'))) : null;
+  const r = await runIngest({ jobs: args.mode === 'test' ? 'test' : 'general', rehearsal: 'rehearsal' in args, previous, overrides });
   summaryLines(r).forEach((l) => console.log(l));
   if (args.out) writeFileSync(args.out, JSON.stringify(r.feed, null, 1));
   const failed = r.results.filter((x) => !x.status.ok && !x.status.notAvailable).length;
