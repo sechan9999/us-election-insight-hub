@@ -33,11 +33,22 @@ export const GA_HERO = {
       value: tx('10월 23일 (금)', 'October 23 (Fri)'),
     },
   ],
-  countdown: (days: number) =>
-    tx(
-      `선거일까지 ${days}일 남았습니다. 사전투표는 10월 30일(금)까지 할 수 있습니다.`,
-      `${days} days until Election Day. Early voting runs through Friday, October 30.`,
-    ),
+  countdown: (days: number, hours: number, earlyOver: boolean) => {
+    const remainKo =
+      [days > 0 ? `${days}일` : '', hours > 0 ? `${hours}시간` : ''].filter(Boolean).join(' ') || '1시간 미만';
+    const remainEn =
+      [days > 0 ? `${days} days` : '', hours > 0 ? `${hours} hours` : ''].filter(Boolean).join(' ') ||
+      'under 1 hour';
+    return tx(
+      earlyOver
+        ? `선거일까지 ${remainKo} 남았습니다. 사전투표는 종료되었습니다. 선거일(11월 3일)에 투표하세요.`
+        : `선거일까지 ${remainKo} 남았습니다. 사전투표는 10월 30일(금)까지 할 수 있습니다.`,
+      earlyOver
+        ? `${remainEn} until Election Day. Early voting has ended — vote on Election Day, November 3.`
+        : `${remainEn} until Election Day. Early voting runs through Friday, October 30.`,
+    );
+  },
+  badgeEarlyOver: tx('사전투표 종료', 'Early voting ended'),
   countdownToday: tx(
     '오늘은 선거일입니다. 오후 7시까지 줄에 서 있으면 투표할 수 있습니다.',
     'Today is Election Day. If you are in line by 7:00 PM, you can vote.',
@@ -400,6 +411,24 @@ export function daysUntilElection(from: Date = new Date()): number {
   const election = new Date('2026-11-03T07:00:00-05:00');
   const ms = election.getTime() - from.getTime();
   return Math.ceil(ms / (1000 * 60 * 60 * 24));
+}
+
+// Floor-based days + hours to Election Day (07:00 ET Nov 3), plus whether
+// in-person early voting has ended (19:00 ET Oct 30). Used for display;
+// daysUntilElection (ceil) still drives the countdown/today/past branch.
+export function electionCountdown(from: Date = new Date()): {
+  days: number;
+  hours: number;
+  earlyOver: boolean;
+} {
+  const election = new Date('2026-11-03T07:00:00-05:00');
+  const earlyEnd = new Date('2026-10-30T19:00:00-04:00');
+  const ms = Math.max(0, election.getTime() - from.getTime());
+  return {
+    days: Math.floor(ms / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+    earlyOver: from.getTime() >= earlyEnd.getTime(),
+  };
 }
 
 export const tr = (lang: Lang, v: LText): string => (lang === 'ko' ? v.ko : v.en);

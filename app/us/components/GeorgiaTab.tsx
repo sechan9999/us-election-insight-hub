@@ -3,6 +3,7 @@
 // "Georgia voting guide" tab — bilingual, nonpartisan voter information.
 // Content: app/us/lib/georgia-guide.ts (facts verified 2026-10-15).
 
+import { useEffect, useState } from 'react';
 import {
   GA_BALLOT,
   GA_CHECKLIST,
@@ -18,6 +19,7 @@ import {
   GA_SECTION2_NOTE,
   GA_WAYS,
   daysUntilElection,
+  electionCountdown,
   tr,
   type BallotQ,
   type LText,
@@ -112,16 +114,26 @@ function QuestionCard({ q, lang }: { q: BallotQ; lang: Lang }) {
 }
 
 export default function GeorgiaTab({ lang }: { lang: Lang }) {
-  const days = daysUntilElection();
+  // Live clock: the countdown re-computes every minute while the page is open.
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(id);
+  }, []);
+  const days = daysUntilElection(now);
+  const cd = electionCountdown(now);
+  const badges = cd.earlyOver
+    ? [GA_HERO.badges[0], GA_HERO.badgeEarlyOver, GA_HERO.badges[2]]
+    : GA_HERO.badges;
   return (
     <div className="mx-auto max-w-4xl pb-16">
       {/* Hero */}
       <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-sky-950/60 to-transparent p-6 md:p-8">
         <div className="flex flex-wrap gap-2">
-          {GA_HERO.badges.slice(0, 1).map((b, i) => (
+          {badges.slice(0, 1).map((b, i) => (
             <span key={i} className="rounded-full bg-red-500/20 px-3 py-1 text-xs font-semibold text-red-200">{tr(lang, b)}</span>
           ))}
-          {GA_HERO.badges.slice(1).map((b, i) => (
+          {badges.slice(1).map((b, i) => (
             <span key={i} className="rounded-full bg-white/10 px-3 py-1 text-xs text-neutral-300">● {tr(lang, b)}</span>
           ))}
         </div>
@@ -141,7 +153,7 @@ export default function GeorgiaTab({ lang }: { lang: Lang }) {
         </div>
         <p className="mt-4 text-sm text-neutral-300">
           {days > 0 ? (
-            <>선거일까지 <span className="font-bold text-amber-300">{tr(lang, GA_HERO.countdown(days))}</span></>
+            <span className="font-bold text-amber-300">{tr(lang, GA_HERO.countdown(cd.days, cd.hours, cd.earlyOver))}</span>
           ) : days === 0 ? (
             tr(lang, GA_HERO.countdownToday)
           ) : (
