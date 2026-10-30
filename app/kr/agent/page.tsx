@@ -101,7 +101,8 @@ const T: Record<Lang, {
   emptyQ: string; unavailable: string; notConfigured: string; abstain: string;
   fallback: string; trace: string; details: string; sources: string;
   citationSuffix: string; failed: string; neutrality: string; builtFor: string;
-  builtForLink: string; verified: string;
+  builtForLink: string; verified: string; howTitle: string; howIntro: string;
+  howCaption: string; howAlt: string;
 }> = {
   ko: {
     back: "← 한국 대선 데이터로 돌아가기",
@@ -123,6 +124,10 @@ const T: Record<Lang, {
     builtFor: "2026 Meta Global AI Developer Hackathon(10월 27–28일)에서 새로 만든 기능입니다. 해커톤 중 만든 부분과 기존 허브의 구분은 ",
     builtForLink: "README에서 확인하세요",
     verified: "검증: 21대 개표지 50페이지 표본에서 SAM 3.1이 찾은 표 영역의 수치를 공식 총계와 대조해 218개 셀 전부 일치했습니다(50/50 페이지).",
+    howTitle: "검증은 어떻게 되나",
+    howIntro: "SAM 3.1이 개표지에서 표 영역을 찾고, 에이전트는 그 안의 숫자를 읽어 공식 총계와 대조합니다. SAM이 숫자 자체를 뽑아내는 것은 아닙니다.",
+    howCaption: "울산광역시 북구 농소2동제7투 개표지(21대). 테두리가 SAM 3.1이 찾은 6개 표 영역입니다. 읽은 수치 5개가 공식 수치와 전부 일치했습니다: 이재명 989, 김문수 989(동표), 이준석 188, 권영국 50, 송진호 5.",
+    howAlt: "SAM 3.1이 찾은 표 영역이 표시된 21대 개표지",
   },
   en: {
     back: "← Back to Korean election data",
@@ -144,6 +149,10 @@ const T: Record<Lang, {
     builtFor: "Built Oct 27–28, 2026 for the Meta Global AI Developer Hackathon. What was built during the hackathon vs the pre-existing Hub is documented in the ",
     builtForLink: "submission README",
     verified: "Verified: on a 50-page sample of 21st-election tally sheets, every cell SAM 3.1 located matched the published totals — 218/218 cells, 50/50 pages.",
+    howTitle: "How verification works",
+    howIntro: "SAM 3.1 locates the table regions on a tally sheet; the agent reads the figures inside and cross-checks them against the published totals. SAM does not extract the numbers itself.",
+    howCaption: "Tally sheet for Nongso-2-dong, 7th precinct, Buk-gu, Ulsan (21st election). Outlines are the 6 table regions SAM 3.1 located. All 5 figures read matched the published totals: Lee Jaemyung 989, Kim Moonsoo 989 (a tie), Lee Junseok 188, Kwon Youngkuk 50, Song Jinho 5.",
+    howAlt: "21st-election tally sheet with the table regions SAM 3.1 located",
   },
 };
 
@@ -173,6 +182,20 @@ function stepSummary(s: Step, lang: Lang): string {
   if (Array.isArray(d.candidates)) return `${d.candidates.length} candidates`;
   return "ok";
 }
+
+// SAM 3.1 table-region boxes for the example tally sheet below, from
+// sam_run_live50/sam_report.json (page e21_ulsan_39108_p032). Normalized
+// [x0, y0, x1, y1] coordinates — rendered as CSS percentages so the
+// outlines scale with the image. These are the boxes SAM actually
+// returned, not hand-drawn: SAM locates tables, it does not read numbers.
+const SAM_BOXES: [number, number, number, number][] = [
+  [0.592, 0.321, 0.947, 0.593],
+  [0.59, 0.215, 0.943, 0.283],
+  [0.044, 0.651, 0.949, 0.716],
+  [0.039, 0.217, 0.579, 0.286],
+  [0.046, 0.777, 0.951, 0.877],
+  [0.042, 0.323, 0.582, 0.595],
+];
 
 export default function Agent() {
   const [q, setQ] = useState("");
@@ -311,6 +334,21 @@ export default function Agent() {
           {res.source && <p className="mt-2 text-xs text-neutral-500">{res.source}</p>}
         </div>
       )}
+      <section className="mt-10">
+        <h2 className="text-base font-semibold text-neutral-100">{t.howTitle}</h2>
+        <p className="mt-1 text-sm text-neutral-400">{t.howIntro}</p>
+        <div className="relative mt-3 overflow-hidden rounded-xl border border-white/10">
+          <img src="/agent/sam-tally-example.jpg" alt={t.howAlt} className="block w-full" />
+          {SAM_BOXES.map((b, i) => (
+            <div key={i} className="pointer-events-none absolute border-2 border-teal-300/90"
+              style={{
+                left: `${b[0] * 100}%`, top: `${b[1] * 100}%`,
+                width: `${(b[2] - b[0]) * 100}%`, height: `${(b[3] - b[1]) * 100}%`,
+              }} />
+          ))}
+        </div>
+        <p className="mt-2 text-xs text-neutral-500">{t.howCaption}</p>
+      </section>
       <footer className="mt-10 space-y-1 border-t border-white/10 pt-4 text-xs text-neutral-500">
         <p>{t.neutrality}</p>
         <p>{t.builtFor}<a href="https://github.com/sechan9999/electoral-evidence-agent" target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">{t.builtForLink}</a>.</p>
