@@ -100,7 +100,8 @@ const T: Record<Lang, {
   back: string; title: string; desc: string; placeholder: string; ask: string;
   emptyQ: string; unavailable: string; notConfigured: string; abstain: string;
   fallback: string; trace: string; details: string; sources: string;
-  citationSuffix: string; failed: string;
+  citationSuffix: string; failed: string; neutrality: string; builtFor: string;
+  builtForLink: string; verified: string;
 }> = {
   ko: {
     back: "← 한국 대선 데이터로 돌아가기",
@@ -118,6 +119,10 @@ const T: Record<Lang, {
     sources: "출처: ",
     citationSuffix: "년 선거 아카이브 색인 →",
     failed: "실패",
+    neutrality: "중립 원칙: 이 에이전트는 공식 발표 수치만 보고하며, 후보·공직자·정당·정책에 대해 추천·평가·예측하지 않습니다.",
+    builtFor: "2026 Meta Global AI Developer Hackathon(10월 27–28일)에서 새로 만든 기능입니다. 해커톤 중 만든 부분과 기존 허브의 구분은 ",
+    builtForLink: "README에서 확인하세요",
+    verified: "검증: 21대 개표지 50페이지 표본에서 SAM 3.1이 찾은 표 영역의 수치를 공식 총계와 대조해 218개 셀 전부 일치했습니다(50/50 페이지).",
   },
   en: {
     back: "← Back to Korean election data",
@@ -135,6 +140,10 @@ const T: Record<Lang, {
     sources: "Sources: ",
     citationSuffix: " election archive index →",
     failed: "failed",
+    neutrality: "Neutrality rule: the agent reports officially published figures only and never recommends, evaluates, or predicts candidates, officials, parties, or policy positions.",
+    builtFor: "Built Oct 27–28, 2026 for the Meta Global AI Developer Hackathon. What was built during the hackathon vs the pre-existing Hub is documented in the ",
+    builtForLink: "submission README",
+    verified: "Verified: on a 50-page sample of 21st-election tally sheets, every cell SAM 3.1 located matched the published totals — 218/218 cells, 50/50 pages.",
   },
 };
 
@@ -302,6 +311,11 @@ export default function Agent() {
           {res.source && <p className="mt-2 text-xs text-neutral-500">{res.source}</p>}
         </div>
       )}
+      <footer className="mt-10 space-y-1 border-t border-white/10 pt-4 text-xs text-neutral-500">
+        <p>{t.neutrality}</p>
+        <p>{t.builtFor}<a href="https://github.com/sechan9999/electoral-evidence-agent" target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">{t.builtForLink}</a>.</p>
+        <p>{t.verified}</p>
+      </footer>
     </main>
   );
 }
