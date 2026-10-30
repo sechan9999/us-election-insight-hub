@@ -12,6 +12,7 @@ type SearchParams = { lang?: string };
 
 const DASHBOARD = 'https://k18to21-election2.vercel.app';
 const GITHUB = 'https://github.com/sechan9999/K18to21Election2';
+const DEMO_VIDEO = 'https://www.youtube.com/watch?v=v14OXlEQy0s';
 
 const TITLES: Record<Lang, string> = {
   ko: '한국 대통령 선거 데이터 — Election Insights Hub',
@@ -41,6 +42,7 @@ const S = {
     en: 'Ask in Korean or English — turnout, vote share, swing and margins are fetched live from BigQuery. Every number comes from a tool call; citations are the archive index pages.',
   },
   agentCta: { ko: '에이전트에게 묻기 →', en: 'Ask the agent →' },
+  demoVideo: { ko: '▶ 데모 영상 보기 (영어 내레이션, 약 2분 44초)', en: '▶ Watch the demo video (English narration, 2:44)' },
   archiveHeading: { ko: '원본 기록 아카이브', en: 'Original-records archives' },
   archiveIntro: {
     ko: '분석의 바탕이 된 원본 기록을 전부 공개합니다. 원본 문서 36,000쪽 이상, 공식 결과 85,000행 이상 — 누구든 수치를 원본과 대조할 수 있습니다.',
@@ -173,6 +175,15 @@ export default async function KoreaPage({
           <div className="text-lg font-semibold text-emerald-300">{tr(lang, 'agentTitle')}</div>
           <div className="mt-1 text-sm text-neutral-300">{tr(lang, 'agentBody')}</div>
           <div className="mt-2 text-sm font-medium text-emerald-300">{tr(lang, 'agentCta')}</div>
+        </a>
+
+        <a
+          href={DEMO_VIDEO}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2 inline-block text-sm font-medium text-red-300 hover:underline"
+        >
+          {tr(lang, 'demoVideo')}
         </a>
 
         <h2 className="mt-10 text-xl font-bold">{tr(lang, 'archiveHeading')}</h2>
