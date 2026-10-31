@@ -193,3 +193,85 @@ Notes:
   would.
 - After the Monday Nov 2 run includes these polls, remove the one-time
   catch-up paragraph from the refresh cron body.
+- EXECUTED EARLY: this catch-up executed on Oct 31, moved up from Nov 2 per
+  HK decision Oct 31 (see the Refresh 2026-10-31 section below). The
+  one-time catch-up paragraph should now be removed from the refresh cron
+  body.
+
+## Refresh 2026-10-31 — included (13 polls, 8 races)
+
+Catch-ups (HK decision Oct 31, moved up from the Nov 2 refresh):
+
+| Poll | Race | Field dates | n | Margin (D−R) | Source |
+|---|---|---|---|---|---|
+| St. Pete Polls / Florida Politics | FL-SEN | Oct 26–28 (PollingSource dates Oct 27; released Oct 28) | 916 LV | −4 (Nixon 45 / Moody 49) | PollingSource FL page; On Point FL page (44.7/49 unrounded); Florida Politics via Florida Press rewrite |
+| High Point University / YouGov | NC-SEN | Oct 1–20 | 620 LV | +14 (Cooper 54 / Whatley 40) | highpoint.edu primary release (published Oct 28) |
+| Rasmussen Reports | NH-SEN | Oct 20–23 | 970 LV | +6 (Pappas 50 / Sununu 44) | RealClearPolling NH page; PollingSource NH page |
+
+New Oct 30 releases (after the Oct 30 morning run):
+
+| Poll | Race | Field dates | n | Margin (D−R) | Source |
+|---|---|---|---|---|---|
+| Data for Progress | ME-SEN | Oct 23–27 | 652 LV | +5 (Jackson 50 / Collins 45) | dataforprogress.org blog + ME tabs PDF |
+| Data for Progress | MI-SEN | Oct 23–25 | 622 LV | +4 (El-Sayed 50 / Rogers 46) | DFP blog + MI tabs PDF |
+| Data for Progress | TX-SEN | Oct 23–26 | 712 LV | +4 (Talarico 49 / Paxton 45) | DFP blog + TX tabs PDF |
+| Quantus Insights | TX-SEN | Oct 26–28 | 1,221 LV | −1.1 (Talarico 47.6 / Paxton 48.7, initial ballot) | 270toWin TX page; texpolls.com |
+| Big Data Poll | FL-SEN | unverified; fieldEnd = release date (proxy) | 1,129 LV | −8.5 (Nixon 44.1 / Moody 52.6 detailed; PollingSource rounds 45/52) | PollingSource FL page; On Point FL page |
+| InsiderAdvantage | FL-SEN | ended Oct 29 | 1,200 LV | −6 (Nixon 43 / Moody 49) | PollingSource FL page; PoliAgg daily Oct 31 (release Oct 30) |
+| Washington Post / Schar School | KS-SEN | Oct 22–26 | 801 LV | +9 (Hamilton 52 / Marshall 43) | USA Today, Oct 30; Political Wire, Oct 30 |
+| Emerson College Polling | KS-SEN | Oct 26–28 | 800 LV | +4 (Hamilton 49 / Marshall 45) | emersoncollegepolling.com primary release, Oct 30 |
+| KSTP / SurveyUSA | MN-SEN | Oct 24–28 | 714 LV | +7 (Flanagan 48 / Tafoya 41) | RealClearPolling MN page; PollingSource MN page; Political Wire, Oct 30 |
+| Alaska Survey Research | AK-SEN | Oct 26–29 | 1,326 LV | +2 (final round 51/49; first choice 48/46) | RealClearPolling AK page; PollingSource AK page; Political Wire, Oct 30 |
+
+House: generic-ballot input updated 8.3 → 8.2 (RCP average, Oct 30, 2026:
+51.4/43.2, reported by NorthJersey Oct 30, Zark News and Fyrim Oct 31);
+all 435 district margins in house-districts.ts shifted −0.1 accordingly.
+
+Adjudication notes for this refresh (2026-10-31):
+- Dating: the HPU NC primary release is dated Oct 28 (18:58 UTC), not
+  Oct 27 as the decision memo said; it postdates the Oct 28 08:00 run, so
+  it was missed by both the Oct 28 and Oct 30 runs. The HK catch-up
+  decision names the poll, so inclusion stands. Rasmussen NH release
+  dating is ambiguous (RCP groups 10/23; decision memo said Oct 25);
+  fieldEnd = Oct 23 (end of field) per the model's convention.
+- St. Pete FL dating: PollingSource dates Oct 27, NJ Globe reports field
+  Oct 26–28, Florida Politics released Wednesday Oct 28. fieldEnd =
+  Oct 27 (PollingSource date); a 1-day difference is immaterial at a
+  21-day half-life.
+- Big Data Poll FL field dates are unverified; fieldEnd = Oct 30 release
+  date as a labeled proxy (Oct 28 precedent).
+- Detailed vs rounded splits: Quantus TX uses the initial ballot
+  (48.7/47.6 → −1.1), not leaners (49.4/48.4); Big Data FL uses the
+  detailed 44.1/52.6 → −8.5 (PollingSource rounds to 45/52 → −7); AK uses
+  +2, which is the same for the final-round (51/49) and first-choice
+  (48/46) cuts. Emerson KS uses the initial ballot (49/45), not leaners
+  (50/47).
+- Sponsorship/disclosure: Quantus TX — no sponsor named for this survey
+  (texpolls); the firm sells campaign consulting and the NRSC paid it
+  $15,000 for other work. ASR AK — flagged D-sponsored by PollingSource;
+  its director has publicly opposed Sullivan (Juneau Independent).
+  WaPo/Schar KS — the Post/GMU themselves flagged differential
+  nonresponse (Democratic completion 32% vs Republican 12%) as a possible
+  Democratic overstatement. Under the standing inclusion principle all
+  are included with disclosure; none is a deliberate-manipulation
+  finding.
+- NOT added (for HK decision at the Nov 2 run): ActiVote TX (Oct 29:
+  Talarico 52.1 / Paxton 47.9, +4.2, n=400, field Oct 22–28; activote.net
+  primary), A2 Insights TX (Oct 29: Talarico 50 / Paxton 47, +3, n=631;
+  270toWin TX page), UNF FL (made public Oct 21: Moody 49 / Nixon 45,
+  −4, n=1,471, field Oct 12–19; Miramar News / CNN), Palafox /
+  Political Matrix FL (field Oct 26–28, n=500, Moody 41.8 / Nixon 35.8,
+  22.4% undecided; release date unverifiable from the firm's own page;
+  unrated first-appearance firm, not listed by PollingSource/270toWin).
+  All four were available to the Oct 30 run or predate the window; per
+  the Oct 30 precedent, re-adjudicating them is HK's decision, not this
+  run's. Also noted for the Nov 2 sweep: RedBox Research KS (Marshall
+  +1, field ~Oct 20–23, per ElectionTracker) — release date unverified.
+- No new polls were found for GA, OH, IA in this sweep; the Marist IA
+  50/42 figure circulating Oct 30 is the September poll (Sept 17–20,
+  RV), inside the RCP window, not new.
+- polls.ts (display-only) was not updated, consistent with the Oct 28
+  and Oct 30 runs.
+- Result vs the Oct 30 run: Senate 58.1% → 60.3% (+2.2pp), expected
+  seats 50.68 → 50.81, band 47–54 unchanged; House 97.1% → 96.9%
+  (−0.2pp), expected seats 241.04 → 240.64, band 224–259 → 224–258.
