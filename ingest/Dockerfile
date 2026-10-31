@@ -4,5 +4,8 @@ WORKDIR /app
 RUN npm install -g tsx@4.21.0 && npm cache clean --force
 COPY ingest/results ./ingest/results
 COPY app/us/lib/live.ts app/us/lib/schedule.ts ./app/us/lib/
+# Source files may arrive with group-only modes (660); the container runs as
+# `node`, so make everything readable or tsx fails with EACCES on job.ts.
+RUN chmod -R a+rX /app
 USER node
 CMD ["tsx", "ingest/results/job.ts"]
