@@ -275,3 +275,29 @@ Adjudication notes for this refresh (2026-10-31):
 - Result vs the Oct 30 run: Senate 58.1% → 60.3% (+2.2pp), expected
   seats 50.68 → 50.81, band 47–54 unchanged; House 97.1% → 96.9%
   (−0.2pp), expected seats 241.04 → 240.64, band 224–259 → 224–258.
+
+## Include all pending polls in the Nov 1 refresh (HK decision 2026-10-31)
+
+The five polls listed as "NOT added" in the Oct 31 adjudication notes
+above are INCLUDED in the Sunday Nov 1, 2026 refresh (moved up from the
+Nov 2 sweep by HK decision Oct 31), even though their release/field
+dates predate DATA_AS_OF (2026-10-31) and the normal "released after
+DATA_AS_OF" window rule would skip them. Each gets its own ledger row
+in the Nov 1 refresh section with figures re-verified from the primary
+source at that run; the figures below are the Oct 31 sweep's notes,
+not pre-recorded model inputs.
+
+| Poll | Race | Notes from the Oct 31 sweep |
+|---|---|---|
+| ActiVote | TX-SEN | Oct 29; Talarico 52.1 / Paxton 47.9 (+4.2), n=400, field Oct 22–28; activote.net primary. A different poll from the excluded ActiVote TX Oct 21 release; that exclusion does not extend to it. |
+| A2 Insights | TX-SEN | Oct 29; Talarico 50 / Paxton 47 (+3), n=631; 270toWin TX page. |
+| University of North Florida (UNF) | FL-SEN | Made public Oct 21; Moody 49 / Nixon 45 (−4), n=1,471, field Oct 12–19; Miramar News / CNN. |
+| Palafox / Political Matrix | FL-SEN | Field Oct 26–28, n=500; Moody 41.8 / Nixon 35.8, 22.4% undecided; release date unverifiable from the firm's own page; unrated first-appearance firm, not listed by PollingSource/270toWin. |
+| RedBox Research | KS-SEN | Marshall +1, field ~Oct 20–23 per ElectionTracker; release date unverified. |
+
+Notes:
+- Sponsor disclosure follows the standing inclusion principle (HK,
+  2026-10-28): lean alone never excludes; only a
+  deliberate-manipulation finding would.
+- After the Nov 1 run includes these polls, remove the one-time
+  paragraph from the refresh cron body.
