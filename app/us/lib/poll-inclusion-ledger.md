@@ -301,3 +301,49 @@ Notes:
   deliberate-manipulation finding would.
 - After the Nov 1 run includes these polls, remove the one-time
   paragraph from the refresh cron body.
+
+## Refresh 2026-11-01 — included (6 polls, 4 races)
+
+Five HK catch-ups (decision Oct 31) + one genuinely new release since the
+Oct 31 morning run:
+
+| Poll | Race | Field dates | n | Margin (D−R) | Source |
+|---|---|---|---|---|---|
+| ActiVote | TX-SEN | Oct 22–28 | 400 LV | +4.2 (Talarico 52.1 / Paxton 47.9) | activote.net primary poll page, Oct 29 |
+| A2 Insights | TX-SEN | unverified; fieldEnd = release date (proxy) | 631 LV | +3 (Talarico 50 / Paxton 47) | 270toWin TX page; Political Wire, Oct 29 |
+| University of North Florida (PORL) | FL-SEN | Oct 12–19 | 1,471 LV | −4 (Nixon 45 / Moody 49) | UNF PORL press release, Oct 21 (embargoed); Fox 35 Orlando |
+| Palafox / Political Matrix | FL-SEN | Oct 26–28 | 500 LV | −6.0 (Nixon 35.8 / Moody 41.8) | palafoxproductions.com primary release |
+| RedBox Research | KS-SEN | Oct 20–23 | 1,301 LV | −1 (Hamilton 45 / Marshall 46) | ElectionTracker KS final-call page; PollingSource KS page |
+| ActiVote | OH-SEN | Oct 18–31 | 400 LV | +0.4 (Brown 50.2 / Husted 49.8) | activote.net primary poll page, Oct 31; PollingSource OH page |
+
+Adjudication notes for this refresh (2026-11-01):
+- ActiVote OH is the only poll released after the Oct 31 08:00 run (field
+  ended Oct 31, so it cannot predate that run); all other Oct 30–31
+  candidates were already available to the Oct 31 run.
+- Field-date proxies: A2 Insights TX field dates unverified; fieldEnd =
+  Oct 29 release date as a labeled proxy (Oct 28 precedent). Palafox FL
+  release date remains unverified from the firm's own page; fieldEnd =
+  Oct 28 (end of field) per the model's convention. RedBox KS release
+  date unverified; fieldEnd = Oct 23 (end of field).
+- Sponsorship/disclosure: RedBox KS is flagged D-sponsored by
+  PollingSource. Palafox/Political Matrix is an unrated first-appearance
+  firm, not listed by PollingSource/270toWin, with 22.4% undecided in its
+  FL ballot. Under the standing inclusion principle both are included
+  with disclosure; neither is a deliberate-manipulation finding.
+- ActiVote TX Oct 29 is a different poll from the excluded ActiVote TX
+  Oct 21 release; that exclusion does not extend to it (Oct 28 precedent
+  for ActiVote FL).
+- House: generic-ballot input UNCHANGED at Dem +8.2 (RCP average still
+  51.4/43.2 per Oct 31 reporting); no new RCP average value was adopted.
+- NOT added (missed by the Oct 31 run; re-adjudication is HK's decision
+  per the Oct 30 precedent, not this run's scope): Stetson/CPOR FL
+  (released Oct 30 17:06 EDT, Moody 49 / Nixon 45, n=861 RV, online
+  non-probability panel); Kreate Strategies TX (released Oct 30,
+  Talarico 48 / Paxton 45, n=900 LV, field Oct 27–30; full methodology
+  behind a contact form, not publicly disclosed); Rasmussen MI (field
+  Oct 28–29, El-Sayed 49 / Rogers 44, n=745 LV); Upswing Research MI
+  (Oct 28, 50/45, n=505 LV); MSU/Verasight MI (Oct 23, 50.5/43.1,
+  n=1,383 LV).
+- Result vs the Oct 31 run: Senate 60.3% → 59.6% (−0.7pp), expected
+  seats 50.81 → 50.79, band 47–54 unchanged; House unchanged (96.9%,
+  240.64 seats, band 224–258).
