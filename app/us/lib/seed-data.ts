@@ -16,8 +16,8 @@
 import type { RaceInput } from './forecast';
 import { aggregatePolls, type DatedPoll } from './poll-aggregation';
 
-export const DATA_AS_OF = '2026-11-01';
-export const DATA_SOURCE = 'RealClearPolitics polling averages (via uspresidentialelectionnews.com), Oct 21, 2026 compilation; RCP component polls fielded ~Sept 14–Oct 11; fresh individual polls released Oct 21–25 added as dated entries; Oct 27–28 releases added as dated entries (12 polls, 8 races); six Oct 22–23 polls added Oct 28 per HK inclusion principle (see poll-inclusion-ledger.md); Oct 30 refresh adds 9 polls, 6 races: CNN/SSRS x4 (MI/TX/ME/KS, released Oct 29), MSU/YouGov MI catch-up (HK decision Oct 29), CBS Detroit/Mitchell MI + UMass Lowell NH + co/efficient IA (released/fielded Oct 28 after the Oct 28 morning run), TSU/YouGov TX (released Oct 29); Oct 31 refresh adds 13 polls, 8 races: HK catch-ups moved up from Nov 2 (St. Pete Polls FL, High Point NC, Rasmussen NH) + Oct 30 releases after the Oct 30 morning run (Data for Progress ME/MI/TX, Quantus TX, Big Data Poll FL, InsiderAdvantage FL, WaPo/Schar KS, Emerson KS, KSTP/SurveyUSA MN, Alaska Survey Research AK); House generic ballot updated to 8.2 (RCP average, Oct 30, 2026); Nov 1 refresh adds 6 polls, 4 races: HK catch-ups ActiVote TX, A2 Insights TX, UNF FL, Palafox/Political Matrix FL, RedBox KS + ActiVote OH (released Oct 31); House generic ballot unchanged at 8.2 (RCP average still 51.4/43.2 per Oct 31 reporting)';
+export const DATA_AS_OF = '2026-11-02';
+export const DATA_SOURCE = 'RealClearPolitics polling averages (via uspresidentialelectionnews.com), Oct 21, 2026 compilation; RCP component polls fielded ~Sept 14–Oct 11; fresh individual polls released Oct 21–25 added as dated entries; Oct 27–28 releases added as dated entries (12 polls, 8 races); six Oct 22–23 polls added Oct 28 per HK inclusion principle (see poll-inclusion-ledger.md); Oct 30 refresh adds 9 polls, 6 races: CNN/SSRS x4 (MI/TX/ME/KS, released Oct 29), MSU/YouGov MI catch-up (HK decision Oct 29), CBS Detroit/Mitchell MI + UMass Lowell NH + co/efficient IA (released/fielded Oct 28 after the Oct 28 morning run), TSU/YouGov TX (released Oct 29); Oct 31 refresh adds 13 polls, 8 races: HK catch-ups moved up from Nov 2 (St. Pete Polls FL, High Point NC, Rasmussen NH) + Oct 30 releases after the Oct 30 morning run (Data for Progress ME/MI/TX, Quantus TX, Big Data Poll FL, InsiderAdvantage FL, WaPo/Schar KS, Emerson KS, KSTP/SurveyUSA MN, Alaska Survey Research AK); House generic ballot updated to 8.2 (RCP average, Oct 30, 2026); Nov 1 refresh adds 6 polls, 4 races: HK catch-ups ActiVote TX, A2 Insights TX, UNF FL, Palafox/Political Matrix FL, RedBox KS + ActiVote OH (released Oct 31); House generic ballot unchanged at 8.2 (RCP average still 51.4/43.2 per Oct 31 reporting); Nov 2 refresh adds 16 polls, 9 races: HK decision Nov 2 (Stetson/CPOR FL, Kreate TX, Rasmussen MI, Upswing MI) + final NYT/Siena round Nov 1 (AK/IA/KS/ME/MI/OH/TX) + YouGov Nov 1 (NC/OH/TX/MI) + Trafalgar TX (Nov 1); House generic ballot unchanged at 8.2 (no verified new RCP value)';
 
 export interface SenateRace extends RaceInput {
   stateKo: string;
@@ -134,6 +134,17 @@ const senateSigma = (nPolls: number, rcv = false) => {
  * methodology behind a contact form), Rasmussen MI (field Oct 28–29,
  * El-Sayed 49/Rogers 44), Upswing MI (Oct 28, 50/45), MSU/Verasight MI
  * (Oct 23, 50.5/43.1).
+ * Nov 2 refresh (16 polls, 9 races): HK decision Nov 2 includes the four
+ * deferred polls (Stetson/CPOR FL, Kreate TX, Rasmussen MI, Upswing MI)
+ * + genuinely new Nov 1 releases: final NYT/Siena round (AK/IA/KS/ME/
+ * MI/OH/TX), YouGov final round (NC/OH/TX/MI), Trafalgar TX. House
+ * generic ballot UNCHANGED at 8.2 (no verified new RCP value; conflicting
+ * secondary reports noted in poll-inclusion-ledger.md). NOT added:
+ * YouGov KS/IA (margins verified, sample sizes unverified), ResearchCo MI
+ * (conflicting published shares 48/46 vs 51/48), AtlasIntel TX (conflicting
+ * shares 51 vs 52; adult sample), On Point TX (aggregator house poll),
+ * MSU/Verasight MI + ECU/Quantus/RedBox NC (missed pre-Oct-30 polls;
+ * re-adjudication remains HK's decision).
  */
 const RCP_DATE = '2026-10-08';
 const rcp = (margin: number, nRcpPolls: number): DatedPoll => ({
@@ -152,7 +163,8 @@ const RACE_DEFS: RaceDef[] = [
   { id: 'NC-SEN', label: 'North Carolina', stateKo: '노스캐롤라이나', demCandidate: 'Roy Cooper', repCandidate: 'Michael Whatley', rating: 'Leans D', note: 'R-held open', region: 'S', nRcpPolls: 10,
     polls: [rcp(9.9, 10),
       { margin: 10, fieldEnd: '2026-10-20', n: 600, label: 'Carolina Journal/Harper (released Oct 22)' },
-      { margin: 14, fieldEnd: '2026-10-20', n: 620, label: 'High Point University/YouGov (released Oct 28; HK catch-up Oct 31)' }] },
+      { margin: 14, fieldEnd: '2026-10-20', n: 620, label: 'High Point University/YouGov (released Oct 28; HK catch-up Oct 31)' },
+      { margin: 11, fieldEnd: '2026-10-29', n: 2130, label: 'YouGov (released Nov 1)' }] },
   { id: 'GA-SEN', label: 'Georgia', stateKo: '조지아', demCandidate: 'Jon Ossoff (inc.)', repCandidate: 'Mike Collins', rating: 'Leans D', note: 'D-held', region: 'S', nRcpPolls: 10,
     polls: [rcp(8.6, 10),
       { margin: 15, fieldEnd: '2026-10-23', n: 508, label: 'Echelon Insights/NetChoice (released Oct 27)' }] },
@@ -167,7 +179,9 @@ const RACE_DEFS: RaceDef[] = [
       { margin: 3, fieldEnd: '2026-10-28', n: 500, label: 'Suffolk/USA TODAY (released Oct 28; field dates unverified, fieldEnd = release date)' },
       { margin: 0, fieldEnd: '2026-10-23', n: 508, label: 'Echelon Insights/NetChoice (released Oct 27)' },
       { margin: 3, fieldEnd: '2026-10-22', n: 1200, label: 'InsiderAdvantage (released Oct 22)' },
-      { margin: 0.4, fieldEnd: '2026-10-31', n: 400, label: 'ActiVote (released Oct 31)' }] },
+      { margin: 0.4, fieldEnd: '2026-10-31', n: 400, label: 'ActiVote (released Oct 31)' },
+      { margin: 5, fieldEnd: '2026-11-01', n: 717, label: 'NYT/Siena (released Nov 1; field Oct 26–Nov 1)' },
+      { margin: 2, fieldEnd: '2026-10-29', n: 2090, label: 'YouGov (released Nov 1)' }] },
   { id: 'MI-SEN', label: 'Michigan', stateKo: '미시간', demCandidate: 'Abdul El-Sayed', repCandidate: 'Mike Rogers', rating: 'Toss Up', note: 'D-held open', region: 'MW', nRcpPolls: 10,
     polls: [rcp(2.0, 10),
       { margin: 2, fieldEnd: '2026-10-18', n: 1185, label: 'Marist (released Oct 21)' },
@@ -177,7 +191,11 @@ const RACE_DEFS: RaceDef[] = [
       { margin: 3.5, fieldEnd: '2026-10-19', n: 836, label: 'MSU State of the State Survey/YouGov (released Oct 26; HK catch-up Oct 30)' },
       { margin: 7, fieldEnd: '2026-10-27', n: 636, label: 'CBS Detroit/Mitchell Research (released Oct 28 evening)' },
       { margin: 7, fieldEnd: '2026-10-27', n: 768, label: 'CNN/SSRS (released Oct 29)' },
-      { margin: 4, fieldEnd: '2026-10-25', n: 622, label: 'Data for Progress (released Oct 30)' }] },
+      { margin: 4, fieldEnd: '2026-10-25', n: 622, label: 'Data for Progress (released Oct 30)' },
+      { margin: 5, fieldEnd: '2026-10-29', n: 745, label: 'Rasmussen Reports (field Oct 28–29; HK decision Nov 2)' },
+      { margin: 5, fieldEnd: '2026-10-28', n: 505, label: 'Upswing Research/Demand Justice (released Oct 29; D-sponsored; HK decision Nov 2)' },
+      { margin: 11, fieldEnd: '2026-11-01', n: 1011, label: 'NYT/Siena (released Nov 1; field Oct 23–Nov 1)' },
+      { margin: 4, fieldEnd: '2026-10-29', n: 2093, label: 'YouGov (released Nov 1)' }] },
   { id: 'TX-SEN', label: 'Texas', stateKo: '텍사스', demCandidate: 'James Talarico', repCandidate: 'Ken Paxton', rating: 'Toss Up', note: 'R-held open', region: 'S', nRcpPolls: 10,
     polls: [rcp(2.2, 10),
       { margin: 0, fieldEnd: '2026-10-19', n: 1398, label: 'Fox News/Beacon-Shaw (released Oct 22)' },
@@ -190,10 +208,15 @@ const RACE_DEFS: RaceDef[] = [
       { margin: 4, fieldEnd: '2026-10-26', n: 712, label: 'Data for Progress (released Oct 30)' },
       { margin: -1.1, fieldEnd: '2026-10-28', n: 1221, label: 'Quantus Insights (released Oct 30; no sponsor named for this survey)' },
       { margin: 4.2, fieldEnd: '2026-10-28', n: 400, label: 'ActiVote (released Oct 29; HK catch-up Nov 1)' },
-      { margin: 3, fieldEnd: '2026-10-29', n: 631, label: 'A2 Insights (released Oct 29; field dates unverified, fieldEnd = release date; HK catch-up Nov 1)' }] },
+      { margin: 3, fieldEnd: '2026-10-29', n: 631, label: 'A2 Insights (released Oct 29; field dates unverified, fieldEnd = release date; HK catch-up Nov 1)' },
+      { margin: 3, fieldEnd: '2026-10-30', n: 900, label: 'Kreate Strategies (released Oct 30; no sponsor named; full methodology behind contact form; HK decision Nov 2)' },
+      { margin: 7, fieldEnd: '2026-11-01', n: 1215, label: 'NYT/Siena (released Nov 1; field Oct 27–Nov 1)' },
+      { margin: 4, fieldEnd: '2026-10-29', n: 2141, label: 'YouGov (released Nov 1)' },
+      { margin: 0, fieldEnd: '2026-11-01', n: 1089, label: 'Trafalgar Group (released Nov 1; R-sponsored per PollingSource)' }] },
   { id: 'AK-SEN', label: 'Alaska', stateKo: '알래스카', demCandidate: 'Mary Peltola', repCandidate: 'Dan Sullivan (inc.)', rating: 'Toss Up', note: 'R-held · RCV', region: 'W', nRcpPolls: 5, rcv: true,
     polls: [rcp(2.2, 5),
-      { margin: 2, fieldEnd: '2026-10-29', n: 1326, label: 'Alaska Survey Research (released Oct 30; final-round 51/49, first-choice 48/46; flagged D-sponsored by PollingSource)' }] },
+      { margin: 2, fieldEnd: '2026-10-29', n: 1326, label: 'Alaska Survey Research (released Oct 30; final-round 51/49, first-choice 48/46; flagged D-sponsored by PollingSource)' },
+      { margin: 2, fieldEnd: '2026-11-01', n: 610, label: 'NYT/Siena (released Nov 1; field Oct 23–Nov 1 overall round)' }] },
   { id: 'MN-SEN', label: 'Minnesota', stateKo: '미네소타', demCandidate: 'Peggy Flanagan', repCandidate: 'Michele Tafoya', rating: 'Toss Up', note: 'D-held open', region: 'MW', nRcpPolls: 7,
     polls: [rcp(3.2, 7),
       { margin: 3, fieldEnd: '2026-10-21', n: 1182, label: 'Rasmussen (released Oct 23)' },
@@ -203,7 +226,8 @@ const RACE_DEFS: RaceDef[] = [
     polls: [rcp(-0.1, 7),
       { margin: 2, fieldEnd: '2026-10-23', n: 403, label: 'Echelon Insights/NetChoice (released Oct 27)' },
       { margin: -2, fieldEnd: '2026-10-22', n: 1200, label: 'InsiderAdvantage (released Oct 22)' },
-      { margin: -2, fieldEnd: '2026-10-28', n: 1020, label: 'co/efficient (fielded Oct 28; R-sponsored per PollingSource)' }] },
+      { margin: -2, fieldEnd: '2026-10-28', n: 1020, label: 'co/efficient (fielded Oct 28; R-sponsored per PollingSource)' },
+      { margin: 1, fieldEnd: '2026-11-01', n: 705, label: 'NYT/Siena (released Nov 1; field Oct 23–Nov 1 overall round)' }] },
   { id: 'ME-SEN', label: 'Maine', stateKo: '메인', demCandidate: 'Troy Jackson', repCandidate: 'Susan Collins (inc.)', rating: 'Toss Up', note: 'R-held · RCV', region: 'NE', nRcpPolls: 7, rcv: true,
     polls: [rcp(1.6, 7),
       { margin: 0, fieldEnd: '2026-10-20', n: 1514, label: 'Fox News/Beacon-Shaw (released Oct 22)' },
@@ -211,14 +235,16 @@ const RACE_DEFS: RaceDef[] = [
       { margin: 2, fieldEnd: '2026-10-25', n: 1449, label: 'Marist (released Oct 27)' },
       { margin: 7, fieldEnd: '2026-10-23', n: 413, label: 'Echelon Insights/NetChoice (released Oct 27)' },
       { margin: 4, fieldEnd: '2026-10-26', n: 783, label: 'CNN/SSRS (released Oct 29)' },
-      { margin: 5, fieldEnd: '2026-10-27', n: 652, label: 'Data for Progress (released Oct 30)' }] },
+      { margin: 5, fieldEnd: '2026-10-27', n: 652, label: 'Data for Progress (released Oct 30)' },
+      { margin: 6, fieldEnd: '2026-11-01', n: 714, label: 'NYT/Siena (released Nov 1; field Oct 23–Nov 1 overall round)' }] },
   { id: 'KS-SEN', label: 'Kansas', stateKo: '캔자스', demCandidate: 'Adam Hamilton', repCandidate: 'Roger Marshall (inc.)', rating: 'Toss Up', note: 'R-held', region: 'MW', nRcpPolls: 5,
     polls: [rcp(-0.3, 5),
       { margin: -1, fieldEnd: '2026-10-22', n: 1200, label: 'InsiderAdvantage (released Oct 22)' },
       { margin: 4, fieldEnd: '2026-10-26', n: 838, label: 'CNN/SSRS (released Oct 29)' },
       { margin: 9, fieldEnd: '2026-10-26', n: 801, label: 'Washington Post/Schar School (released Oct 30; pollster-flagged differential nonresponse)' },
       { margin: 4, fieldEnd: '2026-10-28', n: 800, label: 'Emerson College Polling (released Oct 30)' },
-      { margin: -1, fieldEnd: '2026-10-23', n: 1301, label: 'RedBox Research (field Oct 20–23; flagged D-sponsored by PollingSource; HK catch-up Nov 1)' }] },
+      { margin: -1, fieldEnd: '2026-10-23', n: 1301, label: 'RedBox Research (field Oct 20–23; flagged D-sponsored by PollingSource; HK catch-up Nov 1)' },
+      { margin: 5, fieldEnd: '2026-11-01', n: 736, label: 'NYT/Siena (released Nov 1; field Oct 23–Nov 1 overall round)' }] },
   { id: 'FL-SEN', label: 'Florida', stateKo: '플로리다', demCandidate: 'Angie Nixon', repCandidate: 'Ashley Moody (appt.)', rating: 'Leans R', note: 'R-held special', region: 'S', nRcpPolls: 5,
     polls: [rcp(-6.8, 5),
       { margin: -6, fieldEnd: '2026-10-28', n: 813, label: 'NYT/Siena (released Oct 28; field dates unverified, fieldEnd = release date)' },
@@ -228,7 +254,8 @@ const RACE_DEFS: RaceDef[] = [
       { margin: -8.5, fieldEnd: '2026-10-30', n: 1129, label: 'Big Data Poll (released Oct 30; field dates unverified, fieldEnd = release date)' },
       { margin: -6, fieldEnd: '2026-10-29', n: 1200, label: 'InsiderAdvantage (released Oct 30)' },
       { margin: -4, fieldEnd: '2026-10-19', n: 1471, label: 'University of North Florida/PORL (released Oct 21; HK catch-up Nov 1)' },
-      { margin: -6, fieldEnd: '2026-10-28', n: 500, label: 'Palafox/Political Matrix (field Oct 26–28; release date unverified; unrated first-appearance firm; HK catch-up Nov 1)' }] },
+      { margin: -6, fieldEnd: '2026-10-28', n: 500, label: 'Palafox/Political Matrix (field Oct 26–28; release date unverified; unrated first-appearance firm; HK catch-up Nov 1)' },
+      { margin: -4, fieldEnd: '2026-10-30', n: 861, label: 'Stetson University/CPOR (released Oct 30; Qualtrics online non-probability panel; HK decision Nov 2)' }] },
 ];
 
 /**

@@ -347,3 +347,73 @@ Adjudication notes for this refresh (2026-11-01):
 - Result vs the Oct 31 run: Senate 60.3% → 59.6% (−0.7pp), expected
   seats 50.81 → 50.79, band 47–54 unchanged; House unchanged (96.9%,
   240.64 seats, band 224–258).
+
+## Refresh 2026-11-02 — included (16 polls, 9 races)
+
+Four HK-decision polls (decision 2026-11-02 06:36 ET, main chat: include all
+four deferred polls) + genuinely new Nov 1 releases since the Nov 1 08:00 run
+(final NYT/Siena round, YouGov final round, Trafalgar TX).
+
+| Poll | Race | Field dates | n | Margin (D−R) | Source |
+|---|---|---|---|---|---|
+| Stetson University/CPOR | FL-SEN | Oct 26–30 | 861 RV | −4 (Nixon 45 / Moody 49) | Stetson Today primary release, Oct 30 |
+| Kreate Strategies (KStrat) | TX-SEN | Oct 27–30 | 900 LV | +3 (Talarico 48 / Paxton 45) | 270toWin TX page; texpolls.com TX race page |
+| Rasmussen Reports | MI-SEN | Oct 28–29 | 745 LV | +5 (El-Sayed 49 / Rogers 44) | RealClearPolling MI page; PollingSource MI page |
+| Upswing Research / Demand Justice | MI-SEN | Oct 24–28 | 505 LV | +5 (El-Sayed 50 / Rogers 45) | Demand Justice primary release, Oct 29 |
+| NYT/Siena College | AK-SEN | Oct 23–Nov 1 (round) | 610 LV | +2 (Peltola 48 / Sullivan 46) | Siena Research Institute primary release, Nov 1 |
+| NYT/Siena College | IA-SEN | Oct 23–Nov 1 (round) | 705 LV | +1 (Turek 48 / Hinson 47) | Siena Research Institute primary release, Nov 1 |
+| NYT/Siena College | KS-SEN | Oct 23–Nov 1 (round) | 736 LV | +5 (Hamilton 49 / Marshall 44) | Siena Research Institute primary release, Nov 1 |
+| NYT/Siena College | ME-SEN | Oct 23–Nov 1 (round) | 714 LV | +6 (Jackson 51 / Collins 45) | Siena Research Institute primary release, Nov 1 |
+| NYT/Siena College | MI-SEN | Oct 23–Nov 1 | 1,011 LV | +11 (El-Sayed 53 / Rogers 42) | Siena Research Institute primary release, Nov 1 |
+| NYT/Siena College | OH-SEN | Oct 26–Nov 1 | 717 LV | +5 (Brown 49 / Husted 44) | Siena Research Institute primary release, Nov 1 |
+| NYT/Siena College | TX-SEN | Oct 27–Nov 1 | 1,215 LV | +7 (Talarico 50 / Paxton 43) | Siena Research Institute primary release, Nov 1 |
+| YouGov | NC-SEN | Oct 26–29 | 2,130 LV | +11 (Cooper 55 / Whatley 44) | Political Wire, Nov 1; PollingSource NC page |
+| YouGov | OH-SEN | Oct 26–29 | 2,090 LV | +2 (Brown 50 / Husted 48) | Political Wire, Nov 1; PollingSource OH page |
+| YouGov | TX-SEN | Oct 26–29 | 2,141 LV | +4 (Talarico 51 / Paxton 47) | Political Wire, Nov 1; UT Texas Politics Project tracker |
+| YouGov | MI-SEN | Oct 26–29 | 2,093 LV | +4 (El-Sayed 51 / Rogers 47) | 270toWin MI page; PollingSource MI page |
+| Trafalgar Group | TX-SEN | Oct 31–Nov 1 | 1,089 LV | 0 (Talarico 48 / Paxton 48) | RealClearPolling TX page; 270toWin TX page |
+
+Adjudication notes for this refresh (2026-11-02):
+- HK one-time inclusion verified, not copied: every figure above was
+  re-verified from its primary or aggregator source at run time. Upswing's
+  candidate order, unstated in the Nov 1 ledger, is resolved by the Demand
+  Justice primary release: El-Sayed 50 / Rogers 45. Stetson n=861 is the
+  registered-voter electoral base (1,000 adults interviewed); PollingSource
+  labels the same sample LV.
+- Siena per-state sample sizes cross-checked: AK 610, IA 705, KS 736, ME 714,
+  MI 1,011, OH 717, TX 1,215 — sum 5,708 matches the NYT-reported round total.
+  Per-state field windows are verified only for MI (Oct 23–Nov 1), OH
+  (Oct 26–Nov 1, per RCP) and TX (Oct 27–Nov 1, per texpolls); the other four
+  use fieldEnd = Nov 1 with the round window noted.
+- Sponsorship/disclosure: Upswing MI is sponsored by Demand Justice
+  (D-aligned); Trafalgar TX is flagged R-sponsored by PollingSource; Kreate
+  TX names no sponsor and its full methodology sits behind a contact form
+  (online panel, MoE ±3.3, per texpolls); Stetson FL uses a Qualtrics online
+  non-probability panel. Under the standing inclusion principle all are
+  included with disclosure; none is a deliberate-manipulation finding.
+- House: generic-ballot input UNCHANGED at Dem +8.2. No new RCP average value
+  was verified from RCP itself; secondary reports conflict (8.2 per a Nov 1
+  final-polls roundup citing RCP; 8.9 per QNC News citing RCP through Oct 30;
+  8.3 per Newsmax, Oct 29). Per the Nov 1 precedent, no change is adopted
+  without a verified new RCP value.
+- NOT added (with reason): YouGov KS (Hamilton 50 / Marshall 49) and YouGov
+  IA (Turek 50 / Hinson 49) — margins verified via Political Wire, but sample
+  sizes unverified, and the model cannot take a poll without n; Siena already
+  covers both races in this run. ResearchCo MI — published shares conflict
+  (48/46 per FutureBallot, On Point, pollcheck vs 51/48 per 270toWin), no
+  primary release found; margin +2 vs +3 unresolved. AtlasIntel TX —
+  published shares conflict (Talarico 51 per pollcheck vs 52 per RCP) and the
+  sample is listed as adults, not likely voters. On Point Polling TX (Nov 1,
+  544 LV, Talarico +5.5) — an aggregator's own house poll, not independently
+  published; never used in prior runs.
+- NOT added (missed pre-Oct-30 polls; re-adjudication remains HK's decision
+  per the Oct 30 precedent, not this run's scope): MSU/Verasight MI (field
+  Oct 8–23, n=1,383, El-Sayed 51 / Rogers 43 per 270toWin); East Carolina
+  University NC (field Oct 26–29, n=1,041, Cooper 54 / Whatley 45);
+  Quantus NC (field Oct 24–25, n=722, Cooper 51.4 / Whatley 42.8);
+  RedBox Research NC (field Oct 23, n=3,292, Cooper 50 / Whatley 44).
+- polls.ts (display-only) was not updated, consistent with the Oct 28–Nov 1
+  runs.
+- Result vs the Nov 1 run: Senate 59.6% → 62.1% (+2.5pp), expected
+  seats 50.79 → 50.94, band 47–54 unchanged; House unchanged (96.9%,
+  240.64 seats, band 224–258).
