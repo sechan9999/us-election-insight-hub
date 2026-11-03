@@ -1,12 +1,12 @@
 // Data analysis competition announcement (in preparation): analyzing the
 // 18th–21st Korean presidential election data from the same public materials
-// and verifying every figure against the originals. Draft page — schedule,
-// eligibility, submission method, judging criteria, and the in-kind prize
-// details are TBD and marked as such; nothing here presents the competition
-// as open. The Roadmap section shows phase order only (dates TBD), with
-// phase 1 marked in progress. Project Boo is NOT named as a co-host: the
-// co-host proposal was drafted but never sent, so the organizer is
-// OhMyCode LLC only.
+// and verifying every figure against the originals. Draft page — deadline
+// (Dec 31, 2026) and winners announcement (Jan 15, 2027) are confirmed;
+// eligibility, submission method, judging criteria, in-kind prize details,
+// rules announcement, and entries-open dates are TBD and marked as such.
+// Nothing here presents entries as open. Project Boo is NOT named as a
+// co-host: the co-host proposal was drafted but never sent, so the
+// organizer is OhMyCode LLC only.
 
 import type { Metadata } from 'next';
 import CountrySwitch from '../../components/CountrySwitch';
@@ -61,13 +61,13 @@ const S = {
   },
   scheduleHeading: { ko: '일정 · 참가 · 심사', en: 'Schedule · eligibility · judging' },
   scheduleBody: {
-    ko: '일정, 참가 자격, 제출 방식, 심사 기준은 추후 공지합니다. 이 페이지는 준비 단계의 안내이며, 아직 접수를 받지 않습니다.',
-    en: 'Schedule, eligibility, submission method, and judging criteria will be announced later. This page is a preparation-stage announcement; entries are not yet open.',
+    ko: '접수 마감은 2026년 12월 31일, 결과 발표는 2027년 1월 15일로 확정되었습니다. 참가 자격, 제출 방식, 심사 기준은 규칙 공지 시 함께 발표하며, 접수는 그때 시작합니다.',
+    en: 'Submission deadline is December 31, 2026, and winners will be announced January 15, 2027. Eligibility, submission method, and judging criteria will be announced with the rules; entries open then.',
   },
   roadmapHeading: { ko: '로드맵', en: 'Roadmap' },
   roadmapIntro: {
-    ko: '날짜는 아직 정해지지 않았습니다. 아래는 순서만 보여주는 로드맵이며, 각 단계의 일정이 정해지면 이 페이지에 공지합니다.',
-    en: 'Dates are not set yet. The roadmap below shows the order of phases only; each phase’s dates will be announced on this page when fixed.',
+    ko: '접수 마감(2026년 12월 31일)과 결과 발표(2027년 1월 15일)는 확정되었습니다. 규칙 공지 및 접수 시작일은 추후 공지합니다.',
+    en: 'Submission deadline (December 31, 2026) and winners announcement (January 15, 2027) are confirmed. Rules announcement and entries-open dates will follow.',
   },
   roadmapNow: { ko: '진행 중', en: 'In progress' },
   roadmapTbd: { ko: '추후 공지', en: 'TBD' },
@@ -104,10 +104,16 @@ const PRIZES: Record<Lang, string[]> = {
   en: ['Cash prize: $1,000', 'In-kind contribution: details to be announced'],
 };
 
-// Roadmap phases in order. Dates are TBD by design (see file header):
-// phase 1 is the current state, the rest carry the TBD badge until HK
-// fixes their dates. Nothing here implies entries are open.
-type RoadmapPhase = { title: { ko: string; en: string }; desc: { ko: string; en: string }; now: boolean };
+// Roadmap phases in order. Deadline (Dec 31, 2026) and winners
+// announcement (Jan 15, 2027) are confirmed (HK 2026-11-03); rules
+// announcement and entries-open dates are TBD. Phase 1 is the current
+// state. Nothing here implies entries are open yet.
+type RoadmapPhase = {
+  title: { ko: string; en: string };
+  desc: { ko: string; en: string };
+  now: boolean;
+  date?: { ko: string; en: string };
+};
 const ROADMAP: RoadmapPhase[] = [
   {
     title: { ko: '1. 준비 단계', en: '1. Preparation' },
@@ -128,8 +134,8 @@ const ROADMAP: RoadmapPhase[] = [
   {
     title: { ko: '3. 접수 시작', en: '3. Entries open' },
     desc: {
-      ko: '참가 접수를 받기 시작합니다.',
-      en: 'Entries open for submissions.',
+      ko: '규칙 공지와 함께 접수를 받기 시작합니다.',
+      en: 'Entries open when the rules are announced.',
     },
     now: false,
   },
@@ -140,6 +146,7 @@ const ROADMAP: RoadmapPhase[] = [
       en: 'Deadline for submitting analysis entries.',
     },
     now: false,
+    date: { ko: '2026년 12월 31일(목)', en: 'Dec 31, 2026 (Thu)' },
   },
   {
     title: { ko: '5. 심사', en: '5. Judging' },
@@ -148,6 +155,7 @@ const ROADMAP: RoadmapPhase[] = [
       en: 'Verification against the originals and evaluation by the judging criteria.',
     },
     now: false,
+    date: { ko: '2027년 1월 초', en: 'Early Jan 2027' },
   },
   {
     title: { ko: '6. 결과 발표 및 시상', en: '6. Winners announced' },
@@ -156,6 +164,7 @@ const ROADMAP: RoadmapPhase[] = [
       en: 'Winning entries announced; $1,000 cash and in-kind prizes awarded.',
     },
     now: false,
+    date: { ko: '2027년 1월 15일(금)', en: 'Jan 15, 2027 (Fri)' },
   },
 ];
 
@@ -354,12 +363,12 @@ export default async function CompetitionPage({
                 <span className="font-semibold">{ph.title[lang]}</span>
                 <span
                   className={
-                    ph.now
+                    ph.now || ph.date
                       ? 'rounded bg-amber-400/15 px-2 py-0.5 text-xs font-medium text-amber-300'
                       : 'rounded bg-white/10 px-2 py-0.5 text-xs text-neutral-400'
                   }
                 >
-                  {ph.now ? tr(lang, 'roadmapNow') : tr(lang, 'roadmapTbd')}
+                  {ph.now ? tr(lang, 'roadmapNow') : ph.date ? ph.date[lang] : tr(lang, 'roadmapTbd')}
                 </span>
               </div>
               <p className="mt-1 text-sm text-neutral-400">{ph.desc[lang]}</p>
