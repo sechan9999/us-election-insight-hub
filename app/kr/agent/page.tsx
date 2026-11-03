@@ -1,7 +1,8 @@
 // Electoral Evidence Agent tab (Korean elections 2012–2025).
 // Client component: asks /api/agent (Muse Spark function calling over BigQuery
-// kr_precinct) and renders the short answer first, then the tool trace and the
-// archive-index citations. Every number shown comes from a tool call.
+// kr_precinct) and renders the short answer first, then charts derived from
+// the tool results, then the tool trace and the archive-index citations.
+// Every number shown comes from a tool call.
 // The language toggle drives both the page chrome AND the answer language:
 // the page sends lang with the question, and the API answers in that language
 // (with English proper names when lang is "en"), even if the question itself
@@ -9,6 +10,10 @@
 "use client";
 import { useEffect, useState, type ReactNode } from "react";
 import { CANDIDATE_EN } from "../../api/agent/lib/names";
+import {
+  Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceLine,
+  ResponsiveContainer, Tooltip, XAxis, YAxis,
+} from "recharts";
 
 // Minimal answer renderer: the model returns Markdown, but the page used to
 // show it as plain text (literal ** markers). Render bold, links, headers,
@@ -114,6 +119,9 @@ const T: Record<Lang, {
   reportSources: string; reportNote: string;
   sheetPrecinct: string; sheetSamples: string; sheetPage: string;
   sheetOriginal: string; sheetsTitle: string;
+  chartsTitle: string; chartNote: string;
+  turnoutTrend: string; candidateShares: string; swingRanking: string;
+  marginTrend: string; national: string;
 }> = {
   ko: {
     back: "← 한국 대선 데이터로 돌아가기",
@@ -152,6 +160,13 @@ const T: Record<Lang, {
     sheetPage: "상황표 페이지",
     sheetOriginal: "원본 이미지",
     sheetsTitle: "개표상황표",
+    chartsTitle: "차트",
+    chartNote: "아래 차트는 답변에 이미 나온 도구 수치 그대로입니다. 새로 계산한 수치가 없습니다.",
+    turnoutTrend: "투표율 추이",
+    candidateShares: "후보 득표율",
+    swingRanking: "스윙 순위",
+    marginTrend: "마진 추이",
+    national: "전국",
   },
   en: {
     back: "← Back to Korean election data",
@@ -190,6 +205,13 @@ const T: Record<Lang, {
     sheetPage: "Sheet page",
     sheetOriginal: "Original image",
     sheetsTitle: "Tally sheet",
+    chartsTitle: "Charts",
+    chartNote: "Charts below plot exactly the tool figures already shown in the answer — no new computation.",
+    turnoutTrend: "Turnout trend",
+    candidateShares: "Candidate shares",
+    swingRanking: "Swing ranking",
+    marginTrend: "Margin trend",
+    national: "National",
   },
 };
 
@@ -226,6 +248,146 @@ function stepSummary(s: Step, lang: Lang): string {
   return "ok";
 }
 
+// ---- Charts (roadmap item 1, 2026-11-03) ----
+// Derived ONLY from the tool steps already returned with the answer: no new
+// API call, no new computation, so a chart cannot diverge from the text.
+// A chart appears only when its data supports it: turnout/margin trends
+// need 2+ elections for the same unit; a single value stays text-only.
+// District labels stay as the tool's district_key (Korean) in both
+// languages — the answer prose carries the romanized names in EN mode.
+const ELECTION_YEAR: Record<number, number> = { 18: 2012, 19: 2017, 20: 2022, 21: 2025 };
+const CHART_BLUE = "#60a5fa";
+const CHART_GRID = "rgba(255,255,255,0.1)";
+const CHART_TICK = "#a3a3a3";
+
+type ChartSpec =
+  | { kind: "line"; title: string; points: { year: number; value: number }[] }
+  | { kind: "bar"; title: string; bars: { name: string; value: number }[]; zeroLine: boolean };
+
+function stepArgs(s: Step): Record<string, unknown> {
+  return (s.args ?? {}) as Record<string, unknown>;
+}
+function districtLabel(s: Step, lang: Lang): string {
+  const a = stepArgs(s);
+  const dk = typeof a.district_key === "string" ? a.district_key : null;
+  const precinct = typeof a.precinct === "string" ? a.precinct : null;
+  if (dk) return precinct ? `${dk} ${precinct}` : dk;
+  return T[lang].national;
+}
+
+function buildCharts(steps: Step[], lang: Lang): ChartSpec[] {
+  const t = T[lang];
+  const specs: ChartSpec[] = [];
+  // Turnout trend: group turnout steps by unit, keep groups with 2+ points.
+  const turnoutGroups = new Map<string, { label: string; pts: Map<number, number> }>();
+  // Margin trend: same grouping, bars by year.
+  const marginGroups = new Map<string, { label: string; pts: Map<number, number> }>();
+  for (const s of steps) {
+    if (!s.ok) continue;
+    const d = s.data as Record<string, unknown> | undefined;
+    if (!d) continue;
+    const a = stepArgs(s);
+    if (s.tool === "turnout" && typeof d.turnout_pct === "number"
+      && typeof a.election === "number" && ELECTION_YEAR[a.election]) {
+      const key = typeof a.district_key === "string"
+        ? `${a.district_key}|${typeof a.precinct === "string" ? a.precinct : ""}`
+        : "national";
+      if (!turnoutGroups.has(key)) turnoutGroups.set(key, { label: districtLabel(s, lang), pts: new Map() });
+      const g = turnoutGroups.get(key)!;
+      if (!g.pts.has(ELECTION_YEAR[a.election])) g.pts.set(ELECTION_YEAR[a.election], d.turnout_pct);
+    }
+    if (s.tool === "margin" && typeof d.margin_votes === "number"
+      && typeof a.election === "number" && ELECTION_YEAR[a.election]) {
+      const key = typeof a.district_key === "string"
+        ? `${a.district_key}|${typeof a.precinct === "string" ? a.precinct : ""}`
+        : "national";
+      if (!marginGroups.has(key)) marginGroups.set(key, { label: districtLabel(s, lang), pts: new Map() });
+      const g = marginGroups.get(key)!;
+      if (!g.pts.has(ELECTION_YEAR[a.election])) g.pts.set(ELECTION_YEAR[a.election], d.margin_votes);
+    }
+  }
+  for (const g of turnoutGroups.values()) {
+    if (g.pts.size < 2) continue;
+    const points = [...g.pts.entries()].sort((x, y) => x[0] - y[0])
+      .map(([year, value]) => ({ year, value }));
+    specs.push({ kind: "line", title: `${t.turnoutTrend} — ${g.label}`, points });
+  }
+  for (const g of marginGroups.values()) {
+    if (g.pts.size < 2) continue;
+    const bars = [...g.pts.entries()].sort((x, y) => x[0] - y[0])
+      .map(([year, value]) => ({ name: String(year), value }));
+    specs.push({ kind: "bar", title: `${t.marginTrend} — ${g.label}`, bars, zeroLine: false });
+  }
+  // One chart per chartable step: candidate shares, swing ranking.
+  for (const s of steps) {
+    if (!s.ok) continue;
+    const d = s.data as Record<string, unknown> | undefined;
+    if (!d) continue;
+    const a = stepArgs(s);
+    if (s.tool === "precinct_lookup" && Array.isArray(d.candidates)) {
+      const bars = (d.candidates as Record<string, unknown>[])
+        .filter((c) => typeof c.share_pct === "number" && typeof c.name === "string")
+        .map((c) => ({
+          name: lang === "en" ? (CANDIDATE_EN[c.name as string] ?? (c.name as string)) : (c.name as string),
+          value: c.share_pct as number,
+        }))
+        .sort((x, y) => y.value - x.value);
+      if (bars.length >= 2) {
+        const year = typeof a.election === "number" ? ELECTION_YEAR[a.election] : undefined;
+        specs.push({ kind: "bar",
+          title: `${t.candidateShares} — ${districtLabel(s, lang)}${year ? ` ${year}` : ""}`,
+          bars, zeroLine: false });
+      }
+    }
+    if (s.tool === "swing_calculation" && Array.isArray(d.rows)) {
+      // Ranking mode only: district-mode swing returns candidates, not rows.
+      const bars = (d.rows as Record<string, unknown>[])
+        .filter((r) => typeof r.swing_pp === "number" && typeof r.district_key === "string")
+        .map((r) => ({ name: r.district_key as string, value: r.swing_pp as number }));
+      if (bars.length >= 2) {
+        const who = typeof a.candidate === "string" ? a.candidate
+          : typeof a.bloc === "string" ? a.bloc : "";
+        const ea = typeof a.election_a === "number" ? ELECTION_YEAR[a.election_a] : undefined;
+        const eb = typeof a.election_b === "number" ? ELECTION_YEAR[a.election_b] : undefined;
+        specs.push({ kind: "bar",
+          title: `${t.swingRanking}${who ? ` — ${lang === "en" && who in CANDIDATE_EN ? CANDIDATE_EN[who] : who}` : ""}${ea && eb ? ` ${ea}→${eb}` : ""}`,
+          bars, zeroLine: true });
+      }
+    }
+  }
+  return specs;
+}
+
+function ChartCard({ spec }: { spec: ChartSpec }) {
+  return (
+    <div className="rounded-lg border border-white/10 bg-black/30 p-4">
+      <h3 className="text-sm font-semibold text-neutral-200">{spec.title}</h3>
+      <div className="mt-2 h-72 w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          {spec.kind === "line" ? (
+            <LineChart data={spec.points} margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
+              <CartesianGrid stroke={CHART_GRID} />
+              <XAxis dataKey="year" tick={{ fill: CHART_TICK, fontSize: 12 }} />
+              <YAxis domain={[0, 100]} tick={{ fill: CHART_TICK, fontSize: 12 }} />
+              <Tooltip contentStyle={{ background: "#171717", border: "1px solid rgba(255,255,255,0.15)" }} />
+              <Line type="monotone" dataKey="value" stroke={CHART_BLUE} strokeWidth={2} dot={{ r: 4 }} />
+            </LineChart>
+          ) : (
+            <BarChart data={spec.bars} layout="vertical" margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
+              <CartesianGrid stroke={CHART_GRID} />
+              <XAxis type="number" tick={{ fill: CHART_TICK, fontSize: 12 }} />
+              <YAxis type="category" dataKey="name" width={150} tick={{ fill: CHART_TICK, fontSize: 12 }} />
+              <Tooltip contentStyle={{ background: "#171717", border: "1px solid rgba(255,255,255,0.15)" }} />
+              {spec.zeroLine && <ReferenceLine x={0} stroke={CHART_TICK} />}
+              <Bar dataKey="value" fill={CHART_BLUE} />
+            </BarChart>
+          )}
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
 // SAM 3.1 table-region boxes for the example tally sheet below, from
 // sam_run_live50/sam_report.json (page e21_ulsan_39108_p032). Normalized
 // [x0, y0, x1, y1] coordinates — rendered as CSS percentages so the
@@ -251,6 +413,7 @@ export default function Agent() {
     if (new URLSearchParams(window.location.search).get("lang") === "en") setLang("en");
   }, []);
   const t = T[lang];
+  const charts = res ? buildCharts(res.steps ?? [], lang) : [];
   function setLanguage(l: Lang) {
     setLang(l);
     const url = new URL(window.location.href);
@@ -387,6 +550,16 @@ export default function Agent() {
               {t.downloadReport}
             </button>
           </div>
+
+          {charts.length > 0 && (
+            <div className="mt-4">
+              <h2 className="text-sm font-semibold text-neutral-300">{t.chartsTitle}</h2>
+              <p className="mt-1 text-xs text-neutral-400">{t.chartNote}</p>
+              <div className="mt-2 space-y-3">
+                {charts.map((c, i) => <ChartCard key={i} spec={c} />)}
+              </div>
+            </div>
+          )}
 
           {res.steps && res.steps.length > 0 && (
             <div className="mt-4">
