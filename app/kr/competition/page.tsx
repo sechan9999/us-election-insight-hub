@@ -3,8 +3,10 @@
 // and verifying every figure against the originals. Draft page — schedule,
 // eligibility, submission method, judging criteria, and the in-kind prize
 // details are TBD and marked as such; nothing here presents the competition
-// as open. Project Boo is NOT named as a co-host: the co-host proposal was
-// drafted but never sent, so the organizer is OhMyCode LLC only.
+// as open. The Roadmap section shows phase order only (dates TBD), with
+// phase 1 marked in progress. Project Boo is NOT named as a co-host: the
+// co-host proposal was drafted but never sent, so the organizer is
+// OhMyCode LLC only.
 
 import type { Metadata } from 'next';
 import CountrySwitch from '../../components/CountrySwitch';
@@ -62,6 +64,13 @@ const S = {
     ko: '일정, 참가 자격, 제출 방식, 심사 기준은 추후 공지합니다. 이 페이지는 준비 단계의 안내이며, 아직 접수를 받지 않습니다.',
     en: 'Schedule, eligibility, submission method, and judging criteria will be announced later. This page is a preparation-stage announcement; entries are not yet open.',
   },
+  roadmapHeading: { ko: '로드맵', en: 'Roadmap' },
+  roadmapIntro: {
+    ko: '날짜는 아직 정해지지 않았습니다. 아래는 순서만 보여주는 로드맵이며, 각 단계의 일정이 정해지면 이 페이지에 공지합니다.',
+    en: 'Dates are not set yet. The roadmap below shows the order of phases only; each phase’s dates will be announced on this page when fixed.',
+  },
+  roadmapNow: { ko: '진행 중', en: 'In progress' },
+  roadmapTbd: { ko: '추후 공지', en: 'TBD' },
   organizerHeading: { ko: '주최', en: 'Organizer' },
   organizerBody: {
     ko: 'Electoral Insights Hub (OhMyCode LLC). 협력 기관은 추후 공지합니다.',
@@ -94,6 +103,61 @@ const PRIZES: Record<Lang, string[]> = {
   ko: ['현금 상금: $1,000', 'In-kind contribution: 내역 추후 공지'],
   en: ['Cash prize: $1,000', 'In-kind contribution: details to be announced'],
 };
+
+// Roadmap phases in order. Dates are TBD by design (see file header):
+// phase 1 is the current state, the rest carry the TBD badge until HK
+// fixes their dates. Nothing here implies entries are open.
+type RoadmapPhase = { title: { ko: string; en: string }; desc: { ko: string; en: string }; now: boolean };
+const ROADMAP: RoadmapPhase[] = [
+  {
+    title: { ko: '1. 준비 단계', en: '1. Preparation' },
+    desc: {
+      ko: '컴피티션 안내 페이지 공개, 18–21대 아카이브 전면 공개, 주제와 상금 발표.',
+      en: 'Announcement page live, 18th–21st archives published in full, topics and prizes announced.',
+    },
+    now: true,
+  },
+  {
+    title: { ko: '2. 참가 안내 공지', en: '2. Rules announcement' },
+    desc: {
+      ko: '참가 자격, 제출 방식, 심사 기준, 상금 내역 공지.',
+      en: 'Eligibility, submission method, judging criteria, and prize details announced.',
+    },
+    now: false,
+  },
+  {
+    title: { ko: '3. 접수 시작', en: '3. Entries open' },
+    desc: {
+      ko: '참가 접수를 받기 시작합니다.',
+      en: 'Entries open for submissions.',
+    },
+    now: false,
+  },
+  {
+    title: { ko: '4. 제출 마감', en: '4. Submission deadline' },
+    desc: {
+      ko: '분석 결과물 제출 마감.',
+      en: 'Deadline for submitting analysis entries.',
+    },
+    now: false,
+  },
+  {
+    title: { ko: '5. 심사', en: '5. Judging' },
+    desc: {
+      ko: '원본 대조 검증과 심사 기준에 따른 평가.',
+      en: 'Verification against the originals and evaluation by the judging criteria.',
+    },
+    now: false,
+  },
+  {
+    title: { ko: '6. 결과 발표 및 시상', en: '6. Winners announced' },
+    desc: {
+      ko: '수상작 발표, 현금 $1,000 및 in-kind contribution 시상.',
+      en: 'Winning entries announced; $1,000 cash and in-kind prizes awarded.',
+    },
+    now: false,
+  },
+];
 
 const ARCHIVES: { term: { ko: string; en: string }; desc: { ko: string; en: string }; url: string }[] = [
   {
@@ -279,6 +343,29 @@ export default async function CompetitionPage({
 
         <h2 className="mt-10 text-xl font-bold">{tr(lang, 'scheduleHeading')}</h2>
         <p className="mt-2 leading-relaxed text-neutral-300">{tr(lang, 'scheduleBody')}</p>
+
+        <h2 className="mt-10 text-xl font-bold">{tr(lang, 'roadmapHeading')}</h2>
+        <p className="mt-2 text-sm text-neutral-400">{tr(lang, 'roadmapIntro')}</p>
+        <ol className="mt-4 space-y-0">
+          {ROADMAP.map((ph) => (
+            <li key={ph.title[lang]} className="relative border-l-2 border-white/15 pb-5 pl-5 last:pb-0">
+              <span className="absolute -left-[7px] top-1.5 h-3 w-3 rounded-full bg-amber-300" />
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-semibold">{ph.title[lang]}</span>
+                <span
+                  className={
+                    ph.now
+                      ? 'rounded bg-amber-400/15 px-2 py-0.5 text-xs font-medium text-amber-300'
+                      : 'rounded bg-white/10 px-2 py-0.5 text-xs text-neutral-400'
+                  }
+                >
+                  {ph.now ? tr(lang, 'roadmapNow') : tr(lang, 'roadmapTbd')}
+                </span>
+              </div>
+              <p className="mt-1 text-sm text-neutral-400">{ph.desc[lang]}</p>
+            </li>
+          ))}
+        </ol>
 
         <h2 className="mt-10 text-xl font-bold">{tr(lang, 'organizerHeading')}</h2>
         <p className="mt-2 leading-relaxed text-neutral-300">{tr(lang, 'organizerBody')}</p>
