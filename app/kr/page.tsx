@@ -42,7 +42,7 @@ const S = {
     en: 'Ask in Korean or English — turnout, vote share, swing and margins are fetched live from BigQuery. Every number comes from a tool call; citations are the archive index pages.',
   },
   agentCta: { ko: '에이전트에게 묻기 →', en: 'Ask the agent →' },
-  compTitle: { ko: '🏆 데이터 분석 컴피티션 (준비 중)', en: '🏆 Data analysis competition (in preparation)' },
+  compTitle: { ko: '🏆 데이터 분석 컴피티션 (접수 중)', en: '🏆 Data analysis competition (accepting entries)' },
   compBody: {
     ko: '18–21대 대선 데이터를 같은 공개 자료로 분석하고 원본으로 검증하는 컴피티션. 상금 $1,000 + in-kind contribution.',
     en: 'A competition to analyze the 18th–21st election data from the same public materials and verify every figure against the originals. Prizes: $1,000 + in-kind contribution.',

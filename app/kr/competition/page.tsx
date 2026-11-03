@@ -1,10 +1,10 @@
-// Data analysis competition announcement (in preparation): analyzing the
+// Data analysis competition announcement (entries open): analyzing the
 // 18th–21st Korean presidential election data from the same public materials
-// and verifying every figure against the originals. Draft page — deadline
-// (Dec 31, 2026) and winners announcement (Jan 15, 2027) are confirmed;
-// eligibility, submission method, judging criteria, in-kind prize details,
-// rules announcement, and entries-open dates are TBD and marked as such.
-// Nothing here presents entries as open. Project Boo is NOT named as a
+// and verifying every figure against the originals. Deadline (Dec 31, 2026)
+// and winners announcement (Jan 15, 2027) are confirmed; eligibility,
+// submission method, judging criteria, in-kind prize details, and rules
+// announcement are TBD and marked as such. Entries are accepted via the
+// Google Form linked in the Apply box. Project Boo is NOT named as a
 // co-host: the co-host proposal was drafted but never sent, so the
 // organizer is OhMyCode LLC only.
 
@@ -25,7 +25,7 @@ const DESCRIPTION: Record<Lang, string> = {
 
 const S = {
   back: { ko: '한국 선거 섹션으로', en: 'Back to the Korea section' },
-  status: { ko: '준비 중', en: 'In preparation' },
+  status: { ko: '접수 중', en: 'Accepting entries' },
   heading: {
     ko: '18–21대 대선 데이터 분석 컴피티션',
     en: '18th–21st Presidential Election Data Analysis Competition',
@@ -61,8 +61,8 @@ const S = {
   },
   scheduleHeading: { ko: '일정 · 참가 · 심사', en: 'Schedule · eligibility · judging' },
   scheduleBody: {
-    ko: '접수 마감은 2026년 12월 31일, 결과 발표는 2027년 1월 15일로 확정되었습니다. 참가 자격, 제출 방식, 심사 기준은 규칙 공지 시 함께 발표하며, 접수는 그때 시작합니다.',
-    en: 'Submission deadline is December 31, 2026, and winners will be announced January 15, 2027. Eligibility, submission method, and judging criteria will be announced with the rules; entries open then.',
+    ko: '접수 중입니다. 참가 신청 폼으로 제출하며, 마감은 2026년 12월 31일, 결과 발표는 2027년 1월 15일입니다. 참가 자격, 제출 방식, 심사 기준은 추후 공지합니다.',
+    en: 'Entries are open now via the entry form. Submission deadline is December 31, 2026, and winners will be announced January 15, 2027. Eligibility, submission method, and judging criteria will be announced later.',
   },
   roadmapHeading: { ko: '로드맵', en: 'Roadmap' },
   roadmapIntro: {
@@ -71,6 +71,12 @@ const S = {
   },
   roadmapNow: { ko: '진행 중', en: 'In progress' },
   roadmapTbd: { ko: '추후 공지', en: 'TBD' },
+  applyHeading: { ko: '참가 신청 — 접수 중', en: 'Apply — entries open' },
+  applyBody: {
+    ko: '참가 신청 폼으로 결과물을 제출합니다. 마감: 2026년 12월 31일, 결과 발표: 2027년 1월 15일.',
+    en: 'Submit your entry via the entry form. Deadline: December 31, 2026. Winners announced January 15, 2027.',
+  },
+  applyButton: { ko: '참가 신청 폼 열기 →', en: 'Open the entry form →' },
   organizerHeading: { ko: '주최', en: 'Organizer' },
   organizerBody: {
     ko: 'Electoral Insights Hub (OhMyCode LLC). 협력 기관은 추후 공지합니다.',
@@ -134,10 +140,10 @@ const ROADMAP: RoadmapPhase[] = [
   {
     title: { ko: '3. 접수 시작', en: '3. Entries open' },
     desc: {
-      ko: '규칙 공지와 함께 접수를 받기 시작합니다.',
-      en: 'Entries open when the rules are announced.',
+      ko: '접수 중입니다. 참가 신청 폼으로 제출합니다. 규칙(참가 자격·심사 기준)은 추후 공지합니다.',
+      en: 'Entries are open now via the entry form. Rules (eligibility, judging criteria) will be announced.',
     },
-    now: false,
+    now: true,
   },
   {
     title: { ko: '4. 제출 마감', en: '4. Submission deadline' },
@@ -288,6 +294,19 @@ export default async function CompetitionPage({
         <h1 className="mt-3 text-3xl font-bold leading-snug">{tr(lang, 'heading')}</h1>
         <p className="mt-2 text-lg font-medium text-amber-300">{tr(lang, 'theme')}</p>
         <p className="mt-3 leading-relaxed text-neutral-300">{tr(lang, 'intro')}</p>
+
+        <div className="mt-6 rounded-xl border border-amber-400/30 bg-amber-400/5 p-4">
+          <div className="font-semibold">{tr(lang, 'applyHeading')}</div>
+          <p className="mt-1 text-sm text-neutral-300">{tr(lang, 'applyBody')}</p>
+          <a
+            href="https://forms.gle/97UHnHhM1gMDAuQH8"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-block rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-neutral-950 hover:bg-amber-300"
+          >
+            {tr(lang, 'applyButton')}
+          </a>
+        </div>
 
         <h2 className="mt-10 text-xl font-bold">{tr(lang, 'backgroundHeading')}</h2>
         <p className="mt-2 leading-relaxed text-neutral-300">{tr(lang, 'backgroundBody')}</p>
