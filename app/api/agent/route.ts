@@ -7,9 +7,11 @@
 // figures come from the same BigQuery tools either way; the response labels
 // which model answered.
 // Mirrors /api/ask's discipline: per-IP rate limit, 500-char question cap,
-// 1 GB scan cap (in tools.ts), generic errors.
+// 1 GB scan cap (in tools.ts), generic errors. The answer language follows
+// the UI toggle (lang field); the fallback uses the same computed prompt.
 import { NextRequest, NextResponse } from "next/server";
 import { TOOLS, citationsFor, type ToolResult } from "./lib/tools";
+import { CANDIDATE_EN, SIDO_EN } from "./lib/names";
 import { runGeminiLoop, type LoopResult, type Step } from "./lib/gemini";
 
 export const runtime = "nodejs";
@@ -44,7 +46,10 @@ function clientIp(req: NextRequest): string {
 
 // Condensed from agent-prompts-ko-en-v1.md (final 2026-10-27). The full prompts
 // live in the submission package; the tool semantics here are the enforcement.
-const SYSTEM = `You are the Electoral Insights Hub election-data agent. You answer questions about South Korean presidential elections 18 (2012), 19 (2017), 20 (2022) and 21 (2025) in the language the user asked in.
+// The answer language is NOT fixed here: systemPrompt() below prepends the
+// language block for the UI toggle (lang field), defaulting to the question's
+// language when the caller sends no lang.
+const SYSTEM_BASE = `You are the Electoral Insights Hub election-data agent. You answer questions about South Korean presidential elections 18 (2012), 19 (2017), 20 (2022) and 21 (2025).
 
 NON-NEGOTIABLE RULES — the tools enforce them; never work around them in prose:
 1. Every number in your answer MUST come from a tool call (precinct_lookup, swing_calculation, turnout, margin). Never generate, estimate, or recall a figure from memory. If a tool returns no figure, say the data is not available — do not fill it.
@@ -71,6 +76,25 @@ ERROR HANDLING (use the tool's error, do not improvise):
 - District aggregates sum ALL unit types in the district (regular precincts, early-vote and special rows). That is why district totals reproduce the published turnouts.
 
 ANSWER FORMAT: short answer first (the figure + its level + election), then the supporting tool figures, then the archive-index citation. Keep units explicit: votes, share (%), turnout (%), swing (percentage points, pp).`;
+
+export type AnswerLang = "en" | "ko" | "question";
+
+const CANDIDATE_LIST = Object.entries(CANDIDATE_EN).map(([ko, en]) => `${ko} ${en}`).join("; ");
+const SIDO_LIST = Object.entries(SIDO_EN).map(([ko, en]) => `${ko} ${en}`).join("; ");
+
+// The UI toggle decides the answer language, not the question's language:
+// with the English toggle selected, a Korean question still gets an English
+// answer, with every region and candidate name rendered in English.
+const LANG_EN = `ANSWER LANGUAGE: English. The user selected the English UI toggle, so answer entirely in English even when the question itself is written in Korean. Section labels must be English ("Short answer:", "Evidence:"), never Korean labels.
+NAMES IN ENGLISH: Render every Korean proper name in English in your answer prose — never leave a region or candidate name in Hangul. Candidates (family name first): ${CANDIDATE_LIST}. Provinces: ${SIDO_LIST}. Districts: write "Sigungu, Sido" in English using Revised Romanization, e.g. 경기도|부천시 → "Bucheon, Gyeonggi Province"; 서울특별시|송파구 → "Songpa-gu, Seoul". Tool-trace JSON is raw data and is exempt from this rule.`;
+
+const LANG_KO = `ANSWER LANGUAGE: Korean. The user selected the Korean UI toggle, so answer entirely in Korean even when the question itself is written in English. Render names in Korean exactly as the tools return them.`;
+
+function systemPrompt(mode: AnswerLang): string {
+  if (mode === "en") return `${LANG_EN}\n\n${SYSTEM_BASE}`;
+  if (mode === "ko") return `${LANG_KO}\n\n${SYSTEM_BASE}`;
+  return `Answer in the language the user asked in.\n\n${SYSTEM_BASE}`;
+}
 
 const TOOLS_SCHEMA = [
   { type: "function", name: "precinct_lookup",
@@ -118,13 +142,13 @@ const TOOLS_SCHEMA = [
 
 type MsgItem = Record<string, unknown>;
 
-async function callSpark(apiKey: string, input: MsgItem[]): Promise<{ output: MsgItem[]; error?: string }> {
+async function callSpark(apiKey: string, input: MsgItem[], system: string): Promise<{ output: MsgItem[]; error?: string }> {
   const res = await fetch(META_API, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
       model: MODEL, temperature: 0, reasoning: { effort: "low" },
-      instructions: SYSTEM, input, tools: TOOLS_SCHEMA,
+      instructions: system, input, tools: TOOLS_SCHEMA,
     }),
   });
   const payload = await res.json().catch(() => ({}));
@@ -147,14 +171,14 @@ function finalText(output: MsgItem[]): string {
   return "";
 }
 
-async function runMetaLoop(apiKey: string, question: string): Promise<LoopResult> {
+async function runMetaLoop(apiKey: string, question: string, system: string): Promise<LoopResult> {
   const input: MsgItem[] = [
     { role: "user", content: [{ type: "input_text", text: question }] },
   ];
   const steps: Step[] = [];
   const elections = new Set<number>();
   for (let iter = 0; iter < MAX_ITERATIONS; iter++) {
-    const { output, error } = await callSpark(apiKey, input);
+    const { output, error } = await callSpark(apiKey, input, system);
     if (error) return { answer: "", steps, elections: [...elections], error };
     const calls = output.filter((o) => o.type === "function_call");
     input.push(...output);
@@ -181,7 +205,7 @@ async function runMetaLoop(apiKey: string, question: string): Promise<LoopResult
       input.push({ type: "function_call_output", call_id: call.call_id, output: JSON.stringify(result) });
     }
     if (iter === MAX_ITERATIONS - 1) {
-      const { output: last, error: lastError } = await callSpark(apiKey, input);
+      const { output: last, error: lastError } = await callSpark(apiKey, input, system);
       if (lastError) return { answer: "", steps, elections: [...elections], error: lastError };
       return { answer: finalText(last), steps, elections: [...elections] };
     }
@@ -203,15 +227,19 @@ export async function POST(req: NextRequest) {
         reason: "The agent's Meta Model API key is not set on this service. Set META_MODEL_API_KEY and redeploy.",
       }, { status: 503 });
     }
-    const { question } = await req.json();
+    const { question, lang } = await req.json();
     if (!question || typeof question !== "string") {
       return NextResponse.json({ error: "Missing question" }, { status: 400 });
     }
     if (question.length > MAX_QUESTION_CHARS) {
       return NextResponse.json({ error: `Question too long (max ${MAX_QUESTION_CHARS} characters).` }, { status: 400 });
     }
+    // The UI toggle decides the answer language; callers that send no lang
+    // keep the old behavior (answer in the question's language).
+    const langMode: AnswerLang = lang === "en" ? "en" : lang === "ko" ? "ko" : "question";
+    const system = systemPrompt(langMode);
 
-    const meta = await runMetaLoop(apiKey, question);
+    const meta = await runMetaLoop(apiKey, question, system);
     if (meta.answer) {
       return NextResponse.json({
         answer: meta.answer, steps: meta.steps,
@@ -224,7 +252,7 @@ export async function POST(req: NextRequest) {
     // message): fall back to Gemini with the same tools, labeled as such.
     const fallbackReason = meta.error || "Meta Model API returned no final answer.";
     console.error("agent falling back to Gemini:", fallbackReason);
-    const gemini = await runGeminiLoop(question, SYSTEM, TOOLS_SCHEMA);
+    const gemini = await runGeminiLoop(question, system, TOOLS_SCHEMA);
     if (gemini.answer) {
       return NextResponse.json({
         answer: gemini.answer, steps: gemini.steps,

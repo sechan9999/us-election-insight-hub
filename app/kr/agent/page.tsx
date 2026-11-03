@@ -2,8 +2,13 @@
 // Client component: asks /api/agent (Muse Spark function calling over BigQuery
 // kr_precinct) and renders the short answer first, then the tool trace and the
 // archive-index citations. Every number shown comes from a tool call.
+// The language toggle drives both the page chrome AND the answer language:
+// the page sends lang with the question, and the API answers in that language
+// (with English proper names when lang is "en"), even if the question itself
+// is written in the other language.
 "use client";
 import { useEffect, useState, type ReactNode } from "react";
+import { CANDIDATE_EN } from "../../api/agent/lib/names";
 
 // Minimal answer renderer: the model returns Markdown, but the page used to
 // show it as plain text (literal ** markers). Render bold, links, headers,
@@ -93,8 +98,9 @@ const EXAMPLES_KO = [
   "Who won 서울특별시|송파구 in 2025, and by how much?",
 ];
 
-// UI chrome strings. The toggle switches page titles/labels only; the agent
-// still answers in the language the question was asked in.
+// UI chrome strings. The toggle switches page titles/labels AND the answer
+// language (sent to /api/agent as lang); the question itself may be in
+// either language.
 type Lang = "ko" | "en";
 const T: Record<Lang, {
   back: string; title: string; desc: string; placeholder: string; ask: string;
@@ -107,7 +113,7 @@ const T: Record<Lang, {
   ko: {
     back: "← 한국 대선 데이터로 돌아가기",
     title: "선거 증거 에이전트",
-    desc: "한국 대통령 선거 18대(2012)–21대(2025)에 대해 물어보세요. 모든 숫자는 BigQuery 도구 호출에서 가져오며, 모델이 지어낸 수치는 없습니다. 출처는 선거별 아카이브 색인 페이지입니다. Ask in Korean or English — the agent answers in the language you asked in.",
+    desc: "한국 대통령 선거 18대(2012)–21대(2025)에 대해 물어보세요. 모든 숫자는 BigQuery 도구 호출에서 가져오며, 모델이 지어낸 수치는 없습니다. 출처는 선거별 아카이브 색인 페이지입니다. 한국어·영어로 질문할 수 있고, 답변 언어는 위의 토글이 정합니다.",
     placeholder: "예: 부천시 투표율 추이 2012 → 2025?",
     ask: "묻기",
     emptyQ: "질문을 입력하세요.",
@@ -132,7 +138,7 @@ const T: Record<Lang, {
   en: {
     back: "← Back to Korean election data",
     title: "Electoral Evidence Agent",
-    desc: "Ask about Korean presidential elections, 18th (2012) – 21st (2025). Every number comes from a BigQuery tool call — never invented by the model. Citations are the election archive index pages. Ask in Korean or English — the agent answers in the language you asked in.",
+    desc: "Ask about Korean presidential elections, 18th (2012) – 21st (2025). Every number comes from a BigQuery tool call — never invented by the model. Citations are the election archive index pages. Ask in Korean or English — answers follow the language toggle above.",
     placeholder: "e.g. Bucheon turnout trend 2012 → 2025?",
     ask: "Ask",
     emptyQ: "Enter a question.",
@@ -176,7 +182,8 @@ function stepSummary(s: Step, lang: Lang): string {
   if (typeof d.turnout_pct === "number") return `turnout ${d.turnout_pct}%`;
   if (typeof d.margin_votes === "number") {
     const w = d.winner as { name?: string } | undefined;
-    return `${w?.name ?? ""} +${d.margin_votes} votes (${d.margin_pp}pp)`;
+    const wName = w?.name ? (lang === "en" ? (CANDIDATE_EN[w.name] ?? w.name) : w.name) : "";
+    return `${wName} +${d.margin_votes} votes (${d.margin_pp}pp)`;
   }
   if (Array.isArray(d.rows)) return `${d.rows.length} rows`;
   if (Array.isArray(d.candidates)) return `${d.candidates.length} candidates`;
@@ -222,7 +229,7 @@ export default function Agent() {
       const r = await fetch("/api/agent", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ question: query }),
+        body: JSON.stringify({ question: query, lang }),
       });
       setRes(await r.json());
     } catch (e) {
