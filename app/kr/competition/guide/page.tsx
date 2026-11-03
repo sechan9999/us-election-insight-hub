@@ -3,6 +3,7 @@
 // 2026-11-03. Source of truth:
 // ~/workspace/user/files/competition-participant-guide-2026-11-03.md
 // (English only, as approved; the competition page links here.)
+// Sponsor: JNCTV (added 2026-11-03).
 
 import type { Metadata } from 'next';
 import CountrySwitch from '../../../components/CountrySwitch';
@@ -94,6 +95,7 @@ export default async function CompetitionGuidePage({
         <p className="mt-3 leading-relaxed text-neutral-300">
           Organizer: Electoral Insights Hub (OhMyCode LLC).
         </p>
+        <p className="mt-3 leading-relaxed text-neutral-300">Sponsor: JNCTV.</p>
 
         <h2 className="mt-10 text-xl font-bold">1. Your Goal: Problem Statements</h2>
         <p className="mt-2 leading-relaxed text-neutral-300">

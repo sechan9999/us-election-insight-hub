@@ -6,7 +6,7 @@
 // rules (approved 2026-11-03). Entries are accepted via the Google Form
 // linked in the Apply box. Project Boo is NOT named as a co-host: the
 // co-host proposal was drafted but never sent, so the organizer is
-// OhMyCode LLC only.
+// OhMyCode LLC only. Sponsor: JNCTV (added 2026-11-03).
 
 import type { Metadata } from 'next';
 import CountrySwitch from '../../components/CountrySwitch';
@@ -83,6 +83,7 @@ const S = {
     ko: 'Electoral Insights Hub (OhMyCode LLC). 협력 기관은 추후 공지합니다.',
     en: 'Electoral Insights Hub (OhMyCode LLC). Partner organizations will be announced later.',
   },
+  sponsor: { ko: '후원: JNCTV', en: 'Sponsor: JNCTV' },
   neutrality: {
     ko: '비당파적 원칙: 이 컴피티션은 공식 발표 수치만을 다룹니다. 후보·정당·정책에 대한 추천이나 평가는 심사 대상이 아닙니다.',
     en: 'Non-partisan rule: this competition deals only with officially published figures. Recommendations or evaluations of candidates, parties, or policies are not part of the judging.',
@@ -404,6 +405,7 @@ export default async function CompetitionPage({
 
         <h2 className="mt-10 text-xl font-bold">{tr(lang, 'organizerHeading')}</h2>
         <p className="mt-2 leading-relaxed text-neutral-300">{tr(lang, 'organizerBody')}</p>
+        <p className="mt-2 leading-relaxed text-neutral-300">{tr(lang, 'sponsor')}</p>
 
         <p className="mt-10 border-t border-white/10 pt-4 text-xs leading-relaxed text-neutral-500">
           {tr(lang, 'neutrality')}
