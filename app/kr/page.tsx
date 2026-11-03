@@ -12,7 +12,7 @@ type SearchParams = { lang?: string };
 
 const DASHBOARD = 'https://k18to21-election2.vercel.app';
 const GITHUB = 'https://github.com/sechan9999/K18to21Election2';
-const DEMO_VIDEO = 'https://www.youtube.com/watch?v=v14OXlEQy0s';
+const DEMO_VIDEO = 'https://youtu.be/JzfRxSYloVo';
 
 const TITLES: Record<Lang, string> = {
   ko: '한국 대통령 선거 데이터 — Election Insights Hub',
