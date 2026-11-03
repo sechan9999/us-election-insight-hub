@@ -42,6 +42,12 @@ const S = {
     en: 'Ask in Korean or English — turnout, vote share, swing and margins are fetched live from BigQuery. Every number comes from a tool call; citations are the archive index pages.',
   },
   agentCta: { ko: '에이전트에게 묻기 →', en: 'Ask the agent →' },
+  compTitle: { ko: '🏆 데이터 분석 컴피티션 (준비 중)', en: '🏆 Data analysis competition (in preparation)' },
+  compBody: {
+    ko: '18–21대 대선 데이터를 같은 공개 자료로 분석하고 원본으로 검증하는 컴피티션. 상금 $1,000 + in-kind contribution.',
+    en: 'A competition to analyze the 18th–21st election data from the same public materials and verify every figure against the originals. Prizes: $1,000 + in-kind contribution.',
+  },
+  compCta: { ko: '컴피티션 안내 보기 →', en: 'See the competition announcement →' },
   demoVideo: { ko: '▶ 데모 영상 보기 (영어 내레이션, 약 2분 44초)', en: '▶ Watch the demo video (English narration, 2:44)' },
   archiveHeading: { ko: '원본 기록 아카이브', en: 'Original-records archives' },
   archiveIntro: {
@@ -175,6 +181,15 @@ export default async function KoreaPage({
           <div className="text-lg font-semibold text-emerald-300">{tr(lang, 'agentTitle')}</div>
           <div className="mt-1 text-sm text-neutral-300">{tr(lang, 'agentBody')}</div>
           <div className="mt-2 text-sm font-medium text-emerald-300">{tr(lang, 'agentCta')}</div>
+        </a>
+
+        <a
+          href={`/kr/competition?lang=${lang}`}
+          className="mt-4 block rounded-xl border border-violet-400/30 bg-violet-400/10 p-5 hover:bg-violet-400/15"
+        >
+          <div className="text-lg font-semibold text-violet-300">{tr(lang, 'compTitle')}</div>
+          <div className="mt-1 text-sm text-neutral-300">{tr(lang, 'compBody')}</div>
+          <div className="mt-2 text-sm font-medium text-violet-300">{tr(lang, 'compCta')}</div>
         </a>
 
         <a
