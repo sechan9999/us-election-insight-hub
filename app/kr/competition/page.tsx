@@ -1,12 +1,12 @@
-// Data analysis competition announcement (entries open): analyzing the
-// 18th–21st Korean presidential election data from the same public materials
-// and verifying every figure against the originals. Deadline (Dec 31, 2026)
-// and winners announcement (Jan 15, 2027) are confirmed; eligibility,
-// submission method, judging criteria, in-kind prize details, and rules
-// announcement are TBD and marked as such. Entries are accepted via the
-// Google Form linked in the Apply box. Project Boo is NOT named as a
-// co-host: the co-host proposal was drafted but never sent, so the
-// organizer is OhMyCode LLC only.
+// Data analysis competition announcement (entries open, rules published):
+// analyzing the 18th–21st Korean presidential election data from the same
+// public materials and verifying every figure against the originals.
+// Deadline (Dec 31, 2026) and winners announcement (Jan 15, 2027) are
+// confirmed; the Participant Guide at /kr/competition/guide is the official
+// rules (approved 2026-11-03). Entries are accepted via the Google Form
+// linked in the Apply box. Project Boo is NOT named as a co-host: the
+// co-host proposal was drafted but never sent, so the organizer is
+// OhMyCode LLC only.
 
 import type { Metadata } from 'next';
 import CountrySwitch from '../../components/CountrySwitch';
@@ -19,8 +19,8 @@ const TITLE: Record<Lang, string> = {
   en: '18th–21st Presidential Election Data Analysis Competition — Electoral Insights Hub',
 };
 const DESCRIPTION: Record<Lang, string> = {
-  ko: '18대(2012)–21대(2025) 대통령선거 데이터를 같은 공개 자료로 분석하고 원본으로 검증하는 데이터 분석 컴피티션. 상금 $1,000 + in-kind contribution. 준비 중.',
-  en: 'A data analysis competition over the 18th (2012)–21st (2025) Korean presidential election data: analyze from the same public materials and verify every figure against the originals. Prizes: $1,000 + in-kind contribution. In preparation.',
+  ko: '18대(2012)–21대(2025) 대통령선거 데이터를 같은 공개 자료로 분석하고 원본으로 검증하는 데이터 분석 컴피티션. 상금 $1,000(1등) + 차순위 in-kind (OhMyCode LLC 제공). 접수 중.',
+  en: 'A data analysis competition over the 18th (2012)–21st (2025) Korean presidential election data: analyze from the same public materials and verify every figure against the originals. Prizes: $1,000 (first place) + in-kind prizes for runners-up (provided by OhMyCode LLC). Accepting entries.',
 };
 
 const S = {
@@ -35,8 +35,8 @@ const S = {
     en: 'Verify with the originals, not with claims',
   },
   intro: {
-    ko: '선거 데이터를 전면 공개하고, 누구나 같은 자료로 분석하고 검증하게 하는 일. 그 첫 사업으로 18대부터 21대까지의 대통령선거 데이터를 대상으로 한 데이터 분석 컴피티션을 준비하고 있습니다.',
-    en: 'Publish election data in full, so that anyone can analyze and verify from the same materials. As a first project, we are preparing a data analysis competition over the presidential election data from the 18th through the 21st elections.',
+    ko: '선거 데이터를 전면 공개하고, 누구나 같은 자료로 분석하고 검증하게 하는 일. 그 첫 사업으로 18대부터 21대까지의 대통령선거 데이터를 대상으로 한 데이터 분석 컴피티션을 개최합니다. 접수 중입니다.',
+    en: 'Publish election data in full, so that anyone can analyze and verify from the same materials. As a first project, we are holding a data analysis competition over the presidential election data from the 18th through the 21st elections. Entries are open now.',
   },
   backgroundHeading: { ko: '배경', en: 'Background' },
   backgroundBody: {
@@ -52,7 +52,7 @@ const S = {
     ko: '네 번의 대선 기록이 전부 공개되어 있습니다. 개표상황표 원본과 공식 투표구 결과를 누구나 내려받아 대조할 수 있습니다.',
     en: 'The records of all four elections are published in full. Anyone can download the original tally sheets and the official precinct results and check one against the other.',
   },
-  topicsHeading: { ko: '주제 (예정)', en: 'Topics (proposed)' },
+  topicsHeading: { ko: '주제', en: 'Topics' },
   prizesHeading: { ko: '상금', en: 'Prizes' },
   resourcesHeading: { ko: '자료', en: 'Resources' },
   resourcesIntro: {
@@ -61,13 +61,13 @@ const S = {
   },
   scheduleHeading: { ko: '일정 · 참가 · 심사', en: 'Schedule · eligibility · judging' },
   scheduleBody: {
-    ko: '접수 중입니다. 참가 신청 폼으로 제출하며, 마감은 2026년 12월 31일, 결과 발표는 2027년 1월 15일입니다. 참가 자격, 제출 방식, 심사 기준은 추후 공지합니다.',
-    en: 'Entries are open now via the entry form. Submission deadline is December 31, 2026, and winners will be announced January 15, 2027. Eligibility, submission method, and judging criteria will be announced later.',
+    ko: '접수 중입니다. 참가 신청 폼으로 제출하며, 마감은 2026년 12월 31일, 결과 발표는 2027년 1월 15일입니다. 참가 자격, 제출 방식, 심사 기준은 참가자 가이드(공식 규칙)에 공지되어 있습니다.',
+    en: 'Entries are open now via the entry form. Submission deadline is December 31, 2026, and winners will be announced January 15, 2027. Eligibility, submission method, and judging criteria are published in the Participant Guide (official rules).',
   },
   roadmapHeading: { ko: '로드맵', en: 'Roadmap' },
   roadmapIntro: {
-    ko: '접수 마감(2026년 12월 31일)과 결과 발표(2027년 1월 15일)는 확정되었습니다. 규칙 공지 및 접수 시작일은 추후 공지합니다.',
-    en: 'Submission deadline (December 31, 2026) and winners announcement (January 15, 2027) are confirmed. Rules announcement and entries-open dates will follow.',
+    ko: '규칙이 공지되었고 접수 중입니다. 접수 마감(2026년 12월 31일)과 결과 발표(2027년 1월 15일)는 확정되었습니다.',
+    en: 'Rules are published and entries are open. Submission deadline (December 31, 2026) and winners announcement (January 15, 2027) are confirmed.',
   },
   roadmapNow: { ko: '진행 중', en: 'In progress' },
   roadmapTbd: { ko: '추후 공지', en: 'TBD' },
@@ -77,6 +77,7 @@ const S = {
     en: 'Submit your entry via the entry form. Deadline: December 31, 2026. Winners announced January 15, 2027.',
   },
   applyButton: { ko: '참가 신청 폼 열기 →', en: 'Open the entry form →' },
+  guideLink: { ko: '참가자 가이드 (공식 규칙) →', en: 'Participant Guide (official rules) →' },
   organizerHeading: { ko: '주최', en: 'Organizer' },
   organizerBody: {
     ko: 'Electoral Insights Hub (OhMyCode LLC). 협력 기관은 추후 공지합니다.',
@@ -106,14 +107,14 @@ const TOPICS: Record<Lang, string[]> = {
   ],
 };
 const PRIZES: Record<Lang, string[]> = {
-  ko: ['현금 상금: $1,000', 'In-kind contribution: 내역 추후 공지'],
-  en: ['Cash prize: $1,000', 'In-kind contribution: details to be announced'],
+  ko: ['현금 상금: $1,000 (1등)', 'In-kind: 차순위 수상, OhMyCode LLC 제공 (내역 추후 공지)'],
+  en: ['Cash prize: $1,000 (first place)', 'In-kind prizes for runners-up, provided by OhMyCode LLC (details to be announced)'],
 };
 
 // Roadmap phases in order. Deadline (Dec 31, 2026) and winners
-// announcement (Jan 15, 2027) are confirmed (HK 2026-11-03); rules
-// announcement and entries-open dates are TBD. Phase 1 is the current
-// state. Nothing here implies entries are open yet.
+// announcement (Jan 15, 2027) are confirmed (HK 2026-11-03); rules were
+// published 2026-11-03 (Participant Guide) and entries are open.
+// Phases 1–3 are current/done; phases 4–6 carry their dates.
 type RoadmapPhase = {
   title: { ko: string; en: string };
   desc: { ko: string; en: string };
@@ -132,16 +133,16 @@ const ROADMAP: RoadmapPhase[] = [
   {
     title: { ko: '2. 참가 안내 공지', en: '2. Rules announcement' },
     desc: {
-      ko: '참가 자격, 제출 방식, 심사 기준, 상금 내역 공지.',
-      en: 'Eligibility, submission method, judging criteria, and prize details announced.',
+      ko: '참가자 가이드(공식 규칙) 공지 완료 — 참가 자격, 제출 방식, 심사 기준, 상금 배분 포함.',
+      en: 'Participant Guide (official rules) published — eligibility, submission method, judging criteria, and prize split included.',
     },
-    now: false,
+    now: true,
   },
   {
     title: { ko: '3. 접수 시작', en: '3. Entries open' },
     desc: {
-      ko: '접수 중입니다. 참가 신청 폼으로 제출합니다. 규칙(참가 자격·심사 기준)은 추후 공지합니다.',
-      en: 'Entries are open now via the entry form. Rules (eligibility, judging criteria) will be announced.',
+      ko: '접수 중입니다. 참가 신청 폼으로 제출합니다. 규칙은 참가자 가이드를 확인하세요.',
+      en: 'Entries are open now via the entry form. See the Participant Guide for the rules.',
     },
     now: true,
   },
@@ -305,6 +306,12 @@ export default async function CompetitionPage({
             className="mt-3 inline-block rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-neutral-950 hover:bg-amber-300"
           >
             {tr(lang, 'applyButton')}
+          </a>
+          <a
+            href={`/kr/competition/guide?lang=${lang}`}
+            className="mt-3 ml-3 inline-block text-sm font-medium text-blue-300 hover:underline"
+          >
+            {tr(lang, 'guideLink')}
           </a>
         </div>
 
