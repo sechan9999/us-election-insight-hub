@@ -16,7 +16,6 @@ import {
   GA_QUESTIONS,
   GA_REFERENDUM,
   GA_SAMPLE,
-  GA_SECTION2_NOTE,
   GA_WAYS,
   daysUntilElection,
   electionCountdown,
@@ -187,7 +186,6 @@ export default function GeorgiaTab({ lang }: { lang: Lang }) {
 
       {/* 2. Key dates */}
       <SectionHead n="2">{lang === 'ko' ? '놓치면 안 되는 날짜' : 'Key dates'}</SectionHead>
-      <p className="mt-2 text-sm text-neutral-400">{tr(lang, GA_SECTION2_NOTE)}</p>
       <div className="mt-4 overflow-hidden rounded-xl border border-white/10">
         {GA_DATES.map((d, i) => (
           <div key={i} className={`grid grid-cols-[140px_1fr] gap-3 p-3 text-sm md:grid-cols-[200px_1fr] ${i % 2 ? 'bg-white/[0.02]' : ''}`}>

@@ -109,11 +109,6 @@ export const GA_DATES: { date: LText; note: LText; hot?: boolean }[] = [
   { date: tx('11월 3일 (화)', 'Tue, Nov 3'), note: tx('본 투표일, 오전 7시 – 오후 7시, 지정 투표소에서 투표. 우편투표용지 도착 마감도 이날 오후 7시입니다.', 'Election Day, 7:00 AM – 7:00 PM at your assigned precinct. Absentee ballots must also arrive by 7:00 PM.'), hot: true },
 ];
 
-export const GA_SECTION2_NOTE = tx(
-  '오늘은 10월 15일 — 사전투표가 이미 시작했습니다.',
-  'Today is October 15 — early voting has already begun.',
-);
-
 // ── Section 3: what is on the ballot ────────────────────────────────────
 export const GA_BALLOT: { icon: string; title: LText; items: LText[] }[] = [
   {
