@@ -417,3 +417,107 @@ Adjudication notes for this refresh (2026-11-02):
 - Result vs the Nov 1 run: Senate 59.6% → 62.1% (+2.5pp), expected
   seats 50.79 → 50.94, band 47–54 unchanged; House unchanged (96.9%,
   240.64 seats, band 224–258).
+
+## Refresh 2026-11-03 — included (32 polls, 11 races; Election Day final refresh)
+
+Final-round polls the Nov 2 run (committed 08:59 ET Nov 2) had not yet
+captured: the Poll Vault/Emerson briefing is dated Nov 2, Research Co.'s
+second batch is dated Nov 2, and the remaining Nov 1-dated polls below were
+not adjudicated in the Nov 2 ledger (its NOT-added list names only YouGov
+KS/IA, ResearchCo MI, AtlasIntel TX, On Point TX, and the pre-Oct-30
+missed polls). Sweep sources: PollingSource race pages for all 12
+battlegrounds, Research Co. primary releases (Nov 1 and Nov 2), Survey 160
+primary crosstabs, RealClearPolling MI/TX/AK pages, 270toWin, Pollcheck MI.
+Margins are D−R; fieldEnd is the end of field (PollingSource date where
+no field window was published).
+
+| Poll | Race | Field dates | n | Margin (D−R) | Source |
+|---|---|---|---|---|---|
+| Research Co. | GA-SEN | Oct 31–Nov 2 | 450 LV | +10 (Ossoff 55 / Collins 45, decided) | researchco.ca primary, Nov 2 |
+| University of New Hampshire | NH-SEN | ended Oct 31 | 2,040 LV | +12 (Pappas 54 / Sununu 42) | PollingSource NH page |
+| Survey 160 | OH-SEN | Oct 27–Nov 1 | 1,174 | +4 (Brown 49 / Husted 45, initial ballot) | survey160.com primary crosstabs |
+| AtlasIntel | OH-SEN | ended Nov 1 | 1,801 LV | +7 (Brown 51 / Husted 44) | PollingSource OH page |
+| Poll Vault/Emerson | OH-SEN | Oct 31–Nov 1 | 930 LV | −2 (Brown 46 / Husted 48) | Poll Vault briefing, Nov 2; PollingSource OH page |
+| Trafalgar Group (R-sponsored) | OH-SEN | ended Nov 1 | 1,092 LV | +2 (Brown 47 / Husted 45) | PollingSource OH page |
+| Research Co. | OH-SEN | Oct 30–Nov 1 | 450 LV | +1 (Brown 49 / Husted 48, decided; full ballot 45/44, margin +1 both) | researchco.ca primary, Nov 1 |
+| Rasmussen Reports | OH-SEN | ended Oct 31 | 1,119 LV | 0 (Brown 46 / Husted 46) | PollingSource OH page |
+| InsiderAdvantage | OH-SEN | ended Oct 30 | 1,200 LV | +2 (Brown 49 / Husted 47) | PollingSource OH page |
+| Trafalgar Group (R-sponsored) | MI-SEN | ended Nov 1 | 1,087 LV | +1 (El-Sayed 47 / Rogers 46) | PollingSource MI page; 270toWin (dated 11/02) |
+| Research Co. | MI-SEN | Oct 30–Nov 1 | 450 LV | +3 (El-Sayed 51 / Rogers 48, decided; full ballot 48/46, margin +2 — decided used) | researchco.ca primary, Nov 1 |
+| Poll Vault/Emerson | MI-SEN | Oct 31–Nov 1 | 500 LV | +6 (El-Sayed 51 / Rogers 45) | Poll Vault briefing, Nov 2; Pollcheck MI page |
+| AtlasIntel | MI-SEN | Oct 28–Nov 1 | 1,316 LV | +8 (El-Sayed 54 / Rogers 46) | Pollcheck MI page; RCP MI page |
+| John Zogby Strategies | MI-SEN | Oct 31–Nov 2 | 1,001 LV | +2 (El-Sayed 51 / Rogers 49) | Pollcheck MI page |
+| Concord Public Opinion Partners (D-sponsored) | MI-SEN | Oct 31–Nov 1 | 510 LV | +10 (El-Sayed 51 / Rogers 41) | Pollcheck MI page |
+| Poll Vault/Emerson | TX-SEN | Oct 31–Nov 1 | 500 LV | +2 (Talarico 50 / Paxton 48) | RCP TX page; Pollcheck TX page |
+| Research Co. | TX-SEN | Oct 31–Nov 2 | 450 LV | +3 (Talarico 51 / Paxton 48, decided; full ballot 49/46, margin +3 both) | researchco.ca primary, Nov 2 |
+| InsiderAdvantage | AK-SEN | Oct 31–Nov 1 | 1,200 LV | 0 (final-round 50/50; first-choice 48/48 tie per RCP) | PollingSource AK page; RCP AK page |
+| AtlasIntel | AK-SEN | Oct 28–Nov 1 | 522 LV | +5 (first-choice two-party 50/45 per RCP; multi-candidate first-choice 50.1/44.6) | RCP AK page; Call the Map AK page |
+| Research Co. | MN-SEN | Oct 30–Nov 1 | 450 LV | +5 (Flanagan 52 / Tafoya 47, decided; full ballot 48/43, margin +5 both) | researchco.ca primary, Nov 1 |
+| Survey 160 | MN-SEN | Oct 27–Nov 1 | 1,423 | +10 (Flanagan 52 / Tafoya 42, initial ballot) | survey160.com primary crosstabs |
+| InsiderAdvantage | MN-SEN | ended Oct 30 | 1,200 LV | +3 (Flanagan 49 / Tafoya 46) | PollingSource MN page |
+| Rasmussen Reports | IA-SEN | ended Oct 31 | 901 LV | −1 (Turek 46 / Hinson 47) | PollingSource IA page |
+| YouGov | IA-SEN | ended Oct 29 | 2,020 LV | +1 (Turek 50 / Hinson 49) | PollingSource IA page |
+| Survey 160 | ME-SEN | Oct 27–Nov 1 | 1,342 | +2 (Jackson 49 / Collins 47, first-choice; PollingSource final-round 50/46, margin +4, noted) | survey160.com primary; Political Wire, Nov 2 |
+| Poll Vault/Emerson | ME-SEN | Oct 31–Nov 1 | 600 LV | −2 (Jackson 49 / Collins 51) | Poll Vault briefing, Nov 2; PollingSource ME page |
+| University of New Hampshire | ME-SEN | ended Oct 31 | 1,654 LV | +9 (Jackson 54 / Collins 45) | PollingSource ME page |
+| YouGov | ME-SEN | ended Oct 29 | 1,503 LV | +5 (Jackson 52 / Collins 47) | PollingSource ME page |
+| Survey 160 | KS-SEN | Oct 27–Nov 1 | 1,353 | +7 (Hamilton 50 / Marshall 43, initial ballot LV) | survey160.com primary crosstabs |
+| YouGov | KS-SEN | ended Oct 29 | 2,092 LV | +1 (Hamilton 50 / Marshall 49) | PollingSource KS page |
+| RedBox Research | FL-SEN | ended Oct 31 | 2,898 LV | −2 (Nixon 45 / Moody 47) | PollingSource FL page |
+| Research Co. | FL-SEN | Oct 31–Nov 2 | 450 LV | −7 (Nixon 46 / Moody 53, decided) | researchco.ca primary, Nov 2 |
+
+Adjudication notes for this refresh (2026-11-03):
+- YouGov KS/IA/ME sample sizes are now verified via PollingSource
+  (KS 2,092; IA 2,020; ME 1,503), resolving the Nov 2 exclusion reason
+  (margins verified, n unverified). All three are the YouGov final round
+  (field ended Oct 29), same batch as the four YouGov races included
+  Nov 2.
+- ResearchCo MI: the Nov 2 exclusion (conflicting 48/46 vs 51/48, no
+  primary found) is resolved by the Nov 1 primary release: the headline
+  is decided voters (51/48, margin +3); the 48/46 version is the
+  full-ballot cut (margin +2). Decided is used, consistent with
+  270toWin's listing (51/48); the +2 variant is recorded here. For OH
+  and MN the decided and full-ballot margins are identical (+1, +5),
+  so no judgment call was needed there.
+- ResearchCo Nov 2 batch (GA/FL/TX): decided-voter shares from the
+  primary release; TX full-ballot (49/46) gives the same +3 margin.
+- Survey 160 margins use the initial ballot, per the Quantus/Emerson
+  precedent (initial ballot, not leaners): KS +7 (LV 50/43; leaners
+  50/44, +6), OH +4 (49/45; leaners 50/45, +5), MN +10 (52/42), ME +2
+  first-choice (49/47). ME is an RCV race: the model uses first-choice
+  margins for ME (as for NYT/Siena and Marist entries), so +2 is used
+  and PollingSource's final-round +4 (50/46) is noted, not used.
+  Survey 160 n values are the primary's final interview counts
+  (KS 1,353; OH 1,174; ME 1,342; MN 1,423; field Oct 27–Nov 1); the
+  crosstab likely-voter subsamples are slightly lower (KS 1,267) and
+  PollingSource's LV figures differ by <5% (KS 1,365; OH 1,122;
+  ME 1,322) — immaterial at these weights.
+- Poll Vault/Emerson: Emerson College polling sponsored by Poll Vault
+  (Sean Trende's Substack); the briefing is dated Nov 2, 2026, i.e.
+  after the Nov 2 08:59 ET commit, which is why this batch was not in
+  the Nov 2 model. Sponsorship is disclosed, not a reason to exclude
+  under the standing inclusion principle.
+- Sponsorship/disclosure: Trafalgar MI/OH are flagged R-sponsored by
+  PollingSource; Concord MI is D-sponsored; AtlasIntel AK is a
+  first-choice figure (final-round tabulation not published in the
+  sources checked). Under the standing inclusion principle all are
+  included with disclosure; none is a deliberate-manipulation finding.
+- House: generic-ballot input UNCHANGED at Dem +8.2. No new RCP average
+  value was verified from RCP itself; secondary reports conflict
+  (8.9 per DelawareOnline/Weekly Sift citing RCP, 52.0/43.1; 8.5 per
+  Eastora citing RCP through Oct 30, 51.8/43.3). Per the Nov 1–2
+  precedent, no change is adopted without a directly verified RCP value.
+- NOT added (exclusions carried forward): AtlasIntel TX — the Nov 2
+  exclusion stands because the population conflict persists across
+  aggregators (PollingSource lists both a 1,678-LV 52/46 version and a
+  1,678-adult 51/45 version; margin +6 in both, but the population is
+  unresolved). On Point Polling TX (aggregator house poll). MSU/Verasight
+  MI, ECU/Quantus/RedBox NC (missed pre-Oct-30 polls; re-adjudication
+  remains HK's decision per the Oct 30 precedent). No new polls were
+  found for NC in this sweep beyond the three excluded items above.
+- polls.ts (display-only) was not updated, consistent with the Oct 28–
+  Nov 2 runs.
+- Result vs the Nov 2 run: Senate 62.1% → 65.1% (+3.0pp), expected
+  seats 50.94 → 51.16, band 47–54 unchanged; House unchanged (96.9%,
+  240.64 seats, band 224–258).
+
