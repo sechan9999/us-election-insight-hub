@@ -2,8 +2,14 @@
 // Semantics are identical to the Python tools: same tables, same DISTINCT-units
 // aggregates, same error codes, same bloc mapping, same deterministic checks.
 // Differences from the Python original are noted inline (guardrail fix 2026-10-27).
+// sheet_lookup (added 2026-11-03) is the exception to BigQuery: it reads the
+// 21st-election sheet manifest (app/api/agent/lib/sheet_index_21.json, built
+// from the archive digitization.csv) because the image URLs are file paths,
+// not table rows. URLs come only from that manifest, never constructed.
 
 import { BigQuery } from "@google-cloud/bigquery";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 const PROJECT = process.env.GOOGLE_CLOUD_PROJECT || "electoral-hub-510410";
 const TABLE = `\`${PROJECT}.elections.kr_precinct\``;
@@ -204,7 +210,7 @@ function round4(x: number): number { return Math.round(x * 1e4) / 1e4; }
 export function citationsFor(elections: number[]) {
   return elections.map((e) => ({
     election: e, election_year: ELECTION_YEARS[e], citation_url: INDEX_URL[e],
-    note: "Archive index page (HK decision 2026-10-27; per-figure sheet URLs not promised in v1).",
+    note: "Archive index page. Per-question tally-sheet images come from sheet_lookup (21st election, specific precincts only).",
   }));
 }
 
@@ -524,4 +530,93 @@ export const TOOLS: Record<string, (args: Record<string, unknown>) => Promise<To
   turnout: (a) => turnout(a as never),
   margin: (a) => margin(a as never),
   swing_calculation: (a) => swingCalculation(a as never),
+  sheet_lookup: (a) => sheetLookup(a as never),
 };
+
+// ---- Tally-sheet lookup (21st election only, v1) ----
+// Manifest: sheet_index_21.json, built from the k21 archive digitization.csv
+// (build script in the hackathon goal's hidden_files). Each row is one
+// scanned sheet: (sido, sigungu, precinct) -> image_url + page_url, with the
+// URL pattern verified against the bucket (per-district zero padding).
+// Coverage (verified 2026-11-03): 16,387 sheets, 225 published districts.
+// 28 published districts are not yet mapped (their digitization rows carry
+// unrecoverable labels) — those return SHEET_NOT_FOUND honestly.
+// 20th is excluded: its digitization precinct labels are internal codes
+// (e.g. "중구-1"), not published precinct names, so no reliable join exists.
+// 18th/19th have no per-precinct sheet index in this archive form.
+type SheetRow = {
+  election: number; sido: string; sigungu: string; precinct: string | null;
+  image_url: string; page_url: string; page_id: string; status: string;
+};
+let sheetIndex: SheetRow[] | null = null;
+function loadSheetIndex(): SheetRow[] {
+  if (sheetIndex) return sheetIndex;
+  try {
+    const p = path.join(process.cwd(), "app/api/agent/lib/sheet_index_21.json");
+    sheetIndex = JSON.parse(fs.readFileSync(p, "utf-8")) as SheetRow[];
+  } catch {
+    sheetIndex = [];
+  }
+  return sheetIndex;
+}
+
+export async function sheetLookup(args: { election: number; district_key?: string; sido?: string; sigungu?: string; precinct?: string }): Promise<ToolResult> {
+  try {
+    const election = normElection(args.election);
+    if (election !== 21) {
+      throw new ToolError("SHEET_NOT_AVAILABLE",
+        election === 20
+          ? "Tally-sheet lookup covers the 21st election only in v1: the 20th digitization labels do not match published precinct names, so no reliable sheet join exists yet."
+          : "Tally-sheet lookup covers the 21st election only in v1: no per-precinct sheet index exists for this election in this archive form.",
+        election === 20
+          ? "개표상황표 조회는 v1에서 21대에만 됩니다. 20대 디지털화 표기가 공개 투표구명과 달라 믿을 만한 연결이 아직 없습니다."
+          : "개표상황표 조회는 v1에서 21대에만 됩니다. 이 선거에는 투표구별 상황표 색인이 아직 없습니다.");
+    }
+    const { key, published, mapping } = await resolveDistrict(election, args);
+    const index = loadSheetIndex();
+    if (!index.length) {
+      throw new ToolError("SHEET_INDEX_UNAVAILABLE",
+        "The tally-sheet index could not be loaded.",
+        "개표상황표 색인을 불러올 수 없습니다.");
+    }
+    const publishedPairs = published.map((p) => {
+      const [sido, sigungu] = p.split("|");
+      return { sido, sigungu };
+    });
+    const inScope = (r: SheetRow) =>
+      publishedPairs.some((pp) => pp.sido === r.sido && pp.sigungu === r.sigungu);
+    const toSheet = (r: SheetRow) => ({
+      precinct: r.precinct, image_url: r.image_url, page_url: r.page_url,
+      page_id: r.page_id, status: r.status,
+    });
+    if (args.precinct) {
+      const matches = index.filter((r) => inScope(r) && r.precinct === args.precinct);
+      if (!matches.length) {
+        const sugg = [...new Set(index.filter(inScope).map((r) => r.precinct).filter((x): x is string => !!x))].sort().slice(0, 20);
+        throw new ToolError("PRECINCT_NOT_FOUND",
+          `No tally sheet for precinct "${args.precinct}" in district ${key} for the 21st election. Do NOT substitute another precinct's sheet.`,
+          `21대 ${key} 구역에 "${args.precinct}" 투표구의 상황표가 없습니다. 다른 투표구 상황표로 슬쩍 바꾸지 마세요.`,
+          sugg);
+      }
+      return wrap("sheet_lookup", { election, district_key: key, precinct: args.precinct },
+        { region: { district_key: key, published_sigungu: published, mapping_type: mapping, precinct: args.precinct },
+          level: "precinct", sheet_count: matches.length, sheets: matches.map(toSheet),
+          note: matches.length > 1
+            ? "This precinct has more than one sheet; all are shown."
+            : "The sheet image is the original scan for this precinct." }, [election]);
+    }
+    const districtSheets = index.filter(inScope)
+      .sort((a, b) => (a.sigungu === b.sigungu ? a.page_id.localeCompare(b.page_id) : a.sigungu.localeCompare(b.sigungu)));
+    if (!districtSheets.length) {
+      throw new ToolError("SHEET_NOT_FOUND",
+        `No indexed tally sheets for district ${key} in the 21st election. The district's figures still come from the other tools; only the sheet image is unavailable (this district's digitization rows are not yet mapped to published precinct names).`,
+        `21대 ${key} 구역의 색인된 상황표가 없습니다. 수치는 다른 도구로 계속 답할 수 있고, 상황표 이미지만 아직 연결되지 않았습니다.`);
+    }
+    const samples = districtSheets.slice(0, 3).map(toSheet);
+    return wrap("sheet_lookup", { election, district_key: key, precinct: null },
+      { region: { district_key: key, published_sigungu: published, mapping_type: mapping },
+        level: "district", sheet_count: districtSheets.length, sample_count: samples.length,
+        sheets: samples,
+        note: `District aggregate: these ${samples.length} are sample sheets from this district (${districtSheets.length} indexed), not the single sheet behind any one figure. Ask for a specific precinct to get its sheet.` }, [election]);
+  } catch (e) { return err(e as ToolError); }
+}

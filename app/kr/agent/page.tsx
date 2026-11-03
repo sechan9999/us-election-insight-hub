@@ -109,6 +109,11 @@ const T: Record<Lang, {
   citationSuffix: string; failed: string; neutrality: string; builtFor: string;
   builtForLink: string; verified: string; howTitle: string; howIntro: string;
   howCaption: string; howAlt: string;
+  downloadReport: string; reportTitle: string; reportQuestion: string;
+  reportAsked: string; reportAnswer: string; reportTrace: string;
+  reportSources: string; reportNote: string;
+  sheetPrecinct: string; sheetSamples: string; sheetPage: string;
+  sheetOriginal: string; sheetsTitle: string;
 }> = {
   ko: {
     back: "← 한국 대선 데이터로 돌아가기",
@@ -134,6 +139,19 @@ const T: Record<Lang, {
     howIntro: "SAM 3.1이 개표지에서 표 영역을 찾고, 에이전트는 그 안의 숫자를 읽어 공식 총계와 대조합니다. SAM이 숫자 자체를 뽑아내는 것은 아닙니다.",
     howCaption: "울산광역시 북구 농소2동제7투 개표지(21대). 테두리가 SAM 3.1이 찾은 6개 표 영역입니다. 읽은 수치 5개가 공식 수치와 전부 일치했습니다: 이재명 989, 김문수 989(동표), 이준석 188, 권영국 50, 송진호 5.",
     howAlt: "SAM 3.1이 찾은 표 영역이 표시된 21대 개표지",
+    downloadReport: "리포트 다운로드 (.md)",
+    reportTitle: "선거 증거 에이전트 리포트",
+    reportQuestion: "질문",
+    reportAsked: "작성",
+    reportAnswer: "짧은 답",
+    reportTrace: "도구 호출 기록",
+    reportSources: "출처",
+    reportNote: "이 리포트는 에이전트 출력물입니다. 수치는 도구 호출에서 가져왔고, 출처는 선거별 아카이브 색인 페이지입니다. 중앙선거관리위원회 공식 공표물이 아닙니다.",
+    sheetPrecinct: "이 투표구의 원본 상황표입니다.",
+    sheetSamples: "이 구역의 표본 상황표입니다. 합산 수치에 대응하는 단일 장이 아닙니다.",
+    sheetPage: "상황표 페이지",
+    sheetOriginal: "원본 이미지",
+    sheetsTitle: "개표상황표",
   },
   en: {
     back: "← Back to Korean election data",
@@ -159,6 +177,19 @@ const T: Record<Lang, {
     howIntro: "SAM 3.1 locates the table regions on a tally sheet; the agent reads the figures inside and cross-checks them against the published totals. SAM does not extract the numbers itself.",
     howCaption: "Tally sheet for Nongso-2-dong, 7th precinct, Buk-gu, Ulsan (21st election). Outlines are the 6 table regions SAM 3.1 located. All 5 figures read matched the published totals: Lee Jaemyung 989, Kim Moonsoo 989 (a tie), Lee Junseok 188, Kwon Youngkuk 50, Song Jinho 5.",
     howAlt: "21st-election tally sheet with the table regions SAM 3.1 located",
+    downloadReport: "Download report (.md)",
+    reportTitle: "Electoral Evidence Agent report",
+    reportQuestion: "Question",
+    reportAsked: "Generated",
+    reportAnswer: "Short answer",
+    reportTrace: "Tool trace",
+    reportSources: "Sources",
+    reportNote: "This report is an agent output. Figures come from tool calls; citations are election archive index pages. It is not an official National Election Commission publication.",
+    sheetPrecinct: "Original tally sheet for this precinct.",
+    sheetSamples: "Sample sheets from this district — not the single sheet behind an aggregate figure.",
+    sheetPage: "Sheet page",
+    sheetOriginal: "Original image",
+    sheetsTitle: "Tally sheet",
   },
 };
 
@@ -179,6 +210,11 @@ function stepSummary(s: Step, lang: Lang): string {
   if (!s.ok) return s.error ? `${s.error.code}: ${lang === "en" ? (s.error.message_en || s.error.message_ko) : (s.error.message_ko || s.error.message_en)}` : T[lang].failed;
   const d = s.data as Record<string, unknown> | undefined;
   if (!d) return "ok";
+  if (s.tool === "sheet_lookup" && Array.isArray(d.sheets)) {
+    const level = typeof d.level === "string" ? d.level : "";
+    const count = typeof d.sheet_count === "number" ? d.sheet_count : d.sheets.length;
+    return `${d.sheets.length} sheet${d.sheets.length === 1 ? "" : "s"} (${level}, ${count} indexed)`;
+  }
   if (typeof d.turnout_pct === "number") return `turnout ${d.turnout_pct}%`;
   if (typeof d.margin_votes === "number") {
     const w = d.winner as { name?: string } | undefined;
@@ -206,6 +242,7 @@ const SAM_BOXES: [number, number, number, number][] = [
 
 export default function Agent() {
   const [q, setQ] = useState("");
+  const [askedQ, setAskedQ] = useState("");
   const [loading, setLoading] = useState(false);
   const [res, setRes] = useState<Res | null>(null);
   const [err, setErr] = useState("");
@@ -224,7 +261,7 @@ export default function Agent() {
   async function ask(question?: string) {
     const query = (question ?? q).trim();
     if (!query) { setErr(t.emptyQ); return; }
-    setErr(""); setLoading(true); setRes(null);
+    setErr(""); setLoading(true); setRes(null); setAskedQ(query);
     try {
       const r = await fetch("/api/agent", {
         method: "POST",
@@ -237,6 +274,44 @@ export default function Agent() {
     } finally {
       setLoading(false);
     }
+  }
+
+  // Client-side report: question + raw answer + tool trace + citations.
+  // No server work, no new numbers: everything in the report is already on
+  // screen. The disclaimer keeps it from reading like an official publication.
+  function downloadReport() {
+    if (!res?.answer) return;
+    const lines: string[] = [
+      `# ${t.reportTitle}`,
+      ``,
+      `${t.reportQuestion}: ${askedQ}`,
+      `${t.reportAsked}: ${new Date().toLocaleString()}`,
+      ``,
+      `## ${t.reportAnswer}`,
+      ``,
+      res.answer,
+      ``,
+    ];
+    if (res.steps && res.steps.length > 0) {
+      lines.push(`## ${t.reportTrace}`, ``);
+      for (const s of res.steps) lines.push(`- ${s.tool}: ${stepSummary(s, lang)}`);
+      lines.push(``);
+    }
+    if (res.citations && res.citations.length > 0) {
+      lines.push(`## ${t.reportSources}`, ``);
+      for (const c of res.citations) lines.push(`- ${c.election_year}: ${c.citation_url}`);
+      lines.push(``);
+    }
+    if (res.source) lines.push(`${res.source}`, ``);
+    if (res.fallback) lines.push(`${t.fallback}`, ``);
+    lines.push(`---`, ``, t.reportNote, ``);
+    const blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `agent-report-${new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -306,6 +381,12 @@ export default function Agent() {
           <div className="rounded-xl border border-white/10 bg-white/5 p-5">
             <div className="space-y-3 text-base leading-relaxed text-neutral-100">{renderAnswer(res.answer)}</div>
           </div>
+          <div className="mt-3">
+            <button onClick={downloadReport}
+              className="rounded-lg border border-white/15 px-4 py-2 text-sm text-blue-300 hover:bg-white/10">
+              {t.downloadReport}
+            </button>
+          </div>
 
           {res.steps && res.steps.length > 0 && (
             <div className="mt-4">
@@ -317,6 +398,26 @@ export default function Agent() {
                       {s.ok ? "✓" : "✗"} {s.tool}
                     </span>
                     <span className="ml-2 text-neutral-400">{stepSummary(s, lang)}</span>
+                    {s.tool === "sheet_lookup" && s.ok && Array.isArray((s.data as Record<string, unknown> | undefined)?.sheets) && (
+                      <div className="mt-3 space-y-3">
+                        <p className="text-xs text-neutral-400">
+                          {(s.data as Record<string, unknown>).level === "precinct" ? t.sheetPrecinct : t.sheetSamples}
+                        </p>
+                        {((s.data as Record<string, unknown>).sheets as Record<string, unknown>[]).map((sh, j) => (
+                          <figure key={j} className="overflow-hidden rounded-lg border border-white/10">
+                            <img src={sh.image_url as string} alt={`${t.sheetsTitle} ${sh.page_id as string}`}
+                              loading="lazy" className="block w-full" />
+                            <figcaption className="flex flex-wrap items-center gap-3 px-3 py-2 text-xs text-neutral-400">
+                              <span>{(sh.precinct as string | null) ?? "—"} · {sh.page_id as string}</span>
+                              <a href={sh.page_url as string} target="_blank" rel="noopener noreferrer"
+                                className="text-blue-300 hover:underline">{t.sheetPage} →</a>
+                              <a href={sh.image_url as string} target="_blank" rel="noopener noreferrer"
+                                className="text-blue-300 hover:underline">{t.sheetOriginal} →</a>
+                            </figcaption>
+                          </figure>
+                        ))}
+                      </div>
+                    )}
                     <details className="mt-1">
                       <summary className="cursor-pointer text-xs text-neutral-500">{t.details}</summary>
                       <pre className="mt-1 overflow-x-auto text-xs text-neutral-400">{JSON.stringify({ args: s.args, data: s.data, error: s.error }, null, 2)}</pre>
