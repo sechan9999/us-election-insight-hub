@@ -5,7 +5,8 @@
 // ~/workspace/user/files/competition-participant-guide-2026-11-03.md (EN)
 // ~/workspace/user/files/competition-participant-guide-ko-2026-11-03.md (KO)
 // (the competition page links here.)
-// Sponsor: JNCTV (added 2026-11-03).
+// Sponsor: JNCTV (added 2026-11-03); sponsor logo (public/jnctv-logo.png)
+// links to https://jnctv.com/ (added 2026-11-03).
 
 import type { Metadata } from 'next';
 import CountrySwitch from '../../../components/CountrySwitch';
@@ -112,7 +113,12 @@ export default async function CompetitionGuidePage({
             <p className="mt-3 leading-relaxed text-neutral-300">
               주최: Electoral Insights Hub (OhMyCode LLC).
             </p>
-            <p className="mt-3 leading-relaxed text-neutral-300">후원: JNCTV.</p>
+            <p className="mt-3 flex items-center gap-2 leading-relaxed text-neutral-300">
+              후원:
+              <a href="https://jnctv.com/" target="_blank" rel="noopener noreferrer">
+                <img src="/jnctv-logo.png" alt="JNC TV" className="h-8 w-auto" />
+              </a>
+            </p>
 
             <h2 className="mt-10 text-xl font-bold">1. 목표: 문제</h2>
             <p className="mt-2 leading-relaxed text-neutral-300">
@@ -406,7 +412,12 @@ export default async function CompetitionGuidePage({
         <p className="mt-3 leading-relaxed text-neutral-300">
           Organizer: Electoral Insights Hub (OhMyCode LLC).
         </p>
-        <p className="mt-3 leading-relaxed text-neutral-300">Sponsor: JNCTV.</p>
+        <p className="mt-3 flex items-center gap-2 leading-relaxed text-neutral-300">
+          Sponsor:
+          <a href="https://jnctv.com/" target="_blank" rel="noopener noreferrer">
+            <img src="/jnctv-logo.png" alt="JNC TV" className="h-8 w-auto" />
+          </a>
+        </p>
 
         <h2 className="mt-10 text-xl font-bold">1. Your Goal: Problem Statements</h2>
         <p className="mt-2 leading-relaxed text-neutral-300">
