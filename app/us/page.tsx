@@ -7,8 +7,8 @@ import type { Lang } from './lib/i18n';
 type SearchParams = { lang?: string; tab?: string };
 
 const TITLES: Record<Lang, string> = {
-  ko: 'US Election Insights Hub — 2026 미국 중간선거 예측',
-  en: 'US Election Insights Hub — 2026 US Midterm Forecast',
+  ko: 'US Election Insights Hub — 2026 미국 중간선거 결과',
+  en: 'US Election Insights Hub — 2026 US Midterm Results',
 };
 const DESCRIPTIONS: Record<Lang, string> = {
   ko: '2026 미국 중간선거 예측 보드: 상원 53.4%·하원 96.6% 민주당 과반 확률, 경합주 여론조사 평균, 불확실성 범위. 40,000회 몬테카를로 시뮬레이션.',

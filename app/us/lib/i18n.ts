@@ -4,7 +4,7 @@ export type Lang = 'ko' | 'en';
 
 const S = {
   sample: { ko: '샘플 데이터', en: 'Sample data' },
-  title: { ko: '미국 중간선거 예측 2026', en: 'US Midterm Forecast 2026' },
+  title: { ko: '미국 중간선거 결과 2026', en: 'US Midterm Results 2026' },
   subtitle: {
     ko: '선거일 2026년 11월 3일 · 시뮬레이션 {n}회',
     en: 'Election Day November 3, 2026 · {n} simulations',
