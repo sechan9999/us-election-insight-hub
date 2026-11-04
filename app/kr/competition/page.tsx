@@ -45,8 +45,8 @@ const S = {
     en: 'The starting point is the 2017 K-value explainer published in the Project Boo archive. K compares the two leading candidates’ vote ratios between ballots the sorter classified and ballots it set aside: K = (winner / runner-up among unclassified ballots) ÷ (winner / runner-up among classified ballots). K = 1 means the two candidates’ unclassified rates are equal. The 2017 post reports the 18th-election K value as 1.5. The competition is not about that post’s interpretation — it is about computing and verifying from the original records yourself.',
   },
   backgroundOriginalLink: {
-    ko: '원문 (DOCX)',
-    en: 'Original document (DOCX)',
+    ko: '원문 (PDF)',
+    en: 'Original document (PDF)',
   },
   backgroundMirrorLink: {
     ko: '미러 문서',
@@ -324,7 +324,7 @@ export default async function CompetitionPage({
         <h2 className="mt-10 text-xl font-bold">{tr(lang, 'backgroundHeading')}</h2>
         <p className="mt-2 leading-relaxed text-neutral-300">{tr(lang, 'backgroundBody')}</p>
         <a
-          href="https://storage.googleapis.com/k18-archive/documents/153768-k-value-explanation-original.docx"
+          href="https://storage.googleapis.com/k18-archive/documents/153768-k-value-explanation-original.pdf"
           target="_blank"
           rel="noopener noreferrer"
           className="mt-2 inline-block text-sm font-medium text-blue-300 hover:underline"
