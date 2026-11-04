@@ -44,9 +44,13 @@ const S = {
     ko: '이 구상의 출발점은 2017년 프로젝트부 아카이브에 실린 K값 설명 글입니다. K는 투표지분류기가 가려낸 분류표와 미분류표에서 두 후보의 득표 비율을 비교하는 척도입니다. K = (미분류표에서 당선자 / 경쟁자) ÷ (분류표에서 당선자 / 경쟁자)로 정의되며, K = 1이면 두 후보의 미분류율이 같다는 뜻입니다. 2017년 글은 18대 대선의 K값이 1.5로 나타났다고 설명합니다. 이 글의 해석이 아니라, 원본 자료로 직접 계산하고 검증하는 것이 이번 컴피티션의 주제입니다.',
     en: 'The starting point is the 2017 K-value explainer published in the Project Boo archive. K compares the two leading candidates’ vote ratios between ballots the sorter classified and ballots it set aside: K = (winner / runner-up among unclassified ballots) ÷ (winner / runner-up among classified ballots). K = 1 means the two candidates’ unclassified rates are equal. The 2017 post reports the 18th-election K value as 1.5. The competition is not about that post’s interpretation — it is about computing and verifying from the original records yourself.',
   },
-  backgroundLink: {
-    ko: '프로젝트부 아카이브 — 18대와 19대 대선 데이터에서 나온 K값에 대한 설명 (전희경·현화신, 2017)',
-    en: 'Project Boo archive — K-value explainer from the 18th and 19th election data (HeeKyoung Chun, Hwashin Hyun Shin, 2017)',
+  backgroundOriginalLink: {
+    ko: '원문 (DOCX)',
+    en: 'Original document (DOCX)',
+  },
+  backgroundMirrorLink: {
+    ko: '미러 문서',
+    en: 'Mirror document',
   },
   dataHeading: { ko: '대상 데이터', en: 'The data' },
   dataIntro: {
@@ -320,12 +324,20 @@ export default async function CompetitionPage({
         <h2 className="mt-10 text-xl font-bold">{tr(lang, 'backgroundHeading')}</h2>
         <p className="mt-2 leading-relaxed text-neutral-300">{tr(lang, 'backgroundBody')}</p>
         <a
-          href="http://www.projectboo.com/archive/153768"
+          href="https://storage.googleapis.com/k18-archive/documents/153768-k-value-explanation-original.docx"
           target="_blank"
           rel="noopener noreferrer"
           className="mt-2 inline-block text-sm font-medium text-blue-300 hover:underline"
         >
-          {tr(lang, 'backgroundLink')} →
+          {tr(lang, 'backgroundOriginalLink')} →
+        </a>
+        <a
+          href="https://storage.googleapis.com/k18-archive/documents/153768-k-value-explanation.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2 ml-4 inline-block text-sm font-medium text-blue-300 hover:underline"
+        >
+          {tr(lang, 'backgroundMirrorLink')} →
         </a>
 
         <h2 className="mt-10 text-xl font-bold">{tr(lang, 'dataHeading')}</h2>
