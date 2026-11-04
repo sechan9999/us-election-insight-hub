@@ -1,0 +1,16 @@
+# Crawlers are not welcome on this site, except link-preview bots that
+# generate share cards when people post our links.
+User-agent: Twitterbot
+Allow: /
+User-agent: facebookexternalhit
+Allow: /
+User-agent: LinkedInBot
+Allow: /
+User-agent: Slackbot
+Allow: /
+User-agent: TelegramBot
+Allow: /
+User-agent: Discordbot
+Allow: /
+User-agent: *
+Disallow: /
