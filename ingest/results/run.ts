@@ -1,6 +1,6 @@
 // Shared ingest core used by the CLI (scripts/ingest-results.ts) and the Cloud Run job (ingest/results/job.ts).
 // Never marks a race called from automated data: `called` comes only from the operator overrides
-// (ingest/results/overrides.ts) — NYT calls cited by name, plus manual counts for races with no
+// (ingest/results/overrides.ts) — AP calls cited by name, plus manual counts for races with no
 // automatable adapter (Iowa; the six non-automated battlegrounds).
 
 import { GENERAL, TEST, type StateJob } from './config';

@@ -184,6 +184,13 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
     [lang],
   );
 
+  // Tracker names: the 12 forecast races plus Mississippi, which was outside
+  // the forecast battlegrounds but is tracked as an uncalled race.
+  const trackerRaces = useMemo(
+    () => [...races, { id: 'MS-SEN', name: lang === 'ko' ? '미시시피' : 'Mississippi' }],
+    [races, lang],
+  );
+
   const n = MODEL_NOTES.sims.toLocaleString(lang === 'ko' ? 'ko-KR' : 'en-US');
   const kpis = [
     { key: 'senateKpi' as const, r: senate, need: SENATE_BASELINE.needed, extra: null },
@@ -280,8 +287,16 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
 
         {tab === 'forecast' && (
           <div className="mt-6">
+            {/* Election results tracker — leads the board now that voting is over */}
+            <LiveTracker lang={lang} races={trackerRaces} daysLeft={daysLeft} />
+
+            {/* Pre-election forecast, kept as a record */}
+            <div className="mt-8">
+              <h2 className="text-xl font-semibold">{t(lang, 'archiveTitle')}</h2>
+              <p className="mt-1 text-sm text-neutral-400">{t(lang, 'archiveNote')}</p>
+            </div>
             {/* KPI cards with seat distributions */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
               {kpis.map(({ key, r, need, extra }) => (
                 <div key={key} className="rounded-xl border border-white/10 bg-white/5 p-5">
                   <div className="text-sm text-neutral-400">{t(lang, key)}</div>
@@ -333,9 +348,6 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
                 ))}
               </ul>
             </section>
-
-            {/* Election results tracker */}
-            <LiveTracker lang={lang} races={races} daysLeft={daysLeft} />
 
             {/* Senate battleground chart (vertical layout keeps labels off the 4-pt line) */}
             <section className="mt-8 rounded-xl border border-white/10 bg-white/5 p-5">

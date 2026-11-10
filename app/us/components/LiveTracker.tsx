@@ -45,7 +45,8 @@ export default function LiveTracker({ lang, races, daysLeft }: { lang: Lang; rac
   }, []);
 
   useEffect(() => {
-    if (phase !== 'window' || !LIVE_RESULTS_URL) return;
+    // After the window the feed is frozen at its final state; keep showing it.
+    if (phase === 'before' || phase === null || !LIVE_RESULTS_URL) return;
     const ac = new AbortController();
     const load = () =>
       fetchLiveFeed(ac.signal)
@@ -57,6 +58,7 @@ export default function LiveTracker({ lang, races, daysLeft }: { lang: Lang; rac
           if (!(e instanceof DOMException && e.name === 'AbortError')) setFailedAt(Date.now());
         });
     load();
+    if (phase !== 'window') return () => ac.abort();
     const id = setInterval(load, POLL_MS);
     return () => {
       ac.abort();
@@ -66,7 +68,8 @@ export default function LiveTracker({ lang, races, daysLeft }: { lang: Lang; rac
 
   const name = (id: string) => races.find((r) => r.id === id)?.name ?? id;
   const age = feed && now ? minutesAgo(feed.generatedAt, now) : null;
-  const degraded = failedAt !== null || (age !== null && age > STALE_FEED_MINUTES);
+  // After the window a frozen feed is expected, not a failure.
+  const degraded = phase === 'window' && (failedAt !== null || (age !== null && age > STALE_FEED_MINUTES));
   const waitingKey = !LIVE_RESULTS_URL ? 'liveNotConfigured' : failedAt ? 'liveDown' : 'liveWaiting';
 
   return (
@@ -76,8 +79,19 @@ export default function LiveTracker({ lang, races, daysLeft }: { lang: Lang; rac
         {phase === 'before' && daysLeft !== null && (
           <span className="text-sm text-neutral-400">{t(lang, 'liveDays', { d: daysLeft })}</span>
         )}
-        {feed && age !== null && (
+        {feed && age !== null && phase !== 'after' && (
           <span className={`text-sm ${degraded ? 'text-amber-300' : 'text-neutral-400'}`}>{t(lang, 'liveAgo', { m: age })}</span>
+        )}
+        {feed && phase === 'after' && (
+          <span className="text-sm text-neutral-400">
+            {t(lang, 'liveFinalAsOf', {
+              date: new Date(feed.generatedAt).toLocaleDateString(lang === 'ko' ? 'ko-KR' : 'en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              }),
+            })}
+          </span>
         )}
       </div>
 

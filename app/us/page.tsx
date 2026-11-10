@@ -11,8 +11,8 @@ const TITLES: Record<Lang, string> = {
   en: 'US Election Insights Hub — 2026 US Midterm Results',
 };
 const DESCRIPTIONS: Record<Lang, string> = {
-  ko: '2026 미국 중간선거 예측 보드: 상원 53.4%·하원 96.6% 민주당 과반 확률, 경합주 여론조사 평균, 불확실성 범위. 40,000회 몬테카를로 시뮬레이션.',
-  en: '2026 US midterm forecast board: Senate 53.4% · House 96.6% Democratic majority probability, battleground polling averages, uncertainty ranges. 40,000 Monte Carlo simulations.',
+  ko: '2026 미국 중간선거 결과: 민주당이 상·하원 과반 확보. 추적한 상원 13개 경주 중 11개 확정, 미시시피·알래스카는 개표 중. 선거 전 예측(40,000회 시뮬레이션)은 기록으로 보관.',
+  en: '2026 US midterm results: Democrats won the Senate and House. 11 of 13 tracked Senate races called; Mississippi and Alaska still counting. The pre-election forecast (40,000 simulations) is kept as a record.',
 };
 
 function langFrom(params: SearchParams): Lang {

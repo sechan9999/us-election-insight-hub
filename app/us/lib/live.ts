@@ -5,11 +5,12 @@
 // writes electoral_hub.us_results_live (see bigquery/us_schema.sql). Until the feed URL is set,
 // the panel shows the schedule only and never displays results.
 //
-// Source policy (decided 2026-10-06, option c):
-//   - Vote counts: official state election office results only (countSource names the office).
-//   - Race calls: The New York Times, cited by name and linked (calledBy = 'NYT'). NYT has no public
-//     results API, so NYT data is never scraped or re-hosted; only the call itself is cited.
-// "Called" rule: a race is shown as called only when NYT has called it (called + calledBy set).
+// Source policy (decided 2026-10-06, option c; calls switched NYT → AP by HK direction 2026-11-04):
+//   - Vote counts: official state election office results, or Associated Press interim counts
+//     (countSource names the office or AP; interim rows are replaced wholesale once certified).
+//   - Race calls: the Associated Press, cited by name. AP data is never scraped or re-hosted;
+//     only the call itself is cited. The House-majority call remains NYT (operator override).
+// "Called" rule: a race is shown as called only when AP has called it (called + calledBy set).
 // Vote counts alone never mark a race as decided.
 
 export interface LiveRace {
@@ -19,7 +20,7 @@ export interface LiveRace {
   demVotes: number;
   repVotes: number;
   called: 'D' | 'R' | null; // only set when the cited source has called the race
-  calledBy?: string; // source that made the call: 'NYT'
+  calledBy?: string; // source that made the call: 'AP' (House majority: 'NYT')
   countSource: string; // official state office the counts come from, e.g. 'NC State Board of Elections'
   firstChoiceOnly?: boolean; // ranked-choice state: first-choice counts only, not final
   updatedAt: string; // ISO timestamp from the source
@@ -60,9 +61,9 @@ export const POLL_MS = 60_000;
 export const STALE_FEED_MINUTES = 15;
 
 export const LIVE_SOURCES = [
-  // Replace with the NYT 2026 results page once it is published (URL not known in advance).
-  { key: 'nyt', name: 'The New York Times (race calls)', nameKo: '뉴욕타임스 (승자 판정)', url: 'https://www.nytimes.com/section/politics' },
+  { key: 'ap', name: 'Associated Press (race calls, interim counts)', nameKo: 'AP (승자 판정, 잠정 집계)', url: 'https://apnews.com/projects/elections-2026' },
   { key: 'states', name: 'State election offices (vote counts)', nameKo: '각 주 선거관리 당국 (개표 수치)', url: 'https://www.usa.gov/state-election-office' },
+  { key: 'nyt', name: 'The New York Times (House-majority call)', nameKo: '뉴욕타임스 (하원 과반 판정)', url: 'https://www.nytimes.com/section/politics' },
 ];
 
 export type TrackerPhase = 'before' | 'window' | 'after';

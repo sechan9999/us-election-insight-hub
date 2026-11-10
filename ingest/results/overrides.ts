@@ -5,7 +5,7 @@
 // `called` comes only from a race call entered by the operator — and several
 // races have no automatable adapter at all (Iowa is blocked from Cloud Run;
 // the six non-automated battlegrounds NH/OH/MI/TX/ME/KS have no adapter).
-// Those values arrive here, not from scraping: NYT calls are cited by name
+// Those values arrive here, not from scraping: AP calls are cited by name
 // (never scraped or re-hosted, per the 2026-10-06 source policy), and manual
 // counts come from the official state office named in countSource.
 //
@@ -19,7 +19,7 @@
 //   - Local testing: scripts/ingest-results.ts --overrides path/to.json
 //
 // Schema (JSON object keyed by race id, e.g. "MI-SEN"):
-//   { "called": "D"|"R", "calledBy": "NYT",
+//   { "called": "D"|"R", "calledBy": "AP",
 //     "demVotes": 123, "repVotes": 456, "pctReporting": 42,
 //     "reportingBasis": "precincts"|"counties",
 //     "countSource": "Michigan Secretary of State (manual entry)",

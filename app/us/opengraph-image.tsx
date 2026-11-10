@@ -24,15 +24,15 @@ export default function OgImage() {
           US ELECTION INSIGHTS HUB
         </div>
         <div style={{ fontSize: 22, color: '#9ca3af', marginTop: 12 }}>
-          2026 Midterm Forecast · 40,000 simulations
+          2026 Midterm Results · Democrats take both chambers
         </div>
         <div style={{ display: 'flex', gap: 80, marginTop: 40 }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ fontSize: 88, fontWeight: 800, color: '#60a5fa' }}>53.4%</div>
+            <div style={{ fontSize: 88, fontWeight: 800, color: '#60a5fa' }}>D</div>
             <div style={{ fontSize: 24, color: '#d1d5db' }}>Senate Dem majority</div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ fontSize: 88, fontWeight: 800, color: '#60a5fa' }}>96.6%</div>
+            <div style={{ fontSize: 88, fontWeight: 800, color: '#60a5fa' }}>D</div>
             <div style={{ fontSize: 24, color: '#d1d5db' }}>House Dem majority</div>
           </div>
         </div>

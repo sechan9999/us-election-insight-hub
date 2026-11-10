@@ -6,8 +6,8 @@ const S = {
   sample: { ko: '샘플 데이터', en: 'Sample data' },
   title: { ko: '미국 중간선거 결과 2026', en: 'US Midterm Results 2026' },
   subtitle: {
-    ko: '선거일 2026년 11월 3일 · 시뮬레이션 {n}회',
-    en: 'Election Day November 3, 2026 · {n} simulations',
+    ko: '선거일 2026년 11월 3일 · 인증 전 잠정치, 인증되는 대로 교체',
+    en: 'Election Day November 3, 2026 · Interim counts until certification',
   },
   runId: { ko: '예측 run ID', en: 'Forecast run ID' },
   staleFresh: { ko: '입력 {d}일 경과', en: 'Inputs {d} days old' },
@@ -54,7 +54,7 @@ const S = {
     ko: '개별 조사는 참고용이며 모형 입력이 아닙니다. 모형은 RCP 평균만 쓰므로, 이 조사는 평균에 반영된 뒤 다음 run에서 확률에 들어갑니다. 대부분의 격차가 오차범위 안이라 한 조사만으로 우세를 판단하면 안 됩니다.',
     en: 'Individual polls are shown for reference and are not model inputs. The model reads RCP averages only, so these polls reach the probabilities once they enter the average. Most gaps sit inside the margin of error, so no single poll settles a race.',
   },
-  tabForecast: { ko: '예측', en: 'Forecast' },
+  tabForecast: { ko: '결과', en: 'Results' },
   tabMessages: { ko: '메시지 분석', en: 'Message analysis' },
   tabGeorgia: { ko: '조지아 투표 안내', en: 'Georgia voting guide' },
   tabPaper: { ko: '연구 논문', en: 'Research' },
@@ -196,9 +196,15 @@ const S = {
     en: 'Runs {start} to {end} (the day before Election Day through one week after, ET). Refreshes every minute in that window.',
   },
   liveCalledRule: {
-    ko: '개표 수치는 각 주 선거관리 당국의 공식 결과만 씁니다. 확정 표시는 뉴욕타임스가 승자를 판정한 경주에만 붙이며(출처 표기), 개표율이나 표 차이만으로는 확정으로 표시하지 않습니다.',
-    en: 'Vote counts come only from official state election offices. A race is marked called only when The New York Times has called it (credited); vote share or margin alone never marks a race as decided.',
+    ko: '개표 수치는 각 주 선거관리 당국의 공식 결과 또는 AP 잠정 집계(개표 출처란에 표기)를 씁니다. 확정 표시는 AP가 승자를 판정한 경주에만 붙이며(출처 표기), 개표율이나 표 차이만으로는 확정으로 표시하지 않습니다.',
+    en: 'Vote counts come from official state election offices or Associated Press interim counts (labeled in the count-source column). A race is marked called only when the Associated Press has called it (credited); vote share or margin alone never marks a race as decided.',
   },
+  archiveTitle: { ko: '선거 전 예측 — 최종 run (11월 3일)', en: 'Pre-election forecast — final run (Nov 3)' },
+  archiveNote: {
+    ko: '선거 전에 만든 예측입니다. 결과와 비교용으로 보관합니다.',
+    en: 'The pre-election forecast, kept for comparison with the results.',
+  },
+  liveFinalAsOf: { ko: '최종 업데이트 {date}', en: 'Final update {date}' },
   liveSources: { ko: '출처:', en: 'Sources:' },
   liveAgo: { ko: '{m}분 전 업데이트', en: 'Updated {m} min ago' },
   liveWaiting: {
