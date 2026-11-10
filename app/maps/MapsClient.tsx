@@ -29,6 +29,15 @@ const TABS = [
     summaryKo:
       '주별 기울기: 대졸 비율 1%p 상승 시 민주당 득표율 상승폭 (소득·인종·연령·밀도·인구 통제 카운티 회귀). 전국 통합 기울기 +1.49%p; 가장 강한 주는 NY (+3.93), AZ (+3.15), NC (+2.60); 가장 약한 주는 SD, LA, NE.',
   },
+  {
+    src: '/group_maps.html',
+    label: 'If only one group had voted',
+    labelKo: '이 집단만 투표했다면',
+    summary:
+      'If only one group had voted: which party would have carried each state, for 18 groups (NBC News exit polls, SSRS The Voter Poll). 44 states observed; 6 states and small-group cells estimated (lighter shades). The diploma divide is the widest: white college graduates give Democrats 39 states, white voters without a degree only 4.',
+    summaryKo:
+      '이 집단만 투표했다면 어느 정당이 각 주를 가져갔을지 — 18개 집단 (NBC News 출구조사, SSRS The Voter Poll). 44개 주 실측, 6개 주와 작은 집단은 추정치 (옅은 색). 학력 격차가 가장 크다: 백인 대졸은 민주 39개 주, 백인 대졸 이하는 민주 4개 주.',
+  },
 ];
 
 export default function MapsClient() {

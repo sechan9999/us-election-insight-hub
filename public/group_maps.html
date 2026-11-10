@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>If only one group had voted — 2026 midterms</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", "Noto Sans KR", sans-serif; margin: 0; background: #fff; color: #18181b; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 16px 16px 48px; }
+  h1 { font-size: 22px; margin: 4px 0 4px; }
+  .sub { color: #52525b; font-size: 14px; margin: 0 0 14px; }
+  .btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .btns button { padding: 8px 14px; border-radius: 999px; border: 1px solid #d4d4d8; background: #fff; color: #3f3f46; font-size: 14px; cursor: pointer; }
+  .btns button.active { background: #1d4ed8; border-color: #1d4ed8; color: #fff; font-weight: 700; }
+  .lang { float: right; padding: 8px 12px; border-radius: 8px; border: 1px solid #d4d4d8; background: #fff; font-size: 13px; cursor: pointer; }
+  .cap { font-size: 15px; margin: 10px 0 4px; }
+  .cap b { font-size: 17px; }
+  .note { color: #52525b; font-size: 13px; margin: 0 0 10px; }
+  img.map { width: 100%; height: auto; border: 1px solid #e4e4e7; border-radius: 8px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: #3f3f46; margin: 10px 0 20px; }
+  .sw { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 5px; }
+  .method { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 8px; padding: 14px 16px; font-size: 14px; color: #3f3f46; line-height: 1.65; }
+  .method h2 { font-size: 16px; margin: 0 0 8px; color: #18181b; }
+  .method p { margin: 6px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <button class="lang" onclick="toggleLang()" id="langBtn">English</button>
+  <h1 data-ko="이 집단만 투표했다면 — 2026 미국 중간선거" data-en="If only one group had voted — 2026 U.S. midterms">이 집단만 투표했다면 — 2026 미국 중간선거</h1>
+  <p class="sub" data-ko="주마다 한 집단만 투표했다면 어느 정당이 그 주를 가져갔을지 — 18개 집단 × 50개 주." data-en="Which party would have carried each state if only one group had voted — 18 groups × 50 states.">주마다 한 집단만 투표했다면 어느 정당이 그 주를 가져갔을지 — 18개 집단 × 50개 주.</p>
+  <div class="btns" id="btns"></div>
+  <div class="cap" id="cap"></div>
+  <p class="note" id="sharenote"></p>
+  <img class="map" id="mapimg" alt="group map">
+  <div class="legend">
+    <span><span class="sw" style="background:#2166AC"></span><span data-ko="민주당 승리 (실측)" data-en="Democratic win (observed)">민주당 승리 (실측)</span></span>
+    <span><span class="sw" style="background:#7FB3D5"></span><span data-ko="민주당 승리 (추정)" data-en="Democratic win (estimated)">민주당 승리 (추정)</span></span>
+    <span><span class="sw" style="background:#B2182B"></span><span data-ko="공화당 승리 (실측)" data-en="Republican win (observed)">공화당 승리 (실측)</span></span>
+    <span><span class="sw" style="background:#E08A8A"></span><span data-ko="공화당 승리 (추정)" data-en="Republican win (estimated)">공화당 승리 (추정)</span></span>
+  </div>
+  <div class="method">
+    <h2 data-ko="방법과 출처" data-en="Method and sources">방법과 출처</h2>
+    <p data-ko="출처: NBC News 출구조사 (SSRS The Voter Poll). 2026년 출구조사는 7개 방송사가 공동 의뢰한 단일 조사로, 릴 자막의 'AP VoteCast'는 구 명칭이다. 44개 주는 주별 조사 실측, 6개 주(인디애나·미주리·몬태나·노스다코타·유타·워싱턴)와 작은 집단의 자료 부족 셀은 추정치다. 옅은 색이 추정치다." data-en="Source: NBC News exit polls (SSRS The Voter Poll). The 2026 exit poll is a single survey commissioned jointly by 7 networks; the reel's 'AP VoteCast' label is the old name. 44 states are observed from state polls; 6 states (Indiana, Missouri, Montana, North Dakota, Utah, Washington) and small-group cells with insufficient data are estimates. Lighter shades are estimates.">출처: NBC News 출구조사 (SSRS The Voter Poll). 2026년 출구조사는 7개 방송사가 공동 의뢰한 단일 조사로, 릴 자막의 'AP VoteCast'는 구 명칭이다. 44개 주는 주별 조사 실측, 6개 주(인디애나·미주리·몬태나·노스다코타·유타·워싱턴)와 작은 집단의 자료 부족 셀은 추정치다. 옅은 색이 추정치다.</p>
+    <p data-ko="추정 방법: 이동 모형 — 주 집단 득표 = 전국 집단 득표 + (주 전체 득표 − 전국 하원 득표). 실측 700개 셀에 같은 모형을 돌린 검증: 승자 일치 89.3%, 평균 절대 오차 4.1pt. 추정 셀 10개 중 1개꼴로 색이 틀릴 수 있다. 가장 큰 오차는 극성화된 주(미시시피 백인 남성 등)에서 난다." data-en="Estimation: a shift model — state group share = national group share + (state overall share − national House share). Validated on 700 observed cells: winner agreement 89.3%, mean absolute error 4.1 points. About 1 in 10 estimated cells may have the wrong color; the largest errors are in the most polarized states (e.g. white men in Mississippi).">추정 방법: 이동 모형 — 주 집단 득표 = 전국 집단 득표 + (주 전체 득표 − 전국 하원 득표). 실측 700개 셀에 같은 모형을 돌린 검증: 승자 일치 89.3%, 평균 절대 오차 4.1pt. 추정 셀 10개 중 1개꼴로 색이 틀릴 수 있다. 가장 큰 오차는 극성화된 주(미시시피 백인 남성 등)에서 난다.</p>
+    <p data-ko="경주 선택: 주마다 상원 경주(보궐 포함)를 썼고, 상원 주 도전자가 무소속인 아이다호·사우스다코타·네브래스카와 상원 선거가 없는 10개 주는 주지사 경주를 썼다. 알래스카는 1순위 득표 민주 대 공화 비교, 미시시피는 3명 후보 중 민주 대 공화 비교다. 비공식 잠정치 (2026-11-10 수집), 인증 후 바뀔 수 있다." data-en="Race used: the Senate race in each state (including specials); the governor's race in Idaho, South Dakota and Nebraska (independent Senate challenger) and in the 10 states with no Senate race. Alaska compares first-choice Democratic vs Republican votes; Mississippi compares the Democrat vs the Republican among three candidates. Unofficial interim figures (collected 2026-11-10), subject to change after certification.">경주 선택: 주마다 상원 경주(보궐 포함)를 썼고, 상원 주 도전자가 무소속인 아이다호·사우스다코타·네브래스카와 상원 선거가 없는 10개 주는 주지사 경주를 썼다. 알래스카는 1순위 득표 민주 대 공화 비교, 미시시피는 3명 후보 중 민주 대 공화 비교다. 비공식 잠정치 (2026-11-10 수집), 인증 후 바뀔 수 있다.</p>
+  </div>
+</div>
+<script>
+const GROUPS = [{"key": "men", "ko": "남성", "en": "Men", "share": 47, "d": 20, "r": 30}, {"key": "white_men", "ko": "백인 남성", "en": "White men", "share": 35, "d": 15, "r": 35}, {"key": "women", "ko": "여성", "en": "Women", "share": 53, "d": 41, "r": 9}, {"key": "white_women", "ko": "백인 여성", "en": "White women", "share": 38, "d": 29, "r": 21}, {"key": "independents", "ko": "무당파", "en": "Independents", "share": 33, "d": 44, "r": 6}, {"key": "rural_smalltown", "ko": "농촌·소도시 유권자", "en": "Rural and small-town voters", "share": 35, "d": 10, "r": 40}, {"key": "suburban", "ko": "교외 유권자", "en": "Suburban voters", "share": 45, "d": 42, "r": 8}, {"key": "catholics", "ko": "가톨릭 신자", "en": "Catholics", "share": 20, "d": 16, "r": 34}, {"key": "protestants", "ko": "개신교·기타 기독교 신자", "en": "Protestants and other Christians", "share": 40, "d": 7, "r": 43}, {"key": "age_30_44", "ko": "30~44세", "en": "Voters ages 30 to 44", "share": 20, "d": 45, "r": 5}, {"key": "age_45_64", "ko": "45~64세", "en": "Voters ages 45 to 64", "share": 34, "d": 22, "r": 28}, {"key": "age_65plus", "ko": "65세 이상", "en": "Voters ages 65 and older", "share": 36, "d": 21, "r": 29}, {"key": "age_under30", "ko": "30세 미만", "en": "Voters under 30", "share": 11, "d": 50, "r": 0}, {"key": "white_no_degree", "ko": "백인 대졸 이하", "en": "White voters without a college degree", "share": 38, "d": 4, "r": 46}, {"key": "white_degree", "ko": "백인 대졸 이상", "en": "White voters with a college degree", "share": 35, "d": 39, "r": 11}, {"key": "income_100k", "ko": "가구소득 10만 달러 이상", "en": "Voters with family income of $100,000+", "share": 41, "d": 31, "r": 19}, {"key": "latino", "ko": "라티노 유권자", "en": "Latino voters", "share": 10, "d": 43, "r": 7}, {"key": "black", "ko": "흑인 유권자", "en": "Black voters", "share": 9, "d": 50, "r": 0}];
+let lang = 'ko';
+let cur = 'men';
+function t(obj){ return lang === 'ko' ? obj.ko : obj.en; }
+function renderBtns(){
+  const el = document.getElementById('btns');
+  el.innerHTML = '';
+  const all = {key:'poster', ko:'전체 18개 지도', en:'All 18 maps'};
+  [all].concat(GROUPS).forEach(g => {
+    const b = document.createElement('button');
+    b.textContent = t(g);
+    if (g.key === cur) b.className = 'active';
+    b.onclick = () => { cur = g.key; render(); };
+    el.appendChild(b);
+  });
+}
+function render(){
+  renderBtns();
+  const img = document.getElementById('mapimg');
+  const cap = document.getElementById('cap');
+  const sn = document.getElementById('sharenote');
+  if (cur === 'poster') {
+    img.src = 'maps/if-only-one-group-voted/poster.png';
+    img.alt = 'All 18 maps';
+    cap.innerHTML = '<b>' + (lang==='ko' ? '전체 18개 지도' : 'All 18 maps') + '</b>';
+    sn.textContent = '';
+  } else {
+    const g = GROUPS.find(x => x.key === cur);
+    img.src = 'maps/if-only-one-group-voted/' + g.key + '.png';
+    img.alt = t(g);
+    cap.innerHTML = '<b>' + t(g) + '</b> &nbsp;·&nbsp; ' + (lang==='ko' ? '민주당 ' + g.d + '개 주 · 공화당 ' + g.r + '개 주' : 'Democrats ' + g.d + ' states · Republicans ' + g.r + ' states');
+    sn.textContent = (lang==='ko' ? '전국 유권자의 ' + g.share + '%' : g.share + '% of the national electorate');
+  }
+  document.querySelectorAll('[data-ko]').forEach(el => { el.textContent = lang==='ko' ? el.dataset.ko : el.dataset.en; });
+  document.getElementById('langBtn').textContent = lang==='ko' ? 'English' : '한국어';
+  document.documentElement.lang = lang;
+}
+function toggleLang(){ lang = lang==='ko' ? 'en' : 'ko'; render(); }
+render();
+</script>
+</body>
+</html>
