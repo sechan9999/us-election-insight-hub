@@ -1,5 +1,8 @@
-# Crawlers are not welcome on this site, except link-preview bots that
-# generate share cards when people post our links.
+# Crawlers are not welcome on this site, except Googlebot (so Google
+# Search can index our pages) and link-preview bots that generate share
+# cards when people post our links.
+User-agent: Googlebot
+Allow: /
 User-agent: Twitterbot
 Allow: /
 User-agent: facebookexternalhit

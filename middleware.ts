@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Link-preview bots stay allowed: they render share cards when people post
-// our links on X / Facebook / LinkedIn / Slack / Telegram / Discord.
-const PREVIEW_BOTS = [
+// Googlebot stays allowed so Google Search can index the site
+// (Search Console reported our pages "Blocked due to access forbidden
+// (403)" on 2026-11-12). Googlebot, Googlebot-Image, Googlebot-Video and
+// Googlebot-News all carry 'googlebot' in the user agent, so one entry
+// covers them. Every other crawler stays blocked.
+const ALLOWED_BOTS = [
+  'googlebot',
   'twitterbot',
   'facebookexternalhit',
   'linkedinbot',
@@ -50,7 +54,7 @@ const CRAWLER_PATTERNS = [
 export function middleware(req: NextRequest) {
   const ua = (req.headers.get('user-agent') || '').toLowerCase();
   if (!ua) return NextResponse.next();
-  if (PREVIEW_BOTS.some((p) => ua.includes(p))) return NextResponse.next();
+  if (ALLOWED_BOTS.some((p) => ua.includes(p))) return NextResponse.next();
   if (CRAWLER_PATTERNS.some((p) => ua.includes(p))) {
     return new NextResponse('Blocked: crawlers are not allowed on this site.', {
       status: 403,
