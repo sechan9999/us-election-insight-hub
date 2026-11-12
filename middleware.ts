@@ -5,9 +5,11 @@ import type { NextRequest } from 'next/server';
 // (Search Console reported our pages "Blocked due to access forbidden
 // (403)" on 2026-11-12). Googlebot, Googlebot-Image, Googlebot-Video and
 // Googlebot-News all carry 'googlebot' in the user agent, so one entry
-// covers them. Every other crawler stays blocked.
+// covers them. Bingbot was allowed on 2026-11-12 at HK's request so Bing
+// can index the site too. Every other crawler stays blocked.
 const ALLOWED_BOTS = [
   'googlebot',
+  'bingbot',
   'twitterbot',
   'facebookexternalhit',
   'linkedinbot',
