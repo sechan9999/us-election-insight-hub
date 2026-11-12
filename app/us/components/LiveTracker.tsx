@@ -27,7 +27,7 @@ interface RaceName {
 
 const minutesAgo = (iso: string, now: number) => Math.max(0, Math.round((now - new Date(iso).getTime()) / 60_000));
 
-export default function LiveTracker({ lang, races, daysLeft }: { lang: Lang; races: RaceName[]; daysLeft: number | null }) {
+export default function LiveTracker({ lang, races, daysLeft, onFeed }: { lang: Lang; races: RaceName[]; daysLeft: number | null; onFeed?: (generatedAt: string | null) => void }) {
   const [phase, setPhase] = useState<TrackerPhase | null>(null);
   const [feed, setFeed] = useState<LiveFeed | null>(null);
   const [failedAt, setFailedAt] = useState<number | null>(null);
@@ -65,6 +65,11 @@ export default function LiveTracker({ lang, races, daysLeft }: { lang: Lang; rac
       clearInterval(id);
     };
   }, [phase]);
+
+  useEffect(() => {
+    // Report the feed's timestamp up so the page header can show the results date.
+    onFeed?.(feed ? feed.generatedAt : null);
+  }, [feed, onFeed]);
 
   const name = (id: string) => races.find((r) => r.id === id)?.name ?? id;
   const age = feed && now ? minutesAgo(feed.generatedAt, now) : null;

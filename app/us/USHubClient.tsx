@@ -36,7 +36,7 @@ import { ELECTION_DAY } from './lib/live';
 import LiveTracker from './components/LiveTracker';
 import { NYT_SIENA_OCT_2026, OTHER_RECENT_POLLS, POLL_SOURCE_URLS, type PollRace } from './lib/polls';
 import { forecastRunId } from './lib/run';
-import { daysSince, nextRun, STALE_AFTER_DAYS } from './lib/schedule';
+import { daysSince } from './lib/schedule';
 import MessageTab from './components/MessageTab';
 import CountrySwitch from '../components/CountrySwitch';
 import GeorgiaTab from './components/GeorgiaTab';
@@ -126,7 +126,7 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
   const [lang, setLang] = useState<Lang>(initialLang);
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
   const [inputAge, setInputAge] = useState<number | null>(null);
-  const [next, setNext] = useState<string | null>(null);
+  const [feedAt, setFeedAt] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>(initialTab);
 
   useEffect(() => {
@@ -135,7 +135,6 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setDaysLeft(Math.max(0, Math.ceil(ms / 86_400_000)));
     setInputAge(daysSince(DATA_AS_OF));
-    setNext(nextRun(DATA_AS_OF));
   }, []);
 
   const switchLang = () => {
@@ -204,21 +203,17 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
         {/* Header */}
         <header className="mb-6">
           <div className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="rounded bg-amber-400/15 px-2 py-1 text-amber-300">
-              {t(lang, 'sample')} · {t(lang, 'dataAsOf')} {DATA_AS_OF}
-            </span>
-            {inputAge !== null && (
-              <span
-                className={`rounded px-2 py-1 ${inputAge > STALE_AFTER_DAYS ? 'bg-amber-400/15 text-amber-300' : 'bg-white/5 text-neutral-400'}`}
-              >
-                {t(lang, inputAge > STALE_AFTER_DAYS ? 'staleOld' : 'staleFresh', { d: inputAge })}
-                {next && ` · ${t(lang, 'nextRun', { date: next })}`}
+            {feedAt && (
+              <span className="rounded bg-white/5 px-2 py-1 text-neutral-400">
+                {t(lang, 'resultsAsOf', {
+                  date: new Date(feedAt).toLocaleDateString(lang === 'ko' ? 'ko-KR' : 'en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  }),
+                })}
               </span>
             )}
-            <span className="rounded bg-white/5 px-2 py-1 text-neutral-400">{DATA_SOURCE}</span>
-            <span className="rounded bg-white/5 px-2 py-1 font-mono text-neutral-400">
-              {t(lang, 'runId')} {runId}
-            </span>
             <button
               type="button"
               onClick={switchLang}
@@ -288,7 +283,7 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
         {tab === 'forecast' && (
           <div className="mt-6">
             {/* Election results tracker — leads the board now that voting is over */}
-            <LiveTracker lang={lang} races={trackerRaces} daysLeft={daysLeft} />
+            <LiveTracker lang={lang} races={trackerRaces} daysLeft={daysLeft} onFeed={setFeedAt} />
 
             {/* Pre-election forecast, kept as a record */}
             <div className="mt-8">

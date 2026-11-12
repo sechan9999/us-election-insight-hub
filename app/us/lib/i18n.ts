@@ -205,6 +205,7 @@ const S = {
     en: 'The pre-election forecast, kept for comparison with the results.',
   },
   liveFinalAsOf: { ko: '최종 업데이트 {date}', en: 'Final update {date}' },
+  resultsAsOf: { ko: '결과 기준 {date}', en: 'Results as of {date}' },
   liveSources: { ko: '출처:', en: 'Sources:' },
   liveAgo: { ko: '{m}분 전 업데이트', en: 'Updated {m} min ago' },
   liveWaiting: {
