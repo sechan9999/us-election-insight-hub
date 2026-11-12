@@ -11,8 +11,8 @@ const TITLES: Record<Lang, string> = {
   en: 'US Election Insights Hub — 2026 US Midterm Results',
 };
 const DESCRIPTIONS: Record<Lang, string> = {
-  ko: '2026 미국 중간선거 결과: 민주당이 상·하원 과반 확보. 추적한 상원 13개 경주 중 11개 확정, 미시시피·알래스카는 개표 중. 선거 전 예측(40,000회 시뮬레이션)은 기록으로 보관.',
-  en: '2026 US midterm results: Democrats won the Senate and House. 11 of 13 tracked Senate races called; Mississippi and Alaska still counting. The pre-election forecast (40,000 simulations) is kept as a record.',
+  ko: '2026 미국 중간선거 결과: 민주당이 상·하원 과반 확보. 추적한 상원 13개 경주 중 12개 확정, 알래스카만 개표 중. 상원 민주 55 대 공화 44, 하원 민주 254석 확정(AP). 선거 전 예측(40,000회 시뮬레이션)은 기록으로 보관.',
+  en: '2026 US midterm results: Democrats won the Senate and House. 12 of 13 tracked Senate races called; only Alaska still counting. Senate 55 D to 44 R, House 254 D called (AP). The pre-election forecast (40,000 simulations) is kept as a record.',
 };
 
 function langFrom(params: SearchParams): Lang {
