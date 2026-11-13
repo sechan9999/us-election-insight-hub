@@ -206,6 +206,10 @@ const S = {
   },
   liveFinalAsOf: { ko: '최종 업데이트 {date}', en: 'Final update {date}' },
   resultsAsOf: { ko: '결과 기준 {date}', en: 'Results as of {date}' },
+  turnoutLine: {
+    ko: '투표율 49.4% (유권자 기준, 잠정) — 1914년 이후 중간선거 두 번째로 높고, 2018년(50.1%)에 이어 2위. 투표용지 약 1억 2,430만 장으로 중간선거 최다. 출처: 플로리다대 선거연구소(마이클 맥도널드), 11월 4일 예비 추정치.',
+    en: 'Turnout 49.4% of eligible voters (preliminary) — the second-highest midterm rate since 1914, behind only 2018 (50.1%). About 124.3 million ballots, the most ever cast in a midterm. Source: University of Florida Election Lab (Michael McDonald), preliminary estimate Nov 4.',
+  },
   liveSources: { ko: '출처:', en: 'Sources:' },
   liveAgo: { ko: '{m}분 전 업데이트', en: 'Updated {m} min ago' },
   liveWaiting: {

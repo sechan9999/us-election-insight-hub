@@ -285,6 +285,11 @@ export default function USHubClient({ initialLang = 'ko', initialTab = 'forecast
             {/* Election results tracker — leads the board now that voting is over */}
             <LiveTracker lang={lang} races={trackerRaces} daysLeft={daysLeft} onFeed={setFeedAt} />
 
+            {/* Turnout — verified Nov 13: second-highest midterm rate since 1914 */}
+            <p className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-neutral-300">
+              {t(lang, 'turnoutLine')}
+            </p>
+
             {/* Pre-election forecast, kept as a record */}
             <div className="mt-8">
               <h2 className="text-xl font-semibold">{t(lang, 'archiveTitle')}</h2>
